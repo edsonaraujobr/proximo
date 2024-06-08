@@ -1,6 +1,6 @@
 
 
-export function Login({ typeUser, otherUser, onButtonChangeUser}) {
+export function Login({ typeUser, otherUser, onButtonChangeUser, onButtonLogin}) {
 
   return (
     <div className='w-lvw h-lvh bg-gradient-to-t from-slate-800 to-slate-900 text-white flex gap-4 flex-col justify-center items-center'>
@@ -26,7 +26,7 @@ export function Login({ typeUser, otherUser, onButtonChangeUser}) {
         </div>
 
         <div className="flex w-full">
-          <button type="button" className="w-full bg-lime-700 text-white rounded-md h-7 hover:bg-lime-600">Entrar</button>
+          <button type="button" className="w-full bg-lime-700 text-white rounded-md h-7 hover:bg-lime-600" onClick={onButtonLogin}>Entrar</button>
         </div>
       </div>
 

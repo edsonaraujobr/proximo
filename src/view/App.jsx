@@ -5,31 +5,48 @@ import { Atendimento } from "./Atendimento.jsx";
 
 export function App() {
     const [changeToAdministrator, setChangeToAdministrator] = useState(true);
+    const [showHistorico, setShowHistorico] = useState(false);
 
     const changeTypeUser = () => {
         setChangeToAdministrator(!changeToAdministrator);
     }
 
-    return (
-        // <div>
-        //     { changeToAdministrator ? 
-        //         (    
-        //             <Login 
-        //             typeUser = "Atendente"
-        //             otherUser = "Administrador"
-        //             onButtonChangeUser = {changeTypeUser}
-        //             />) 
-        //         : (
-        //             <Login 
-        //             typeUser = "Administrador"
-        //             otherUser = "Atendente"
-        //             onButtonChangeUser = {changeTypeUser}
-        //             />
-        //         )
-        //     }
-        // </div> 
+    const toggleHistorico = () => {
+        setShowHistorico(!showHistorico);
+    };
 
-        // <Historico/>
-         <Atendimento/>
+    return (
+        <div className=" fixed ">
+            { showHistorico ? 
+                (
+                    <Historico
+                        onButtonExit={toggleHistorico}
+                    /> 
+                ) : (
+                        <div>
+                            { changeToAdministrator ? 
+                                (    
+                                    <Login 
+                                    typeUser = "Atendente"
+                                    otherUser = "Administrador"
+                                    onButtonChangeUser = {changeTypeUser}
+                                    onButtonLogin={toggleHistorico}
+                                    />
+                                ) 
+                                : (
+                                    <Login 
+                                    typeUser = "Administrador"
+                                    otherUser = "Atendente"
+                                    onButtonChangeUser = {changeTypeUser}
+                                    onButtonLogin={toggleHistorico}
+                                    />
+                                )
+                            }
+                        </div>
+                    )
+            };
+        </div>
+
+        // <Atendimento/>
     )
 }
