@@ -1,5 +1,8 @@
-Para executar:
-1. docker build -t app .
-2. docker run --name app -e PORT=8080 -p 8080:8080 -v /home/edson/Documentos/GitHub/projeto-ru:/app -w /app app npm run dev
+1. Para executar:
+docker compose up -d
 
-OBS: Substitua o caminho pelo seu caminho.
+2, Para parar de executar:
+docker compose down
+
+3. Para salvar alterações e visualizar:
+docker compose up -d --build
