@@ -11,5 +11,5 @@ app.use(cors())
 app.use("/", userRoutes)
 
 app.listen('3030',() => {
-    console.log("Running server");
+    console.log("Running serverx");
 })
