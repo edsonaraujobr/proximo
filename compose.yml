@@ -1,13 +1,14 @@
 version: '3.8'
 
 services:
-  # app:
-  #   build: ./
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - mysql
-  #     - backend
+  frontend:
+    build: 
+      context: ./src/frontend
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+      - backend
     
   mysql:
     image: mysql:8.0.36
@@ -21,15 +22,15 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
-  # backend:
-  #   build: ./src/backend/
-  #   ports:
-  #     - "8800:8800"
-  #   depends_on:
-  #     - mysql
-  #   volumes:
-  #     - ./src/backend:/backend
-  #   working_dir: /src/backend
+  backend:
+    build: ./src/backend/
+    ports:
+      - "8800:8800"
+    depends_on:
+      - mysql
+    volumes:
+      - ./src/backend:/backend
+    working_dir: /src/backend
 
 volumes:
   mysql-data:

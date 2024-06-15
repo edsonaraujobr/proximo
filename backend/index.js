@@ -10,4 +10,6 @@ app.use(cors())
 
 app.use("/", userRoutes)
 
-app.listen(8801)
+app.listen('3030',() => {
+    console.log("Running server");
+})
