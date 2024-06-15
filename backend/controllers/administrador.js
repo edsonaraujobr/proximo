@@ -1,13 +1,22 @@
 import db from "../db.js";
 
-export const getAdministradores = (_, res) => {
-    const q = "SELECT * FROM administrador";
+export const getAdministradores = (req, res) => {
+    const { username, password } = req.body;
 
-    db.query(q, (err, data) =>{
+    const query = "SELECT * FROM administrador WHERE (nome = ? OR email = ?) AND senha = ?";
+
+    db.query(query, [username,username, password], (err, data) =>{
         if (err) {
-            return res.status(500).json({ error: "Erro ao buscar administradores.", details: err });
+            console.error('Erro ao consultar banco de dados:', err);
+            return res.status(500).json({ error: 'Erro ao autenticar usuário' });
         }
 
-        return res.status(200).json(data);
+        if (data.length > 0) {
+            // Usuário encontrado
+            return res.status(200).json({ message: 'Usuário autenticado com sucesso', user: data[0] });
+        } else {
+            // Usuário não encontrado
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
     });
 };

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   frontend:
     build: 
-      context: ./src/frontend
+      context: ./frontend
     ports:
       - 8080:8080
     depends_on:
@@ -23,7 +23,7 @@ services:
       - mysql-data:/var/lib/mysql
 
   backend:
-    build: ./src/backend/
+    build: ./backend
     ports:
       - "8800:8800"
     depends_on:

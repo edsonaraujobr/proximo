@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Login } from "./Login.jsx";
+import { LoginAdministrador } from "./LoginAdministrador.jsx";
 import { Historico } from "./Historico.jsx";
 import { Atendimento } from "./Atendimento.jsx";
 
@@ -16,36 +16,12 @@ export function App() {
     };
 
     return (
-        <div className=" fixed ">
-            { showHistorico ? 
-                (
-                    <Historico
-                        onButtonExit={toggleHistorico}
-                    /> 
-                ) : (
-                        <div>
-                            { changeToAdministrator ? 
-                                (    
-                                    <Login 
-                                    typeUser = "Atendente"
-                                    otherUser = "Administrador"
-                                    onButtonChangeUser = {changeTypeUser}
-                                    onButtonLogin={toggleHistorico}
-                                    />
-                                ) 
-                                : (
-                                    <Login 
-                                    typeUser = "Administrador"
-                                    otherUser = "Atendente"
-                                    onButtonChangeUser = {changeTypeUser}
-                                    onButtonLogin={toggleHistorico}
-                                    />
-                                )
-                            }
-                        </div>
-                    )
-            };
-        </div>
+        <LoginAdministrador 
+            typeUser = "Administrador"
+            otherUser = "Atendente"
+            onButtonChangeUser = {changeTypeUser}
+        />
+
 
         // <Atendimento/>
     )
