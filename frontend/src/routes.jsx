@@ -1,5 +1,7 @@
 import {Routes, Route} from "react-router-dom"
-import { Atendimento } from "./pages/Atendente/Atendimento";
+import { Almoco } from "./pages/Atendente/Almoco";
+import { CafeManha } from "./pages/Atendente/CafeManha";
+import { Jantar } from "./pages/Atendente/Jantar";
 import { Login } from "./pages/Login/Login";
 import { Home } from "./pages/Home/Home";
 import { HomeAtendente } from "./pages/Atendente/HomeAtendente";
@@ -32,11 +34,25 @@ function MainRoutes() {
                 </HomeAdministrador>
             }
             />
-            <Route path="/atendente/atendimento" element=
+            <Route path="/atendente/almoco" element=
             {
-                <Atendimento>
+                <Almoco>
                     <Home/>
-                </Atendimento>
+                </Almoco>
+            }
+            />
+            <Route path="/atendente/cafeManha" element=
+            {
+                <CafeManha>
+                    <Home/>
+                </CafeManha>
+            }
+            />
+            <Route path="/atendente/jantar" element=
+            {
+                <Jantar>
+                    <Home/>
+                </Jantar>
             }
             />
             <Route path="/atendente/home" element=

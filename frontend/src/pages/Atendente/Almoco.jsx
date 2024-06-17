@@ -1,12 +1,12 @@
 import { Header } from '../../componentes/Header.jsx'
-import {Button } from '../../componentes/Button.jsx'
-import {Footer} from '../../componentes/Footer.jsx'
+import { Button } from '../../componentes/Button.jsx'
+import { Footer } from '../../componentes/Footer.jsx'
 import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { useContext } from "react"
 import { AtendenteContext } from '../../contexts/AtendenteContext.jsx'; 
 
-export function Atendimento ({children}) {
+export function Almoco ({children}) {
     const [matricula, setMatricula] = useState('');
     const [userType, setUserType] = useState('interno')
     const [paymentType, setPaymentType] = useState('cartao')

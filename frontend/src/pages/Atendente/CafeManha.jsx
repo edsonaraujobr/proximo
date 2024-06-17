@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useContext } from "react"
 import { AtendenteContext } from '../../contexts/AtendenteContext.jsx'; 
 
-export function Jantar({children}) {
+export function CafeManha({children}) {
     const [userType, setUserType] = useState('interno')
     const [matricula, setMatricula] = useState('');
     const logado = false;

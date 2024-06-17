@@ -3,18 +3,29 @@ import * as Dialog from '@radix-ui/react-dialog'; // biblioteca de modals
 import {Button} from '../../componentes/Button.jsx';
 import { Header } from '../../componentes/Header.jsx'
 import {Footer} from '../../componentes/Footer.jsx'
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { AtendenteContext } from '../../contexts/AtendenteContext.jsx'; 
 import { useNavigate } from 'react-router-dom';
 
 export function HomeAtendente({children}) {
     const logado = false;
+    const [tipoAtendimento, setTipoAtendimento] = useState('');
     const { atendente } = useContext(AtendenteContext);
     const navigate = useNavigate()
 
+    const handleTipoAtendimento = (e) => {
+        setTipoAtendimento(e.target.value)
+    };
+
     const handleIniciarAtendimento = (event) => {
         event.preventDefault();
-        navigate('/atendente/atendimento')
+        if(tipoAtendimento === 'almoco') {
+            navigate('/atendente/almoco')
+        } else if(tipoAtendimento === 'cafe-manha') {
+            navigate('/atendente/cafeManha')
+        } else if(tipoAtendimento === 'jantar') {
+            navigate('/atendente/jantar')
+        }
     } 
 
     return (
@@ -46,21 +57,26 @@ export function HomeAtendente({children}) {
                                     <form onSubmit={handleIniciarAtendimento} className='flex w-full h-full justify-center items-center text-white'>
                                         <div className='flex flex-col gap-2'>
                                             <div className='flex gap-2 flex-col'>
-                                                <h2>Tipo de refeição</h2>
+                                                <h2 className='font-bold'>Tipo de refeição</h2>
                                                 <div className='flex gap-2'>
-                                                    <input type="radio" name="refeicao" id="id-cafe-manha" required />
+                                                    <input type="radio" name="refeicao" id="id-cafe-manha" value="cafe-manha" onChange={handleTipoAtendimento} required />
                                                     <label htmlFor="id-cafe-manha">Café da manhã</label>
                                                 </div>
                                                 <div className='flex gap-2'>
-                                                    <input type="radio" name="refeicao" id="id-almoco" required/>
+                                                    <input type="radio" name="refeicao" id="id-almoco" value="almoco" onChange={handleTipoAtendimento} required/>
                                                     <label htmlFor="id-almoco">Almoço</label>
                                                 </div>
                                                 <div className='flex gap-2'>
-                                                    <input type="radio" name="refeicao" id="id-jantar" required />
+                                                    <input type="radio" name="refeicao" id="id-jantar" value="jantar" onChange={handleTipoAtendimento} required />
                                                     <label htmlFor="id-jantar">Jantar</label>
                                                 </div>
                                             </div>
-                                            <button type="submit">Iniciar</button>
+                                            <button 
+                                                type="submit"
+                                                className='w-full bg-green-600 rounded-md hover:bg-green-700'
+                                            >
+                                                Iniciar
+                                            </button>
                                         </div>
                                         
                                     </form>

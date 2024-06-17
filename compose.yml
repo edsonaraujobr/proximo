@@ -1,34 +1,33 @@
 version: '3.8'
 
 services:
-  frontend:
-    build: ./frontend
-    ports:
-      - 8080:8080
-    depends_on:
-      - mysql
-      - backend
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - mysql
+  #     - backend
     
   mysql:
     image: mysql:8.0.36
     container_name: mysql-container
     environment:
-      MYSQL_USER: user
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3300:3300"
+      - "3300:3306"
     volumes:
       - mysql-data:/var/lib/mysql
 
-  backend:
-    build: ./backend
-    ports:
-      - "8800:8800"
-    depends_on:
-      - mysql
-    volumes:
-      - ./backend:/backend
-    working_dir: /backend
+  # backend:
+  #   build: ./backend
+  #   ports:
+  #     - "8800:8800"
+  #   depends_on:
+  #     - mysql
+  #   volumes:
+  #     - ./backend:/backend
+  #   working_dir: /backend
 
 volumes:
   mysql-data:
