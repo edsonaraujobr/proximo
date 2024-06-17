@@ -33,3 +33,7 @@ label {
   input[type=number] {
     -moz-appearance: textfield;
   }
+
+.logo {
+  width: 40px;
+}

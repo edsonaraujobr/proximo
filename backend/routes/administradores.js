@@ -3,6 +3,6 @@ import { getAdministradores } from "../controllers/administrador.js";
 
 const router = express.Router()
 
-router.post("/login", getAdministradores)
+router.post("/administrador", getAdministradores)
 
 export default router

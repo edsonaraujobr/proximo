@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    build: 
-      context: ./frontend
+    build: ./frontend
     ports:
       - 8080:8080
     depends_on:
@@ -14,11 +13,10 @@ services:
     image: mysql:8.0.36
     container_name: mysql-container
     environment:
+      MYSQL_USER: user
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3307:3306"
-    expose:
-      - "3306"
+      - "3300:3300"
     volumes:
       - mysql-data:/var/lib/mysql
 
@@ -29,8 +27,8 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ./src/backend:/backend
-    working_dir: /src/backend
+      - ./backend:/backend
+    working_dir: /backend
 
 volumes:
   mysql-data:

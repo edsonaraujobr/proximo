@@ -1,14 +1,18 @@
-import { Header } from './componentes/Header.jsx'
-import {Button } from './componentes/Button.jsx'
-import {Footer} from './componentes/Footer.jsx'
+import { Header } from '../../componentes/Header.jsx'
+import {Button } from '../../componentes/Button.jsx'
+import {Footer} from '../../componentes/Footer.jsx'
 import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
+import { useContext } from "react"
+import { AtendenteContext } from '../../contexts/AtendenteContext.jsx'; 
 
-export function Atendimento () {
+export function Atendimento ({children}) {
     const [matricula, setMatricula] = useState('');
     const [userType, setUserType] = useState('interno')
     const [paymentType, setPaymentType] = useState('cartao')
     const [dinheiro, setDinheiro] = useState('')
+    const { atendente } = useContext(AtendenteContext);
+    const logado = false;
 
     const handleMatriculaChange = (e) => {
         const value = e.target.value;
@@ -31,9 +35,12 @@ export function Atendimento () {
         }
     }
 
-    return (
+    return ( 
+        logado ? children : (
         <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
-            <Header/>
+            <Header
+                name={atendente.user.nome}
+            />
 
             <div className=' w-full h-full flex flex-col justify-center items-center'>
                 <main className='flex justify-center items-center p-5 '>
@@ -189,5 +196,6 @@ export function Atendimento () {
 
             <Footer/>
         </div>
+        )
     )
 }

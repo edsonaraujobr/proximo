@@ -1,14 +1,15 @@
 import {ExitIcon, HamburgerMenuIcon} from '@radix-ui/react-icons';
+import logo from "../assets/logo.png";
 
-export function Header({onButtonExit}) {
+export function Header({name,onButtonExit}) {
     return (
-        <header className="w-lvw bg-slate-900 px-10 py-4 flex justify-between text-white">
-            <div className='gap-3 flex'>
+        <header className="w-lvw bg-slate-900 px-10 py-4 flex justify-between items-center text-white">
+            <div className='gap-3 flex justify-between items-center'>
                 <button><HamburgerMenuIcon/></button>
-                <span>Icone do Programa</span>
-                <span>edsonaraujoneto</span>
+                <img src={logo} className="size-5" />
+                <span>{name}</span>
             </div>
-            <div className='gap-3 flex'>
+            <div className='gap-3 flex justify-between items-center'>
                 <span>Foto de Perfil</span>
                 <button onClick={onButtonExit}><ExitIcon/></button>
             </div>
