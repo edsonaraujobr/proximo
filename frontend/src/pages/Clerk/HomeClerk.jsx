@@ -1,39 +1,39 @@
 import { PlusCircledIcon, FileTextIcon, EyeOpenIcon, Cross1Icon, CheckIcon} from '@radix-ui/react-icons';
-import * as Dialog from '@radix-ui/react-dialog'; // biblioteca de modals
-import {Button} from '../../componentes/Button.jsx';
+import * as Dialog from '@radix-ui/react-dialog'; 
+import { Button } from '../../componentes/Button.jsx';
 import { Header } from '../../componentes/Header.jsx'
-import {Footer} from '../../componentes/Footer.jsx'
+import { Footer } from '../../componentes/Footer.jsx'
 import { useContext, useState } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 import { useNavigate } from 'react-router-dom';
 
 export function HomeClerk({children}) {
-    const logado = false;
-    const [tipoAtendimento, setTipoAtendimento] = useState('');
+    const login = false;
+    const [typeService, setTypeService] = useState('');
     const { clerk } = useContext(ClerkContext);
     const navigate = useNavigate()
 
-    const handleTipoAtendimento = (e) => {
-        setTipoAtendimento(e.target.value)
+    const handleTypeService = (e) => {
+        setTypeService(e.target.value)
     };
 
-    const handleIniciarAtendimento = (event) => {
+    const handleStartedService = (event) => {
         event.preventDefault();
-        if(tipoAtendimento === 'almoco') {
+        if(typeService === 'almoco') {
             navigate('/atendente/almoco')
-        } else if(tipoAtendimento === 'cafe-manha') {
+        } else if(typeService === 'cafe-manha') {
             navigate('/atendente/cafe')
-        } else if(tipoAtendimento === 'jantar') {
+        } else if(typeService === 'jantar') {
             navigate('/atendente/jantar')
         }
     } 
 
     return (
-        logado ? children : ( 
+        login ? children : ( 
             <Dialog.Root>
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4'>
                     <Header
-                        name={clerk.user.nome}
+                        name={clerk.user.name}
                     />
 
                     <div className='flex'>
@@ -54,20 +54,20 @@ export function HomeClerk({children}) {
                                     <Dialog.Close className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
                                         <Cross1Icon/>
                                     </Dialog.Close>
-                                    <form onSubmit={handleIniciarAtendimento} className='flex w-full h-full justify-center items-center text-white'>
+                                    <form onSubmit={handleStartedService} className='flex w-full h-full justify-center items-center text-white'>
                                         <div className='flex flex-col gap-2'>
                                             <div className='flex gap-2 flex-col'>
                                                 <h2 className='font-bold'>Tipo de refeição</h2>
                                                 <div className='flex gap-2'>
-                                                    <input type="radio" name="refeicao" id="id-cafe-manha" value="cafe-manha" onChange={handleTipoAtendimento} required />
+                                                    <input type="radio" name="refeicao" id="id-cafe-manha" value="cafe-manha" onChange={handleTypeService} required />
                                                     <label htmlFor="id-cafe-manha">Café da manhã</label>
                                                 </div>
                                                 <div className='flex gap-2'>
-                                                    <input type="radio" name="refeicao" id="id-almoco" value="almoco" onChange={handleTipoAtendimento} required/>
+                                                    <input type="radio" name="refeicao" id="id-almoco" value="almoco" onChange={handleTypeService} required/>
                                                     <label htmlFor="id-almoco">Almoço</label>
                                                 </div>
                                                 <div className='flex gap-2'>
-                                                    <input type="radio" name="refeicao" id="id-jantar" value="jantar" onChange={handleTipoAtendimento} required />
+                                                    <input type="radio" name="refeicao" id="id-jantar" value="jantar" onChange={handleTypeService} required />
                                                     <label htmlFor="id-jantar">Jantar</label>
                                                 </div>
                                             </div>

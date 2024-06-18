@@ -8,7 +8,6 @@ const db = mysql.createConnection({
     database: "ru"
 })
 
-// Estabelece a conexão com o banco de dados
 db.connect((err) => {
     if (err) {
         console.error('Erro ao conectar ao banco de dados:', err);

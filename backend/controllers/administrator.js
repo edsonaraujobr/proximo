@@ -1,9 +1,9 @@
 import db from "../db.js";
 
-export const getAdministradores = (req, res) => {
+export const getAdministrators = (req, res) => {
     const { username, password } = req.body;
 
-    const query = "SELECT * FROM administrador WHERE (nome = ? OR email = ?) AND senha = ?";
+    const query = "SELECT * FROM administrator WHERE (name = ? OR email = ?) AND password = ?";
 
     db.query(query, [username,username, password], (err, data) =>{
         if (err) {
@@ -12,10 +12,8 @@ export const getAdministradores = (req, res) => {
         }
 
         if (data.length > 0) {
-            // Usuário encontrado
             return res.status(200).json({ message: 'Usuário autenticado com sucesso', user: data[0] });
         } else {
-            // Usuário não encontrado
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
     });

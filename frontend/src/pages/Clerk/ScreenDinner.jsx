@@ -6,58 +6,58 @@ import { useState } from 'react';
 import { useContext } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 
-export function Jantar({children}) {
-    const [userType, setUserType] = useState('interno')
-    const [matricula, setMatricula] = useState('');
-    const logado = false;
-    const [paymentType, setPaymentType] = useState('cartao')
-    const [dinheiro, setDinheiro] = useState('')
-    const [buscarUsuario, setBuscarUsuario] = useState(false)
-    const [usuarioEncontrado, setUsuarioEncontrado] = useState(false)
+export function ScreenDinner({children}) {
+    const [ userType, setUserType ] = useState('interno')
+    const [ registration, setRegistration ] = useState('');
+    const login = false;
+    const [ paymentType, setPaymentType ] = useState('cartao')
+    const [ money, setMoney ] = useState('')
+    const [ searchUser, setSearchUser ] = useState(false)
+    const [ foundUser, setFoundUser ] = useState(false)
     const { clerk } = useContext(ClerkContext);
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
         if(e.target.value === 'externo') {
-            setMatricula('');
+            setRegistration('');
         }
     }
 
-    const handleMatriculaChange = (e) => {
+    const handleRegistrationChange = (e) => {
         const value = e.target.value;
         if(value.length <= 9) {
-            setMatricula(value);
+            setRegistration(value);
         }
     };
 
     const handlePaymentChange = (e) => {
         setPaymentType(e.target.value);
         if(e.target.value === 'dinheiro') {
-            setDinheiro('');
+            setMoney('');
         }
     }
 
-    const handleBuscarAluno = async (e) => {
+    const handleSearchStudent = async (e) => {
         e.preventDefault();
-        if(matricula.length < 9) {
+        if(registration.length < 9) {
             alert("menor de 9")
         } else {
             try {
-                setBuscarUsuario(true)
+                setSearchUser(true)
                 const response = await fetch(`http://localhost:3030/aluno`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ matricula }),
+                    body: JSON.stringify({ registration }),
                 });
         
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Usuário autenticado:', data);
-                    setUsuarioEncontrado(true)
+                    setFoundUser(true)
                 } else {
-                    setUsuarioEncontrado(false)
+                    setFoundUser(false)
                 }
             } catch (error) {
                 console.error('Erro ao conectar ao servidor:', error);
@@ -67,10 +67,10 @@ export function Jantar({children}) {
     }
 
     return (
-        logado ? children : (
+        login ? children : (
             <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
                 <Header
-                    //name={clerk.user.nome}
+                    name={clerk.user.name}
                 />
                 <div className=' w-full h-full flex flex-col justify-center items-center '>
                     <main className='flex justify-center items-center p-5 '>
@@ -104,16 +104,16 @@ export function Jantar({children}) {
                                             <label htmlFor="id-interno">Interno</label>
                                         </div>
                                     </div>
-                                    <form onSubmit={handleBuscarAluno} className='flex gap-2 flex-col '>
+                                    <form onSubmit={handleSearchStudent} className='flex gap-2 flex-col '>
                                         <label htmlFor="matricula">Nº de matrícula: </label>
                                         <input 
                                             required
                                             type="number" 
                                             name="interno" 
                                             id="matricula" 
-                                            value={matricula}
+                                            value={registration}
                                             disabled={userType === 'externo'}
-                                            onChange={handleMatriculaChange}
+                                            onChange={handleRegistrationChange}
                                             className='bg-slate-700 rounded-md p-1' 
                                         />
                                         <button 
@@ -203,7 +203,7 @@ export function Jantar({children}) {
                                             name="reais" 
                                             id="reais" 
                                             className='bg-slate-700 rounded-md p-1' 
-                                            value={dinheiro}
+                                            value={money}
                                             disabled={paymentType === 'cartao' || paymentType === 'pix'}
                                         />
                                         <Button
@@ -217,9 +217,9 @@ export function Jantar({children}) {
                         </section>
                     </main>
                     { 
-                    buscarUsuario ? 
+                    searchUser ? 
                         (
-                            usuarioEncontrado ? 
+                            foundUser ? 
                             <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
                                 <span>Usuário encontrado</span>
                             </div>: 

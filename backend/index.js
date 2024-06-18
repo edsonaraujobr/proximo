@@ -1,8 +1,8 @@
 import express from "express"
 import cors from "cors"
-import administradorRoutes from "./routes/administradores.js"
-import atendenteRoutes from "./routes/atendentes.js"
-import alunosRoutes from "./routes/alunos.js"
+import administratorRoutes from "./routes/administrators.js"
+import clerkRoutes from "./routes/clerks.js"
+import studentRoutes from "./routes/students.js"
 
 const app = express()
 
@@ -10,11 +10,11 @@ app.use(express.json())
 
 app.use(cors())
 
-app.use("/", administradorRoutes)
-app.use("/", atendenteRoutes)
-app.use("/", alunosRoutes)
+app.use("/", administratorRoutes)
+app.use("/", clerkRoutes)
+app.use("/", studentRoutes)
 
 
 app.listen('3030',() => {
-    console.log("Running server");
+    console.log("Running server port 3030");
 })

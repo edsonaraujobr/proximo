@@ -6,58 +6,58 @@ import { useState } from 'react';
 import { useContext } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 
-export function Almoco ({children}) {
-    const [matricula, setMatricula] = useState('');
+export function ScreenLunch ({children}) {
+    const [registration, setRegistration] = useState('');
     const [userType, setUserType] = useState('interno')
     const [paymentType, setPaymentType] = useState('cartao')
-    const [dinheiro, setDinheiro] = useState('')
+    const [money, setMoney] = useState('')
     const { clerk } = useContext(ClerkContext);
-    const logado = false;
-    const [buscarUsuario, setBuscarUsuario] = useState(false)
-    const [usuarioEncontrado, setUsuarioEncontrado] = useState(false)
+    const login = false;
+    const [searchUser, setSearchUser] = useState(false)
+    const [foundUser, setFoundUser] = useState(false)
 
-    const handleMatriculaChange = (e) => {
+    const handleRegistrationChange = (e) => {
         const value = e.target.value;
         if(value.length <= 9) {
-            setMatricula(value);
+            setRegistration(value);
         }
     };
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
         if(e.target.value === 'externo') {
-            setMatricula('');
+            setRegistration('');
         }
     }
 
     const handlePaymentChange = (e) => {
         setPaymentType(e.target.value);
         if(e.target.value === 'dinheiro') {
-            setDinheiro('');
+            setMoney('');
         }
     }
 
     const handleBuscarAluno = async (e) => {
         e.preventDefault();
-        if(matricula.length < 9) {
+        if(registration.length < 9) {
             alert("menor de 9")
         } else {
             try {
-                setBuscarUsuario(true)
+                setSearchUser(true)
                 const response = await fetch(`http://localhost:3030/aluno`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ matricula }),
+                    body: JSON.stringify({ registration }),
                 });
         
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Usuário autenticado:', data);
-                    setUsuarioEncontrado(true)
+                    setFoundUser(true)
                 } else {
-                    setUsuarioEncontrado(false)
+                    setFoundUser(false)
                 }
             } catch (error) {
                 console.error('Erro ao conectar ao servidor:', error);
@@ -67,10 +67,10 @@ export function Almoco ({children}) {
     }
 
     return ( 
-        logado ? children : (
+        login ? children : (
         <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
             <Header
-                name={clerk.user.nome}
+                name={clerk.user.name}
             />
 
             <div className=' w-full h-full flex flex-col justify-center items-center'>
@@ -112,9 +112,9 @@ export function Almoco ({children}) {
                                         type="number" 
                                         name="interno" 
                                         id="matricula" 
-                                        value={matricula}
+                                        value={registration}
                                         disabled={userType === 'externo'}
-                                        onChange={handleMatriculaChange}
+                                        onChange={handleRegistrationChange}
                                         className='bg-slate-700 rounded-md p-1' 
                                     />
                                     <button 
@@ -202,7 +202,7 @@ export function Almoco ({children}) {
                                         name="reais" 
                                         id="reais" 
                                         className='bg-slate-700 rounded-md p-1' 
-                                        value={dinheiro}
+                                        value={money}
                                         disabled={paymentType === 'cartao' || paymentType === 'pix'}
                                     />
                                     <Button
@@ -218,9 +218,9 @@ export function Almoco ({children}) {
 
                 </main>
                 { 
-                buscarUsuario ? 
+                searchUser ? 
                     (
-                        usuarioEncontrado ? 
+                        foundUser ? 
                         <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
                             <span>Usuário encontrado</span>
                         </div>: 
