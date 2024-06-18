@@ -2,8 +2,8 @@ import { useState } from "react";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom"
 import { useContext } from "react"
-import { AtendenteContext } from '../../contexts/AtendenteContext.jsx'; 
-import { AdministradorContext } from '../../contexts/AdministradorContext.jsx'; 
+import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
+import { AdministratorContext } from '../../contexts/AdministratorContext.jsx'; 
 
 export function Login({ typeUser, otherUser}) {
 
@@ -11,8 +11,8 @@ export function Login({ typeUser, otherUser}) {
   const [password, setPassword] = useState('');
   const [usuarioNaoEncontrado, setUsuarioNaoEncontrado] = useState(false);
   const navigate = useNavigate();
-  const { login: loginAtendente } = useContext(AtendenteContext);
-  const { login: loginAdministrador } = useContext(AdministradorContext);
+  const { login: loginClerk } = useContext(ClerkContext);
+  const { login: loginAdministrator } = useContext(AdministratorContext);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -44,10 +44,10 @@ export function Login({ typeUser, otherUser}) {
             const data = await response.json();
             console.log('Usuário autenticado:', data);
             if(typeUser === 'atendente') {
-              loginAtendente(data)
+              loginClerk(data)
               navigate(`/atendente/home`)
             } else if(typeUser === 'administrador') {
-              loginAdministrador(data)
+              loginAdministrator(data)
               navigate(`/administrador/home`)
             }
 

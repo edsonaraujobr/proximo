@@ -4,15 +4,17 @@ import { Footer } from '../../componentes/Footer.jsx'
 import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { useContext } from "react"
-import { AtendenteContext } from '../../contexts/AtendenteContext.jsx'; 
+import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 
-export function CafeManha({children}) {
+export function Jantar({children}) {
     const [userType, setUserType] = useState('interno')
     const [matricula, setMatricula] = useState('');
     const logado = false;
     const [paymentType, setPaymentType] = useState('cartao')
     const [dinheiro, setDinheiro] = useState('')
-    const { atendente } = useContext(AtendenteContext);
+    const [buscarUsuario, setBuscarUsuario] = useState(false)
+    const [usuarioEncontrado, setUsuarioEncontrado] = useState(false)
+    const { clerk } = useContext(ClerkContext);
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
@@ -35,15 +37,44 @@ export function CafeManha({children}) {
         }
     }
 
+    const handleBuscarAluno = async (e) => {
+        e.preventDefault();
+        if(matricula.length < 9) {
+            alert("menor de 9")
+        } else {
+            try {
+                setBuscarUsuario(true)
+                const response = await fetch(`http://localhost:3030/aluno`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ matricula }),
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Usuário autenticado:', data);
+                    setUsuarioEncontrado(true)
+                } else {
+                    setUsuarioEncontrado(false)
+                }
+            } catch (error) {
+                console.error('Erro ao conectar ao servidor:', error);
+            }
+        }
+
+    }
+
     return (
         logado ? children : (
             <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
                 <Header
-                    //name={atendente.user.nome}
+                    //name={clerk.user.nome}
                 />
-                <div className=' w-full h-full flex flex-col justify-center items-center'>
+                <div className=' w-full h-full flex flex-col justify-center items-center '>
                     <main className='flex justify-center items-center p-5 '>
-                        <section className='flex gap-3 w-[920px]'>
+                        <section className='flex gap-3 w-[920px] justify-center '>
                             <div className=' border border-slate-700 p-5 flex flex-col gap-2 rounded-md items-center'>
                                 <div className='flex w-full'>
                                     <h2 className='font-bold text-lg'>Tipo de Usuário</h2>
@@ -73,9 +104,10 @@ export function CafeManha({children}) {
                                             <label htmlFor="id-interno">Interno</label>
                                         </div>
                                     </div>
-                                    <div className='flex gap-2 flex-col '>
+                                    <form onSubmit={handleBuscarAluno} className='flex gap-2 flex-col '>
                                         <label htmlFor="matricula">Nº de matrícula: </label>
                                         <input 
+                                            required
                                             type="number" 
                                             name="interno" 
                                             id="matricula" 
@@ -83,15 +115,15 @@ export function CafeManha({children}) {
                                             disabled={userType === 'externo'}
                                             onChange={handleMatriculaChange}
                                             className='bg-slate-700 rounded-md p-1' 
-                                            placeholder='000000000'
                                         />
                                         <button 
-                                            type="button" 
+                                            type="submit" 
                                             disabled={userType === 'externo'} 
                                             className='bg-green-600 px-2 rounded-md cursor-pointer flex justify-center items-center gap-2' > 
                                             <MagnifyingGlassIcon/>Buscar
+                                            
                                         </button>
-                                    </div>
+                                    </form>
 
                                 </div>
                                 
@@ -170,24 +202,38 @@ export function CafeManha({children}) {
                                             type="number" 
                                             name="reais" 
                                             id="reais" 
-                                            placeholder='00.00' 
                                             className='bg-slate-700 rounded-md p-1' 
                                             value={dinheiro}
                                             disabled={paymentType === 'cartao' || paymentType === 'pix'}
                                         />
                                         <Button
-                                            cor='bg-green-600'
-                                            texto='Confirmar'
-                                            icone={<CheckIcon/>}
+                                            color='bg-green-600'
+                                            text='Confirmar'
+                                            icon={<CheckIcon/>}
                                         />
                                     </div>
                                 </div>
                             </div>
                         </section>
                     </main>
-                    <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
-                        <span>Aqui vai aparecer o resultado da busca do aluno interno</span>
-                    </div>
+                    { 
+                    buscarUsuario ? 
+                        (
+                            usuarioEncontrado ? 
+                            <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
+                                <span>Usuário encontrado</span>
+                            </div>: 
+                            (
+                            <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
+                                <span>Usuário não encontrado</span>
+                            </div>
+                            )
+                        ) : 
+                        (
+                            <div className='w-[920px] h-44 flex justify-center items-center'></div>
+                        )
+                    }
+
                 </div>
                 
                 <Footer/>

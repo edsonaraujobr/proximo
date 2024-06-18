@@ -4,13 +4,13 @@ import {Button} from '../../componentes/Button.jsx';
 import { Header } from '../../componentes/Header.jsx'
 import {Footer} from '../../componentes/Footer.jsx'
 import { useContext, useState } from "react"
-import { AtendenteContext } from '../../contexts/AtendenteContext.jsx'; 
+import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 import { useNavigate } from 'react-router-dom';
 
-export function HomeAtendente({children}) {
+export function HomeClerk({children}) {
     const logado = false;
     const [tipoAtendimento, setTipoAtendimento] = useState('');
-    const { atendente } = useContext(AtendenteContext);
+    const { clerk } = useContext(ClerkContext);
     const navigate = useNavigate()
 
     const handleTipoAtendimento = (e) => {
@@ -22,7 +22,7 @@ export function HomeAtendente({children}) {
         if(tipoAtendimento === 'almoco') {
             navigate('/atendente/almoco')
         } else if(tipoAtendimento === 'cafe-manha') {
-            navigate('/atendente/cafeManha')
+            navigate('/atendente/cafe')
         } else if(tipoAtendimento === 'jantar') {
             navigate('/atendente/jantar')
         }
@@ -33,7 +33,7 @@ export function HomeAtendente({children}) {
             <Dialog.Root>
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4'>
                     <Header
-                        name={atendente.user.nome}
+                        name={clerk.user.nome}
                     />
 
                     <div className='flex'>
@@ -41,10 +41,10 @@ export function HomeAtendente({children}) {
                             <input type="search" className='bg-slate-900 rounded-md p-1 font-light ' placeholder='Pesquise atendimentos...' />
                             <Dialog.Trigger>
                                 <Button
-                                    cor='bg-green-700'
-                                    texto='Novo Atendimento'
+                                    color='bg-green-700'
+                                    text='Novo Atendimento'
                                     hover='bg-green-900'
-                                    icone={<PlusCircledIcon/>}
+                                    icon={<PlusCircledIcon/>}
                                     
                                 />
                             </Dialog.Trigger>
@@ -104,9 +104,9 @@ export function HomeAtendente({children}) {
                                         icone={<FileTextIcon/>}
                                     /> */}
                                     <Button
-                                        cor='bg-slate-950'
-                                        texto='Visualizar relatório'
-                                        icone={<EyeOpenIcon/>}
+                                        color='bg-slate-950'
+                                        text='Visualizar relatório'
+                                        icon={<EyeOpenIcon/>}
                                     />
                                 </div>
                             </div>
@@ -125,9 +125,9 @@ export function HomeAtendente({children}) {
                                         icone={<FileTextIcon/>}
                                     /> */}
                                     <Button
-                                        cor='bg-slate-950'
-                                        texto='Visualizar relatório'
-                                        icone={<EyeOpenIcon/>}
+                                        color='bg-slate-950'
+                                        text='Visualizar relatório'
+                                        icon={<EyeOpenIcon/>}
                                     />
                                 </div>
                             </div>
@@ -146,9 +146,9 @@ export function HomeAtendente({children}) {
                                         icone={<FileTextIcon/>}
                                     /> */}
                                     <Button
-                                        cor='bg-slate-950'
-                                        texto='Visualizar relatório'
-                                        icone={<EyeOpenIcon/>}
+                                        color='bg-slate-950'
+                                        text='Visualizar relatório'
+                                        icon={<EyeOpenIcon/>}
                                     />
                                 </div>
                             </div>

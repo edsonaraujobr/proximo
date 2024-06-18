@@ -1,11 +1,11 @@
 import {Routes, Route} from "react-router-dom"
-import { Almoco } from "./pages/Atendente/Almoco";
-import { CafeManha } from "./pages/Atendente/CafeManha";
-import { Jantar } from "./pages/Atendente/Jantar";
+import { Almoco } from "./pages/Clerk/Almoco";
+import { Cafe } from "./pages/Clerk/Cafe";
+import { Jantar } from "./pages/Clerk/Jantar";
 import { Login } from "./pages/Login/Login";
 import { Home } from "./pages/Home/Home";
-import { HomeAtendente } from "./pages/Atendente/HomeAtendente";
-import { HomeAdministrador } from "./pages/Administrador/HomeAdministrador";
+import { HomeClerk } from "./pages/Clerk/HomeClerk";
+import { HomeAdministrator } from "./pages/Administrator/HomeAdministrator";
 
 function MainRoutes() {
     return (
@@ -29,9 +29,9 @@ function MainRoutes() {
             />
             <Route path="/administrador/home" element=
             {
-                <HomeAdministrador>
+                <HomeAdministrator>
 
-                </HomeAdministrador>
+                </HomeAdministrator>
             }
             />
             <Route path="/atendente/almoco" element=
@@ -41,11 +41,11 @@ function MainRoutes() {
                 </Almoco>
             }
             />
-            <Route path="/atendente/cafeManha" element=
+            <Route path="/atendente/cafe" element=
             {
-                <CafeManha>
+                <Cafe>
                     <Home/>
-                </CafeManha>
+                </Cafe>
             }
             />
             <Route path="/atendente/jantar" element=
@@ -57,9 +57,9 @@ function MainRoutes() {
             />
             <Route path="/atendente/home" element=
             {
-                <HomeAtendente>
+                <HomeClerk>
                     <Home/>
-                </HomeAtendente>
+                </HomeClerk>
             }
             />
         </Routes>

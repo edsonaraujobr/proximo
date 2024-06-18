@@ -15,7 +15,6 @@ export function Home() {
                 </nav>
             </header>
             <main className="bg-slate-800 w-lvw h-lvh">
-
             </main>
         </div>
 
