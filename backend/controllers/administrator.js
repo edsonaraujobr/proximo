@@ -1,11 +1,11 @@
 import db from "../db.js";
 
 export const getAdministrators = (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const query = "SELECT * FROM administrator WHERE (name = ? OR email = ?) AND password = ?";
+    const query = "SELECT * FROM administrator WHERE email = ? AND password = ?";
 
-    db.query(query, [username,username, password], (err, data) =>{
+    db.query(query, [email, password], (err, data) =>{
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao autenticar usuário' });

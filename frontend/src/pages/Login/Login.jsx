@@ -7,15 +7,15 @@ import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
 
 export function Login({ typeUser, otherUser}) {
 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [usuarioNaoEncontrado, setUsuarioNaoEncontrado] = useState(false);
   const navigate = useNavigate();
   const { login: loginClerk } = useContext(ClerkContext);
   const { login: loginAdministrator } = useContext(AdministratorContext);
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -23,7 +23,7 @@ export function Login({ typeUser, otherUser}) {
   };
 
   const handleUserChange = () => {
-    setUsername('');
+    setEmail('');
     setPassword('');
     return navigate(`/${otherUser}`)
 
@@ -37,7 +37,7 @@ export function Login({ typeUser, otherUser}) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ email, password }),
         });
 
         if (response.ok) {
@@ -77,8 +77,8 @@ export function Login({ typeUser, otherUser}) {
               type="text"
               name="main"
               id="imain"
-              value={username}
-              onChange={handleUsernameChange}
+              value={email}
+              onChange={handleEmailChange}
               required
               className="rounded-md bg-slate-800 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"/>
           </div>

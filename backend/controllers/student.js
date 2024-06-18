@@ -18,3 +18,32 @@ export const getStudents = (req, res) => {
         }
     });
 };
+
+export const registerStudents = (req,res) => {
+    const { registration, type_assistance, name, course, notice_number, date_started_assistance } = req.body;
+
+    const query = "SELECT * FROM student WHERE registration = ?";
+
+    db.query(query, [registration], (err,data) => {
+        if(err) {
+            console.error('Erro ao consultar banco de dados:', err);
+            return res.status(500).json({ error: 'Erro ao buscar estudante' });
+        }
+
+        if(data.length == 0) {
+            let queryInsert = "INSERT INTO student (registration, type_assistance, name, course, notice_number, date_started_assistance) VALUES (?,?,?,?,?,?)" 
+
+            db.query(queryInsert,[registration, type_assistance, name, course, notice_number, date_started_assistance], (err, data) => {
+                if(err) {
+                    console.error('Erro ao inserir aluno no banco de dados:', err);
+                    return res.status(500).json({ error: 'Erro ao inserir aluno no banco de dados' });
+                }
+                return res.status(200).json({ message: 'Aluno cadastrado com sucesso' });
+            })
+
+        } else {
+            console.error('Usuario já cadastrado!', err);
+            return res.status(500).json({ error: 'Já existe esse usuário cadastrado' });
+        }
+    });
+}
