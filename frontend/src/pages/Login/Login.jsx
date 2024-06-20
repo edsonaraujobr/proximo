@@ -68,13 +68,13 @@ export function Login({ typeUser, otherUser}) {
         </h2>
       </header>
 
-      <form onSubmit={handleSubmit} className=" w-[360px] h-48 flex flex-col justify-center items-center bg-gradient-to-b from-slate-900 to-transparent gap-4 rounded-lg p-4">
+      <form autoComplete="on" onSubmit={handleSubmit} className=" w-[360px] h-48 flex flex-col justify-center items-center bg-gradient-to-b from-slate-900 to-transparent gap-4 rounded-lg p-4">
         <div className="flex flex-col w-full">
           <div className="flex flex-col gap-1 w-full">
-            <label htmlFor="imain" className="font-bold">Nome de usuário ou email</label>
+            <label htmlFor="imain" className="font-bold">Email</label>
             <input
               autoComplete="email"
-              type="text"
+              type="email"
               name="main"
               id="imain"
               value={email}

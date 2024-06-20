@@ -1,5 +1,5 @@
 import db from "../db.js";
-const bcrypt = require ("bcrypt");
+import bcrypt from "bcrypt";
 const saltRounds = 10;
 
 export const getClerks = (req, res) => {
@@ -14,7 +14,7 @@ export const getClerks = (req, res) => {
         }
 
         if (data.length > 0) {
-            bcrypt.compare(password, result[0].password, (err, result) => {
+            bcrypt.compare(password, data[0].password, (err, result) => {
                 if(result) {
                     return res.status(200).json({ message: 'Usuário autenticado com sucesso', user: data[0] });
                 } else {
@@ -29,21 +29,21 @@ export const getClerks = (req, res) => {
 };
 
 export const registerClerk = (req,res) => {
-    const { name, email, password, shift } = req.body;
+    const { nameClerk, emailClerk, passwordClerk, shiftClerk } = req.body;
 
     const query = "SELECT * FROM clerk WHERE email = ?";
 
-    db.query(query, [email], (err,data) => {
+    db.query(query, [emailClerk], (err,data) => {
         if(err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao buscar atendente' });
         }
 
         if(data.length == 0) {
-            bcrypt.hash(password, saltRounds, (err,hash) => {
+            bcrypt.hash(passwordClerk, saltRounds, (err,hash) => {
                 let queryInsert = "INSERT INTO clerk (name, email, password, shift) VALUES (?,?,?,?)" 
 
-                db.query(queryInsert,[name, email, hash, shift], (err, data) => {
+                db.query(queryInsert,[nameClerk, emailClerk, hash, shiftClerk], (err, data) => {
                     if(err) {
                         console.error('Erro ao inserir atendente no banco de dados:', err);
                         return res.status(500).json({ error: 'Erro ao inserir atendente no banco de dados' });
