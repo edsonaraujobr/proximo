@@ -3,6 +3,7 @@ import cors from "cors"
 import administratorRoutes from "./routes/administrators.js"
 import clerkRoutes from "./routes/clerks.js"
 import studentRoutes from "./routes/students.js"
+import path from "path";
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(cors())
 app.use("/", administratorRoutes)
 app.use("/", clerkRoutes)
 app.use("/", studentRoutes)
+app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 
 
 app.listen('3030',() => {

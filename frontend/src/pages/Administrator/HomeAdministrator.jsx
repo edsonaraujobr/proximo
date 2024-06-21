@@ -2,8 +2,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Button } from '../../componentes/Button.jsx';
 import { Header } from '../../componentes/Header.jsx'
 import { Footer } from '../../componentes/Footer.jsx'
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { PlusCircledIcon, FileTextIcon, EyeOpenIcon, Cross1Icon, CheckIcon} from '@radix-ui/react-icons';
+import { ClerkContext } from '../../contexts/ClerkContext.jsx';
 
 export function HomeAdministrator ({children}) {
     const login = false;
@@ -13,10 +14,14 @@ export function HomeAdministrator ({children}) {
     const [ typeAssistance, setTypeAssistance ] = useState('');
     const [ noticeNumber, setNoticeNumber ] = useState('');
     const [ dateStartedAssistance, setDateStartedAssistance ] = useState('');
+    const [photo, setPhoto] = useState(null);
+
     const [ nameClerk, setNameClerk ] = useState('');
     const [ emailClerk, setEmailClerk ] = useState('');
     const [ passwordClerk, setPasswordClerk ] = useState('');
     const [ shiftClerk, setShiftClerk ] = useState('');
+    const [photoClerk, setPhotoClerk] = useState(null);
+    const { clerk } = useContext(ClerkContext);
 
     const handleCreatedStudent = async (e) => {
         e.preventDefault();
@@ -26,7 +31,7 @@ export function HomeAdministrator ({children}) {
                 headers: {
                     'Content-type':'application/json',
                 },
-                body: JSON.stringify({registration,typeAssistance,name,course,noticeNumber,dateStartedAssistance})
+                body: JSON.stringify({registration,typeAssistance,name,course,noticeNumber,dateStartedAssistance, photo})
             })
 
             if(response.ok) {
@@ -38,6 +43,7 @@ export function HomeAdministrator ({children}) {
                 setTypeAssistance('');
                 setNoticeNumber('');
                 setDateStartedAssistance('');
+                setPhoto(null);
 
             } else {
                 alert("estudante não cadastrado")
@@ -52,21 +58,28 @@ export function HomeAdministrator ({children}) {
     const handleCreatedClerk = async (e) => {
         e.preventDefault();
         try {
+            const formData = new FormData();
+            formData.append('nameClerk', nameClerk);
+            formData.append('emailClerk', emailClerk);
+            formData.append('passwordClerk', passwordClerk);
+            formData.append('shiftClerk', shiftClerk);
+            formData.append('photoClerk', photoClerk);  
+
             const response = await fetch('http://localhost:3030/registrar-atendente', {
                 method: 'POST',
-                headers: {
-                    'Content-type':'application/json',
-                },
-                body: JSON.stringify({nameClerk, emailClerk, passwordClerk, shiftClerk})
+                body:formData,
             })
 
             if(response.ok) {
+                const result = await response.json();
                 alert("Atendente cadastrado")
                 console.log("Atendente cadastrado");
                 setNameClerk('');
                 setEmailClerk('');
                 setPasswordClerk('');
                 setShiftClerk('');
+                setPhotoClerk(null);
+                clerk(result);
             } else {
                 alert("Atendente não cadastrado")
                 console.log("Atendente não cadastrado");
@@ -128,13 +141,23 @@ export function HomeAdministrator ({children}) {
         setDateStartedAssistance(value);
     };
 
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0]
+        setPhoto(file)
+    }
+
+    const handlePhotoClerkChange = (e) => {
+        const file = e.target.files[0]
+        setPhotoClerk(file)
+    }
+
     return (
         login ? children : ( 
             <Dialog.Root>
-                <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4'>
+                <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4 fixed'>
                     <Header/>
                     <main className='flex gap-3 px-10 h-lvh w-lvw '>
-                        <div className='bg-slate-900 text-white p-4 flex flex-col justify-center items-center rounded-md w-[300px]'>
+                        <div className='bg-slate-900 text-white flex flex-col p-3 rounded-md w-[300px]'>
                             <h1 className='bg-slate-500 px-4 rounded-md'>Registrar Aluno</h1>
                             <form className='flex flex-col gap-2' onSubmit={handleCreatedStudent}>
                                 <div className="flex flex-col gap-1 w-full">
@@ -209,15 +232,19 @@ export function HomeAdministrator ({children}) {
                                     required
                                     className="rounded-md bg-slate-800 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"/>
                                 </div>
+                                <div className="flex flex-col gap-1 w-full ">
+                                <h2 className="font-bold">: </h2>
+                                    <input type="file" name="photoClerk" id="iphotoclerk" onChange={handlePhotoChange} />
+                                </div>
                                 <button type="submit" className='bg-green-500 rounded-md'>Registrar</button>
                             </form>
                         </div>
 
-                        <div className='bg-slate-900 text-white p-4 flex flex-col justify-center items-center rounded-md w-[300px]'>
+                        <div className='bg-slate-900 text-white flex flex-col p-3 rounded-md w-[300px]'>
                             <h1 className='bg-slate-500 px-4 rounded-md'>Registrar Atendente</h1>
                             <form className='flex flex-col gap-2' onSubmit={handleCreatedClerk}>
                                 <div className="flex flex-col gap-1 w-full">
-                                    <label htmlFor="inome-atendente" className="font-bold">Nome: </label>
+                                    <label htmlFor="inome-atendente" className="font-bold">Nome Completo: </label>
                                     <input
                                         type="text"
                                         name="nome-atendente"
@@ -253,7 +280,7 @@ export function HomeAdministrator ({children}) {
                                     />
                                 </div>
                                 <div className="flex flex-col gap-1 w-full ">
-                                    <h2 className="font-bold">Turno: </h2>
+
                                     <div className='flex gap-3'>
                                         <div className='flex gap-2'>
                                             <input type="radio" name="turno" id="imatutino" value="matutino" onChange={handleShift} required />
@@ -269,11 +296,14 @@ export function HomeAdministrator ({children}) {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="flex flex-col gap-1 w-full ">
+                                <h2 className="font-bold">: </h2>
+                                    <input type="file" name="photoClerk" id="iphotoclerk" onChange={handlePhotoClerkChange} />
+                                </div>
                                 <button type="submit" className='bg-green-500 rounded-md'>Registrar</button>
                             </form>
                         </div>
                     </main>
-                    <Footer/>
                 </div>
             </Dialog.Root>
         )

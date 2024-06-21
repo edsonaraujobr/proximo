@@ -6,6 +6,7 @@ import { Footer } from '../../componentes/Footer.jsx'
 import { useContext, useState } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 import { useNavigate } from 'react-router-dom';
+import getImageUrlFromBuffer from '../../function/getImageUrlFromBuffer';
 
 export function HomeClerk({children}) {
     const login = false;
@@ -27,13 +28,24 @@ export function HomeClerk({children}) {
             navigate('/atendente/jantar')
         }
     } 
+    // console.log(clerk)
+    // console.log(clerk.user.photo.data)
+    // console.log(getImageUrlFromBuffer(clerk.user.photo.data))
 
+    function bufferToBlob(buffer) {
+        const arrayBuffer = new Uint8Array(buffer.data).buffer;
+        return new Blob([arrayBuffer], { type: 'image/png' });
+    }
+    console.log("buffer: ",clerk.user.photo.data)
+    console.log("buffer em blob:", bufferToBlob(clerk.user.photo)) 
+    console.log("blob em url: ",URL.createObjectURL(bufferToBlob(clerk.user.photo)))
     return (
         login ? children : ( 
             <Dialog.Root>
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4'>
                     <Header
                         name={clerk.user.name}
+                        linkPhoto={URL.createObjectURL(bufferToBlob(clerk.user.photo))}
                     />
 
                     <div className='flex'>
