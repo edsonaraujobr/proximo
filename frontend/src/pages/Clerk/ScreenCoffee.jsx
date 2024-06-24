@@ -2,9 +2,10 @@ import { Header } from '../../componentes/Header.jsx'
 import { Button } from '../../componentes/Button.jsx'
 import { Footer } from '../../componentes/Footer.jsx'
 import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useContext } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
+import { StudentContext } from '../../contexts/StudentContext.jsx';
 
 export function ScreenCoffee({children}) {
     const [ userType, setUserType ] = useState('interno')
@@ -15,6 +16,7 @@ export function ScreenCoffee({children}) {
     const [ searchUser, setSearchUser ] = useState(false)
     const [ foundUser, setFoundUser ] = useState(false)
     const { clerk } = useContext(ClerkContext);
+    const { login: loginStudent, student } = useContext(StudentContext);
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
@@ -56,6 +58,8 @@ export function ScreenCoffee({children}) {
                     const data = await response.json();
                     console.log('Usuário autenticado:', data);
                     setFoundUser(true)
+                    loginStudent(data)
+                    loadPhoto ()
                 } else {
                     setFoundUser(false)
                 }
@@ -65,6 +69,19 @@ export function ScreenCoffee({children}) {
         }
 
     }
+    const [imageSrc, setImageSrc] = useState('');
+
+    function loadPhoto () {
+        if (student.user.photo && student.user.photo.type === 'Buffer' && Array.isArray(student.user.photo.data)) {
+          // Convertendo o Buffer para uma URL de dados (data URL)
+          const arrayBufferView = new Uint8Array(student.user.photo.data);
+          const blob = new Blob([arrayBufferView], { type: 'image/jpeg' });
+          const imageUrl = URL.createObjectURL(blob);
+    
+          // Atualizando o estado com a URL da imagem
+          setImageSrc(imageUrl);
+        }
+      }
 
     return (
         login ? children : (
@@ -221,7 +238,9 @@ export function ScreenCoffee({children}) {
                         (
                             foundUser ? 
                             <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
-                                <span>Usuário encontrado</span>
+                                <span>{student.user.name}</span>
+                                <img src={imageSrc} alt="Foto" /> 
+                                <span>Encontrado</span>
                             </div>: 
                             (
                             <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ExitIcon, GearIcon } from '@radix-ui/react-icons';
+import { ExitIcon, GearIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
 import './PhotoMenu.css';
 
 export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClickedSupport, onClickedAbout, onClickedExit }) {
@@ -9,7 +9,11 @@ export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClick
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
                 <button aria-label="Customise options">
-                    <img className='IconButton cursor-pointer' src={linkPhoto} alt="foto" />
+                    { linkPhoto ? (
+                        <img className='IconButton cursor-pointer' src={linkPhoto} alt="foto" />
+                    ) : (
+                        <HamburgerMenuIcon />
+                    ) }
                 </button>
             </DropdownMenu.Trigger>
     

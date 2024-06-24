@@ -26,12 +26,18 @@ export function HomeAdministrator ({children}) {
     const handleCreatedStudent = async (e) => {
         e.preventDefault();
         try {
-            const response =await fetch('http://localhost:3030/registrar-aluno', {
+            const formData = new FormData();
+            formData.append('registration', registration);
+            formData.append('typeAssistance', typeAssistance);
+            formData.append('name', name);
+            formData.append('course', course);
+            formData.append('noticeNumber', noticeNumber);
+            formData.append('dateStartedAssistance', dateStartedAssistance);
+            formData.append('photo', photo);  
+
+            const response = await fetch('http://localhost:3030/registrar-aluno', {
                 method: 'POST',
-                headers: {
-                    'Content-type':'application/json',
-                },
-                body: JSON.stringify({registration,typeAssistance,name,course,noticeNumber,dateStartedAssistance, photo})
+                body:formData,
             })
 
             if(response.ok) {
@@ -73,7 +79,7 @@ export function HomeAdministrator ({children}) {
             if(response.ok) {
                 const result = await response.json();
                 alert("Atendente cadastrado")
-                console.log("Atendente cadastrado");
+                console.log("Atendente cadastrado", result);
                 setNameClerk('');
                 setEmailClerk('');
                 setPasswordClerk('');

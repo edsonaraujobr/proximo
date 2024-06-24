@@ -2,6 +2,7 @@ import express from "express";
 import { getClerks, registerClerk } from "../controllers/clerk.js";
 import multer from "multer"
 import path from "path";
+
 const router = express.Router()
 
 // Configurar armazenamento do multer

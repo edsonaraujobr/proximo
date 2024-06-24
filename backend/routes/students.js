@@ -1,9 +1,21 @@
 import express from "express";
 import { getStudents, registerStudents } from "../controllers/student.js";
+import multer from "multer"
+import path from "path";
 
 const router = express.Router()
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 router.post("/aluno", getStudents)
-router.post("/registrar-aluno", registerStudents)
+router.post("/registrar-aluno", upload.single('photo'),registerStudents)
 
 export default router

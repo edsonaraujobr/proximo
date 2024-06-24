@@ -20,7 +20,8 @@ export const getStudents = (req, res) => {
 };
 
 export const registerStudents = (req,res) => {
-    const { registration, typeAssistance, name, course, noticeNumber, dateStartedAssistance, photo } = req.body;
+    const { registration, typeAssistance, name, course, noticeNumber, dateStartedAssistance} = req.body;
+    const photo = req.file ? req.file.filename : null;
 
     const query = "SELECT * FROM student WHERE registration = ?";
 

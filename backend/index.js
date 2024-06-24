@@ -14,7 +14,6 @@ app.use(cors())
 app.use("/", administratorRoutes)
 app.use("/", clerkRoutes)
 app.use("/", studentRoutes)
-app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 
 
 app.listen('3030',() => {

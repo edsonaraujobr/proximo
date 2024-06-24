@@ -29,23 +29,58 @@ export function HomeClerk({children}) {
         }
     } 
     // console.log(clerk)
-    // console.log(clerk.user.photo.data)
+    // console.log(clerk.user.photo)
     // console.log(getImageUrlFromBuffer(clerk.user.photo.data))
 
-    function bufferToBlob(buffer) {
-        const arrayBuffer = new Uint8Array(buffer.data).buffer;
-        return new Blob([arrayBuffer], { type: 'image/png' });
-    }
-    console.log("buffer: ",clerk.user.photo.data)
-    console.log("buffer em blob:", bufferToBlob(clerk.user.photo)) 
-    console.log("blob em url: ",URL.createObjectURL(bufferToBlob(clerk.user.photo)))
+    // function bufferToBlob(buffer) {
+    //     const arrayBuffer = new Uint8Array(buffer.data).buffer;
+    //     return new Blob([arrayBuffer], { type: 'image/png' });
+    // }
+    // console.log("buffer: ",clerk.user.photo.data)
+    // console.log("buffer em blob:", bufferToBlob(clerk.user.photo)) 
+    // console.log("blob em url: ",URL.createObjectURL(bufferToBlob(clerk.user.photo)))
+
+    const arrayBufferToBase64 = (buffer) => {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    };
+
+ // Verifique se clerk.user.photo está definido
+ console.log('clerk.user.photo:', clerk.user.photo);
+
+ if (!clerk.user.photo || !clerk.user.photo.data) {
+     console.error('clerk.user.photo is not defined or is empty.');
+     return null;
+ }
+
+ // Exibir o conteúdo dos dados originais
+ console.log('clerk.user.photo.data:', clerk.user.photo.data);
+
+ // Converta o array de dados para ArrayBuffer
+ const buffer = new Uint8Array(clerk.user.photo).buffer;
+ console.log('ArrayBuffer:', buffer);
+
+ // Verifique o conteúdo do Uint8Array
+ const uint8Array = new Uint8Array(buffer);
+ console.log('Uint8Array:', uint8Array);
+
+ // Verifique se o ArrayBuffer contém os dados esperados
+ const base64Image = arrayBufferToBase64(buffer);
+ const image = `data:image/jpeg;base64,${base64Image}`; // Ajuste o tipo de imagem conforme necessário
+
+ console.log('Generated Base64 Image URL:', image);
     return (
         login ? children : ( 
             <Dialog.Root>
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4'>
                     <Header
                         name={clerk.user.name}
-                        linkPhoto={URL.createObjectURL(bufferToBlob(clerk.user.photo))}
+                        linkPhoto={image}
                     />
 
                     <div className='flex'>
