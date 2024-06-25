@@ -1,8 +1,8 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import { useState } from 'react';
 
-export function TabNav() {
-  const [activeTab, setActiveTab] = useState('account');
+export function TabNav({itens, contents}) {
+  const [activeTab, setActiveTab] = useState(itens[0]);
 
   const handleTabChange = (value) => {
     setActiveTab(value);
@@ -14,41 +14,30 @@ export function TabNav() {
       onValueChange={handleTabChange}
       className="flex flex-col w-full"
     >
-      <Tabs.List className="flex bg-gray-800 p-2 rounded-t-md">
-        <Tabs.Trigger
-          value="account"
-          className={`px-4 py-2 text-white rounded-md ${
-            activeTab === 'account' ? 'bg-green-700' : 'bg-gray-600'
-          }`}
-        >
-          Account
-        </Tabs.Trigger>
-        <Tabs.Trigger
-          value="documents"
-          className={`ml-2 px-4 py-2 text-white rounded-md ${
-            activeTab === 'documents' ? 'bg-green-700' : 'bg-gray-600'
-          }`}
-        >
-          Documents
-        </Tabs.Trigger>
-        <Tabs.Trigger
-          value="settings"
-          className={`ml-2 px-4 py-2 text-white rounded-md ${
-            activeTab === 'settings' ? 'bg-green-700' : 'bg-gray-600'
-          }`}
-        >
-          Settings
-        </Tabs.Trigger>
+      <Tabs.List className="flex bg-gray-900 justify-start items-center gap-1 rounded-t-md">
+        {itens.map((item) => (
+          <Tabs.Trigger
+            key={item}
+            value={item}
+            className={` text-white text-sm p-2 ${
+              activeTab === item? 'bg-slate-600' : 'bg-gray-900'
+            }`}
+          >
+           {item}
+          </Tabs.Trigger>
+        ))}
       </Tabs.List>
-      <Tabs.Content value="account" className="p-4 bg-gray-700 rounded-b-md">
+
+      <Tabs.Content value={itens[0]} className="p-4 bg-gray-700 rounded-b-md h-full">
         Account content goes here.
       </Tabs.Content>
-      <Tabs.Content value="documents" className="p-4 bg-gray-700 rounded-b-md">
+
+      <Tabs.Content value="documents" className="p-4 bg-gray-700 rounded-b-md h-full">
         Documents content goes here.
       </Tabs.Content>
-      <Tabs.Content value="settings" className="p-4 bg-gray-700 rounded-b-md">
-        Settings content goes here.
-      </Tabs.Content>
+
+
+
     </Tabs.Root>
   );
 }

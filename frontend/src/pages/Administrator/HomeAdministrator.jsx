@@ -1,9 +1,7 @@
-import * as Dialog from '@radix-ui/react-dialog'; 
-import { Button } from '../../componentes/Button.jsx';
+import * as Tabs from '@radix-ui/react-tabs';
 import { Header } from '../../componentes/Header.jsx'
-import { Footer } from '../../componentes/Footer.jsx'
-import { useState, useContext } from 'react';
-import { PlusCircledIcon, FileTextIcon, EyeOpenIcon, Cross1Icon, CheckIcon} from '@radix-ui/react-icons';
+import { useState, useContext, useRef } from 'react';
+import { CheckIcon, UploadIcon } from '@radix-ui/react-icons';
 import { ClerkContext } from '../../contexts/ClerkContext.jsx';
 
 export function HomeAdministrator ({children}) {
@@ -15,13 +13,20 @@ export function HomeAdministrator ({children}) {
     const [ noticeNumber, setNoticeNumber ] = useState('');
     const [ dateStartedAssistance, setDateStartedAssistance ] = useState('');
     const [photo, setPhoto] = useState(null);
-
     const [ nameClerk, setNameClerk ] = useState('');
     const [ emailClerk, setEmailClerk ] = useState('');
     const [ passwordClerk, setPasswordClerk ] = useState('');
     const [ shiftClerk, setShiftClerk ] = useState('');
     const [photoClerk, setPhotoClerk] = useState(null);
     const { clerk } = useContext(ClerkContext);
+    const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes", "Atualizar Aluno", "Atualizar Atendente", "Remover Aluno","Remover Atendente"]
+    const [activeTab, setActiveTab] = useState(itens[0]);
+    const inputRef = useRef(null)
+    const inputRefClerk = useRef(null)
+
+    const handleTabChange = (value) => {
+      setActiveTab(value);
+    };
 
     const handleCreatedStudent = async (e) => {
         e.preventDefault();
@@ -164,195 +169,231 @@ export function HomeAdministrator ({children}) {
         setPhotoClerk(null);
     }
 
+    const handleImageStudent = () => {
+        inputRef.current.click();
+    }
+
+    const handleImageClerk = () => {
+        inputRefClerk.current.click();
+    }
+
     return (
         login ? children : ( 
-
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4 fixed'>
-                    <Header/>
-                    <Dialog.Root >
-                        <Dialog.Trigger className='border border-slate-400 rounded-md p-5 flex flex-col justify-center items-start w-72 h-28' >
-                                <div className='flex flex-col items-start'>
-                                    <h1 className='font-bold text-xl'>
-                                        Registrar aluno
-                                    </h1>
-                                    <p className='text-xs font-light'>
-                                        Adicione um novo aluno
-                                    </p>
-                                </div>
-                        </Dialog.Trigger>
-                        <Dialog.Portal>
-                            <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
-                            <Dialog.Content className='items-center justify-center text-white fixed overflow-hidden inset-0  md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[35vw] md:h-[90vh] p-4 bg-slate-800 md:rounded-md flex flex-col outline-none gap-3'>
-                                <Dialog.Close onClick={cleanFieldsStudent} className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
-                                    <Cross1Icon/>
-                                </Dialog.Close>
-                                    <h1 className='text-3xl font-bold'>Registrar Aluno</h1>
-                                    <form className='flex flex-col gap-2 w-full' onSubmit={handleCreatedStudent}>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="imatricula" className="font-bold">Matricula: </label>
-                                            <input
-                                                type="number"
-                                                name="matricula"
-                                                id="imatricula"
-                                                value={registration}
-                                                onChange={handleRegistrationChange}
-                                                required
-                                                className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="inome" className="font-bold">Nome: </label>
-                                            <input
-                                                type="text"
-                                                name="nome"
-                                                id="inome"
-                                                value={name}
-                                                onChange={handleNameChange}
-                                                required
-                                                className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="icurso" className="font-bold">Curso: </label>
-                                            <input
-                                                type="text"
-                                                name="curso"
-                                                id="icurso"
-                                                value={course}
-                                                onChange={handleCourseChange}
-                                                required
-                                                className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="iedital" className="font-bold">Número de edital: </label>
-                                            <input
-                                                type="text"
-                                                name="edital"
-                                                id="iedital"
-                                                value={noticeNumber}
-                                                onChange={handleNoticeNumberChange}
-                                                required
-                                                className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full ">
-                                            <h2 className="font-bold">Tipo de assistência: </h2>
-                                            <div className='flex gap-3'>
-                                                <div className='flex gap-2'>
-                                                    <input type="radio" name="assistance" id="iprae" value="prae" onChange={handleTypeAssistanceChange} required />
-                                                    <label htmlFor="iprae">PRAE</label>
+                        <Tabs.Root
+                            value={activeTab}
+                            onValueChange={handleTabChange}
+                            className="flex flex-col w-full"
+                        >
+                            <Header/>
+                            <Tabs.List className="flex px-10 bg-gray-900 justify-start items-center gap-1 rounded-t-md">
+                                {itens.map((item) => (
+                                <Tabs.Trigger
+                                    key={item}
+                                    value={item}
+                                    className={` text-white text-sm p-2 ${
+                                    activeTab === item? 'bg-slate-600' : 'bg-gray-900'
+                                    }`}
+                                >
+                                {item}
+                                </Tabs.Trigger>
+                                ))}
+                            </Tabs.List>
+
+                            <Tabs.Content value={itens[0]}>
+                                    <form  onSubmit={handleCreatedStudent} className='flex flex-col justify-center items-center'>
+                                        <div className=' text-white p-8 flex gap-28 items-center justify-center'>
+                                            <div className='flex flex-col gap-2 w-[50lvw]'>
+                                                <div className="flex flex-col gap-1 w-full">
+                                                    <label htmlFor="imatricula" className="font-bold">Matricula: </label>
+                                                    <input
+                                                        type="number"
+                                                        name="matricula"
+                                                        id="imatricula"
+                                                        value={registration}
+                                                        onChange={handleRegistrationChange}
+                                                        required
+                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                    />
                                                 </div>
-                                                <div className='flex gap-2'>
-                                                    <input type="radio" name="assistance" id="i50%" value="50%" onChange={handleTypeAssistanceChange} required/>
-                                                    <label htmlFor="i50%">50%</label>
+                                                <div className="flex flex-col gap-1 w-full">
+                                                    <label htmlFor="inome" className="font-bold">Nome: </label>
+                                                    <input
+                                                        type="text"
+                                                        name="nome"
+                                                        id="inome"
+                                                        value={name}
+                                                        onChange={handleNameChange}
+                                                        required
+                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-1 w-full">
+                                                    <label htmlFor="icurso" className="font-bold">Curso: </label>
+                                                    <input
+                                                        type="text"
+                                                        name="curso"
+                                                        id="icurso"
+                                                        value={course}
+                                                        onChange={handleCourseChange}
+                                                        required
+                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-1 w-full">
+                                                    <label htmlFor="iedital" className="font-bold">Número de edital: </label>
+                                                    <input
+                                                        type="text"
+                                                        name="edital"
+                                                        id="iedital"
+                                                        value={noticeNumber}
+                                                        onChange={handleNoticeNumberChange}
+                                                        required
+                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                    />
+                                                </div>
+                                                <div className="flex gap-4 w-full ">
+                                                    <label htmlFor='iprae' className="font-bold">Tipo de assistência: </label>
+                                                    <div className='flex gap-4'>
+                                                        <div className='flex gap-2'>
+                                                            <input type="radio" name="assistance" id="iprae" value="prae" onChange={handleTypeAssistanceChange} required />
+                                                            <label htmlFor="iprae">PRAE</label>
+                                                        </div>
+                                                        <div className='flex gap-2'>
+                                                            <input type="radio" name="assistance" id="i50%" value="50%" onChange={handleTypeAssistanceChange} required/>
+                                                            <label htmlFor="i50%">50%</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col gap-1 w-full">
+                                                    <label htmlFor="idate" className="font-bold">Data início de assistência: </label>
+                                                    <input
+                                                    type="date"
+                                                    name="date"
+                                                    id="idate"
+                                                    value={dateStartedAssistance}
+                                                    onChange={handleDateStartedAssistanceChange}
+                                                    required
+                                                    className="rounded-md text-white bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"/>
+                                                </div>
+                                            </div>
+                                            <div className='flex items-center justify-center flex-col gap-4'>
+                                                <h1 className="font-bold">Foto: </h1>
+                                                <div onClick={handleImageStudent}>
+                                                    { photo ? <img className='flex justify-center items-center w-80 h-80 rounded-full cursor-pointer' src={URL.createObjectURL(photo)} alt="Foto" /> : (
+                                                        <div className='flex justify-center items-center w-80 h-80 bg-slate-700 rounded-full cursor-pointer'>
+                                                            <UploadIcon className='size-14'/>
+                                                        </div>
+                                                    )}
+
+                                                    <input 
+                                                        type="file" 
+                                                        ref={inputRef} 
+                                                        name="photo" 
+                                                        id="iphoto" 
+                                                        style={{display: "none"}} 
+                                                        onChange={handlePhotoChange} 
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="idate" className="font-bold">Data início de assistência: </label>
-                                            <input
-                                            type="date"
-                                            name="date"
-                                            id="idate"
-                                            value={dateStartedAssistance}
-                                            onChange={handleDateStartedAssistanceChange}
-                                            required
-                                            className="rounded-md text-white bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"/>
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full ">
-                                        <h2 className="font-bold">Foto: </h2>
-                                            <input type="file" name="photoClerk" id="iphotoclerk" onChange={handlePhotoChange} />
-                                        </div>
-                                        <button type="submit" className='bg-green-600 rounded-md hover:bg-green-700'>Registrar</button>
+                                        <button 
+                                            type="submit" 
+                                            className='w-56 bg-green-600 gap-2 flex items-center justify-center px-4 py-2 rounded-md hover:bg-green-700'>
+                                            <CheckIcon/>
+                                            Registrar Aluno
+                                        </button>                                    
                                     </form>
-                            </Dialog.Content> 
+                            </Tabs.Content>
+                            <Tabs.Content value={itens[1]}>
+                                <form className='flex flex-col justify-center items-center' onSubmit={handleCreatedClerk}>
 
-                        </Dialog.Portal>
-                    </Dialog.Root>
-
-                    <Dialog.Root>
-                        <Dialog.Trigger className='border border-slate-400 rounded-md p-5 flex flex-col justify-center items-start w-72 h-28' >
-                                <div className='flex flex-col items-start'>
-                                    <h1 className='font-bold text-xl'>
-                                        Registrar atendente
-                                    </h1>
-                                    <p className='text-xs font-light'>
-                                        Adicione um novo atendente
-                                    </p>
-                                </div>
-                        </Dialog.Trigger>
-                        <Dialog.Portal>
-                            <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
-                            <Dialog.Content className='items-center justify-center text-white fixed overflow-hidden inset-0  md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[25vw] md:h-[70vh] p-4 bg-slate-800 md:rounded-md flex flex-col outline-none gap-3'>
-                                <Dialog.Close onClick={cleanFieldsClerk} className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
-                                    <Cross1Icon/>
-                                </Dialog.Close>
-                                <h1 className='text-3xl font-bold'>Registrar Atendente</h1>
-                                    <form className='flex flex-col gap-2' onSubmit={handleCreatedClerk}>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="inome-atendente" className="font-bold">Nome Completo: </label>
-                                            <input
-                                                type="text"
-                                                name="nome-atendente"
-                                                id="inome-atendente"
-                                                value={nameClerk}
-                                                onChange={handleNameClerkChange}
-                                                required
-                                                className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="iemail" className="font-bold">Email: </label>
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                id="iemail"
-                                                value={emailClerk}
-                                                onChange={handleEmailClerkChange}
-                                                required
-                                                className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full">
-                                            <label htmlFor="isenha" className="font-bold">Senha: </label>
-                                            <input
-                                                type="text"
-                                                name="senha"
-                                                id="isenha"
-                                                value={passwordClerk}
-                                                onChange={handlePasswordClerkChange}
-                                                required
-                                                className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col gap-1 w-full ">
-
-                                            <div className='flex gap-3'>
-                                                <div className='flex gap-2'>
-                                                    <input type="radio" name="turno" id="imatutino" value="matutino" onChange={handleShift} required />
-                                                    <label htmlFor="imatutino">Matutino</label>
-                                                </div>
-                                                <div className='flex gap-2'>
-                                                    <input type="radio" name="turno" id="ivespertino" value="vespertino" onChange={handleShift} required/>
-                                                    <label htmlFor="ivespertino">Vespertino</label>
-                                                </div>
-                                                <div className='flex gap-2'>
-                                                    <input type="radio" name="turno" id="inoturno" value="noturno" onChange={handleShift} required/>
-                                                    <label htmlFor="inoturno">Noturno</label>
+                                    <div className=' text-white p-8 flex gap-28 items-center justify-center'>
+                                        <div className='flex flex-col gap-2 w-[50lvw]'> 
+                                            <div className="flex flex-col gap-1 w-full">
+                                                <label htmlFor="inome-atendente" className="font-bold">Nome Completo: </label>
+                                                <input
+                                                    type="text"
+                                                    name="nome-atendente"
+                                                    id="inome-atendente"
+                                                    value={nameClerk}
+                                                    onChange={handleNameClerkChange}
+                                                    required
+                                                    className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col gap-1 w-full">
+                                                <label htmlFor="iemail" className="font-bold">Email: </label>
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    id="iemail"
+                                                    value={emailClerk}
+                                                    onChange={handleEmailClerkChange}
+                                                    required
+                                                    className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col gap-1 w-full">
+                                                <label htmlFor="isenha" className="font-bold">Senha: </label>
+                                                <input
+                                                    type="text"
+                                                    name="senha"
+                                                    id="isenha"
+                                                    value={passwordClerk}
+                                                    onChange={handlePasswordClerkChange}
+                                                    required
+                                                    className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col gap-1 w-full ">
+                                                <div className='flex gap-4'>
+                                                <label htmlFor="imatutino" className="font-bold">Número de edital: </label>
+                                                    <div className='flex gap-2'>
+                                                        <input type="radio" name="turno" id="imatutino" value="matutino" onChange={handleShift} required />
+                                                        <label htmlFor="imatutino">Matutino</label>
+                                                    </div>
+                                                    <div className='flex gap-2'>
+                                                        <input type="radio" name="turno" id="ivespertino" value="vespertino" onChange={handleShift} required/>
+                                                        <label htmlFor="ivespertino">Vespertino</label>
+                                                    </div>
+                                                    <div className='flex gap-2'>
+                                                        <input type="radio" name="turno" id="inoturno" value="noturno" onChange={handleShift} required/>
+                                                        <label htmlFor="inoturno">Noturno</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col gap-1 w-full ">
-                                        <h2 className="font-bold">Foto: </h2>
-                                            <input type="file" name="photoClerk" id="iphotoclerk" onChange={handlePhotoClerkChange} />
-                                        </div>
-                                        <button type="submit" className='bg-green-500 rounded-md'>Registrar</button>
-                                    </form>
-                            </Dialog.Content> 
+                                        <div className='flex items-center justify-center flex-col gap-4'>
+                                            <h1 className="font-bold">Foto: </h1>
+                                            <div onClick={handleImageClerk}>
+                                                { photoClerk ? <img className='flex justify-center items-center w-80 h-80  rounded-full cursor-pointer' src={URL.createObjectURL(photoClerk)} alt="Foto" /> : (
+                                                    <div className='flex justify-center items-center w-80 h-80 bg-slate-700 rounded-full cursor-pointer'>
+                                                        <UploadIcon className='size-14'/>
+                                                    </div>
+                                                )}
 
-                        </Dialog.Portal>
-                    </Dialog.Root>
-                </div>              )
+                                                <input 
+                                                    type="file" 
+                                                    ref={inputRefClerk} 
+                                                    name="photoClerk" 
+                                                    id="iphotoclerk" 
+                                                    style={{display: "none"}} 
+                                                    onChange={handlePhotoClerkChange} 
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        type="submit" 
+                                        className='w-56 bg-green-600 gap-2 flex items-center justify-center px-4 py-2 rounded-md hover:bg-green-700'>
+                                        <CheckIcon/>
+                                        Registrar Atendente
+                                    </button>
+                                </form>
+                            </Tabs.Content>
+                        </Tabs.Root>
+                </div>  
+            )
     )
 }
