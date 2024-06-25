@@ -1,10 +1,12 @@
 import { Header } from '../../componentes/Header.jsx'
 import { Button } from '../../componentes/Button.jsx'
 import { Footer } from '../../componentes/Footer.jsx'
+import { Student } from '../../componentes/Student.jsx'
 import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { useContext } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
+import { StudentContext } from '../../contexts/StudentContext.jsx';
 
 export function ScreenDinner({children}) {
     const [ userType, setUserType ] = useState('interno')
@@ -15,6 +17,8 @@ export function ScreenDinner({children}) {
     const [ searchUser, setSearchUser ] = useState(false)
     const [ foundUser, setFoundUser ] = useState(false)
     const { clerk } = useContext(ClerkContext);
+    const { login: loginStudent, student } = useContext(StudentContext);
+
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
@@ -56,6 +60,7 @@ export function ScreenDinner({children}) {
                     const data = await response.json();
                     console.log('Usuário autenticado:', data);
                     setFoundUser(true)
+                    loginStudent(data.responseStudent)
                 } else {
                     setFoundUser(false)
                 }
@@ -70,7 +75,8 @@ export function ScreenDinner({children}) {
         login ? children : (
             <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
                 <Header
-                    name={clerk.user.name}
+                    name={clerk.name}
+                    linkPhoto={clerk.photo}
                 />
                 <div className=' w-full h-full flex flex-col justify-center items-center '>
                     <main className='flex justify-center items-center p-5 '>
@@ -221,7 +227,13 @@ export function ScreenDinner({children}) {
                         (
                             foundUser ? 
                             <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
-                                <span>Usuário encontrado</span>
+                                <Student
+                                    registration={student.registration}
+                                    name={student.name}
+                                    course={student.course}
+                                    typeAssistance={student.typeAssistance}
+                                    photo={student.photo}
+                                />
                             </div>: 
                             (
                             <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>

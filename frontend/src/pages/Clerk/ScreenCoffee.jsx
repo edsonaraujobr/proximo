@@ -1,6 +1,7 @@
 import { Header } from '../../componentes/Header.jsx'
 import { Button } from '../../componentes/Button.jsx'
 import { Footer } from '../../componentes/Footer.jsx'
+import { Student } from '../../componentes/Student.jsx'
 import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
 import { useState, useEffect } from 'react';
 import { useContext } from "react"
@@ -58,8 +59,7 @@ export function ScreenCoffee({children}) {
                     const data = await response.json();
                     console.log('Usuário autenticado:', data);
                     setFoundUser(true)
-                    loginStudent(data)
-                    loadPhoto ()
+                    loginStudent(data.responseStudent)
                 } else {
                     setFoundUser(false)
                 }
@@ -69,25 +69,13 @@ export function ScreenCoffee({children}) {
         }
 
     }
-    const [imageSrc, setImageSrc] = useState('');
-
-    function loadPhoto () {
-        if (student.user.photo && student.user.photo.type === 'Buffer' && Array.isArray(student.user.photo.data)) {
-          // Convertendo o Buffer para uma URL de dados (data URL)
-          const arrayBufferView = new Uint8Array(student.user.photo.data);
-          const blob = new Blob([arrayBufferView], { type: 'image/jpeg' });
-          const imageUrl = URL.createObjectURL(blob);
     
-          // Atualizando o estado com a URL da imagem
-          setImageSrc(imageUrl);
-        }
-      }
-
     return (
         login ? children : (
             <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
                 <Header
-                    name={clerk.user.name}
+                    name={clerk.name}
+                    linkPhoto={clerk.photo}
                 />
                 <div className=' w-full h-full flex flex-col justify-center items-center '>
                     <main className='flex justify-center items-center p-5 '>
@@ -238,9 +226,13 @@ export function ScreenCoffee({children}) {
                         (
                             foundUser ? 
                             <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
-                                <span>{student.user.name}</span>
-                                <img src={imageSrc} alt="Foto" /> 
-                                <span>Encontrado</span>
+                                <Student
+                                    registration={student.registration}
+                                    name={student.name}
+                                    course={student.course}
+                                    typeAssistance={student.typeAssistance}
+                                    photo={student.photo}
+                                />
                             </div>: 
                             (
                             <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>

@@ -1,10 +1,12 @@
 import { Header } from '../../componentes/Header.jsx'
 import { Button } from '../../componentes/Button.jsx'
 import { Footer } from '../../componentes/Footer.jsx'
+import { Student } from '../../componentes/Student.jsx'
 import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { useContext } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
+import { StudentContext } from '../../contexts/StudentContext.jsx';
 
 export function ScreenLunch ({children}) {
     const [registration, setRegistration] = useState('');
@@ -15,6 +17,7 @@ export function ScreenLunch ({children}) {
     const login = false;
     const [searchUser, setSearchUser] = useState(false)
     const [foundUser, setFoundUser] = useState(false)
+    const { login: loginStudent, student } = useContext(StudentContext);
 
     const handleRegistrationChange = (e) => {
         const value = e.target.value;
@@ -56,6 +59,7 @@ export function ScreenLunch ({children}) {
                     const data = await response.json();
                     console.log('Usuário autenticado:', data);
                     setFoundUser(true)
+                    loginStudent(data.responseStudent)
                 } else {
                     setFoundUser(false)
                 }
@@ -70,7 +74,8 @@ export function ScreenLunch ({children}) {
         login ? children : (
         <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
             <Header
-                name={clerk.user.name}
+                name={clerk.name}
+                linkPhoto={clerk.photo}
             />
 
             <div className=' w-full h-full flex flex-col justify-center items-center'>
@@ -222,8 +227,13 @@ export function ScreenLunch ({children}) {
                     (
                         foundUser ? 
                         <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
-                            <span>Usuário encontrado</span>
-                        </div>: 
+                            <Student
+                                registration={student.registration}
+                                name={student.name}
+                                course={student.course}
+                                typeAssistance={student.typeAssistance}
+                                photo={student.photo}
+                            />                        </div>: 
                         (
                         <div className='border border-slate-700 w-[920px] h-44 flex justify-center items-center'>
                             <span>Usuário não encontrado</span>

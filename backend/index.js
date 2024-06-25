@@ -14,7 +14,7 @@ app.use(cors())
 app.use("/", administratorRoutes)
 app.use("/", clerkRoutes)
 app.use("/", studentRoutes)
-
+app.use('/uploads', express.static('uploads'));
 
 app.listen('3030',() => {
     console.log("Running server port 3030");

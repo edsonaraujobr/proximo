@@ -44,7 +44,7 @@ export function Login({ typeUser, otherUser}) {
             const data = await response.json();
             console.log('Usuário autenticado:', data);
             if(typeUser === 'atendente') {
-              loginClerk(data)
+              loginClerk(data.responseClerk)
               navigate(`/atendente/home`)
             } else if(typeUser === 'administrador') {
               loginAdministrator(data)

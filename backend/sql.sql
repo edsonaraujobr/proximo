@@ -1,6 +1,8 @@
 CREATE DATABASE ru;
 USE ru;
 
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+
 CREATE TABLE administrator (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255),
@@ -10,8 +12,6 @@ CREATE TABLE administrator (
 
 INSERT INTO administrator (name,email,password) VALUES ("admin","admin@gmail.com", "admin");
 SELECT * FROM administrator;
-
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
 
 CREATE TABLE clerk (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -23,8 +23,6 @@ CREATE TABLE clerk (
 );
 
 select * from clerk;
-DROP TABLE clerk;
-TRUNCATE TABLE CLERK;
 
 CREATE TABLE student (
 	registration CHAR(9) PRIMARY KEY ,
@@ -36,5 +34,5 @@ CREATE TABLE student (
     photo blob
 );
 
-TRUNCATE TABLE student;
 SELECT * FROM student;
+

@@ -17,7 +17,19 @@ export const getClerks = (req, res) => {
         if (data.length > 0) {
             bcrypt.compare(password, data[0].password, (err, result) => {
                 if(result) {
-                    return res.status(200).json({ message: 'Usuário autenticado com sucesso', user: data[0] });
+                    const clerk = data[0];
+
+                    const responseClerk = {
+                      registration: clerk.registration,
+                      typeAssistance: clerk.type_assistance,
+                      name: clerk.name,
+                      course: clerk.course,
+                      noticeNumber: clerk.notice_number,
+                      dateStartedAssistance: clerk.date_started_assistance,
+                      photo: `http://localhost:3030/uploads/${clerk.photo}`,
+                    };
+
+                    return res.status(200).json({ message: 'Usuário autenticado com sucesso', responseClerk });
                 } else {
                     return res.status(404).json({ error: 'Usuário não encontrado' });
                 }

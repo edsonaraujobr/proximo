@@ -12,7 +12,19 @@ export const getStudents = (req, res) => {
         }
 
         if (data.length > 0) {
-            return res.status(200).json({ message: 'Usuário autenticado com sucesso', user: data[0] });
+            const student = data[0];
+
+            const responseStudent = {
+              registration: student.registration,
+              typeAssistance: student.type_assistance,
+              name: student.name,
+              course: student.course,
+              noticeNumber: student.notice_number,
+              dateStartedAssistance: student.date_started_assistance,
+              photo: `http://localhost:3030/uploads/${student.photo}`,
+            };
+
+            return res.status(200).json({ message: 'Usuário autenticado com sucesso', responseStudent });
         } else {
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
