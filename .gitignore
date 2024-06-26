@@ -7,12 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+#diretorios e arquivos de build
 node_modules
 dist
 dist-ssr
 *.local
+
+# pastas especificas
 ./backend/uploads/
+
 ./backend/node_modules/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
