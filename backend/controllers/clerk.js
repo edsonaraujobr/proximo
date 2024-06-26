@@ -42,7 +42,7 @@ export const getClerks = (req, res) => {
 };
 
 export const registerClerk = (req,res) => {
-    const { nameClerk, emailClerk, passwordClerk, shiftClerk } = req.body;
+    const { nameClerk, emailClerk, passwordClerk, shiftClerk, idAdministrator } = req.body;
     const photoClerk = req.file ? req.file.filename : null;
 
     const query = "SELECT * FROM clerk WHERE email = ?";
@@ -55,9 +55,9 @@ export const registerClerk = (req,res) => {
 
         if(data.length == 0) {
             bcrypt.hash(passwordClerk, saltRounds, (err,hash) => {
-                let queryInsert = "INSERT INTO clerk (name, email, password, shift, photo) VALUES (?,?,?,?,?)" 
+                let queryInsert = "INSERT INTO clerk (full_name, email, password, shift, photo, id_administrator) VALUES (?,?,?,?,?,?)" 
 
-                db.query(queryInsert,[nameClerk, emailClerk, hash, shiftClerk,photoClerk], (err, data) => {
+                db.query(queryInsert,[nameClerk, emailClerk, hash, shiftClerk,photoClerk, idAdministrator], (err, data) => {
                     if(err) {
                         console.error('Erro ao inserir atendente no banco de dados:', err);
                         return res.status(500).json({ error: 'Erro ao inserir atendente no banco de dados' });

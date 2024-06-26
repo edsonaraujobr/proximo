@@ -5,11 +5,12 @@ import './PhotoMenu.css';
 
 export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClickedSupport, onClickedAbout, onClickedExit }) {
     
+    console.log(linkPhoto)
     return (
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
                 <button aria-label="Customise options">
-                    { linkPhoto ? (
+                    { linkPhoto !== 'http://localhost:3030/uploads/null' && typeof linkPhoto !== 'undefined' ? (
                         <img className='IconButton cursor-pointer' src={linkPhoto} alt="foto" />
                     ) : (
                         <HamburgerMenuIcon />

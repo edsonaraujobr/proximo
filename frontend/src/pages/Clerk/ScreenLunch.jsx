@@ -1,23 +1,26 @@
-import { Header } from '../../componentes/Header.jsx'
-import { Button } from '../../componentes/Button.jsx'
-import { Footer } from '../../componentes/Footer.jsx'
-import { Student } from '../../componentes/Student.jsx'
-import { CheckIcon, MagnifyingGlassIcon, EraserIcon } from '@radix-ui/react-icons';
+import { Header } from '../../componentes/Header.jsx';
+import { Student } from '../../componentes/Student.jsx';
+import { CheckIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { useContext } from "react"
+import { useContext } from "react";
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 import { StudentContext } from '../../contexts/StudentContext.jsx';
 
 export function ScreenLunch ({children}) {
     const [registration, setRegistration] = useState('');
-    const [userType, setUserType] = useState('interno')
-    const [paymentType, setPaymentType] = useState('cartao')
-    const [money, setMoney] = useState('')
+    const [userType, setUserType] = useState('interno');
+    const [paymentType, setPaymentType] = useState('cartao');
+    const [money, setMoney] = useState('');
+    const [price, setPrice] = useState('');
+    const [total, setTotal] = useState('');
+    const [searchUser, setSearchUser] = useState(false);
+    const [foundUser, setFoundUser] = useState(false);
+    const [ quantity, setQuantity ] = useState('');
+
     const { clerk } = useContext(ClerkContext);
+    const { login: loginStudent, student, logout: logoutStudent } = useContext(StudentContext);
+
     const login = false;
-    const [searchUser, setSearchUser] = useState(false)
-    const [foundUser, setFoundUser] = useState(false)
-    const { login: loginStudent, student } = useContext(StudentContext);
 
     const handleRegistrationChange = (e) => {
         const value = e.target.value;
@@ -26,21 +29,36 @@ export function ScreenLunch ({children}) {
         }
     };
 
+    function cleanFieldsStudent() {
+        setRegistration('');
+        setMoney('');
+        setPrice('');
+        setTotal('');
+        setQuantity('');
+        setFoundUser(false);
+        setSearchUser(false);
+        logoutStudent();
+        setPaymentType('cartao')
+    }
+
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
         if(e.target.value === 'externo') {
             setRegistration('');
         }
+        cleanFieldsStudent();
     }
 
     const handlePaymentChange = (e) => {
         setPaymentType(e.target.value);
         if(e.target.value === 'dinheiro') {
-            setMoney('');
+            setMoney('R$ ');
+        } else {
+            setMoney(price);
         }
     }
 
-    const handleBuscarAluno = async (e) => {
+    const handleSearchStudent = async (e) => {
         e.preventDefault();
         if(registration.length < 9) {
             alert("menor de 9")
@@ -68,6 +86,67 @@ export function ScreenLunch ({children}) {
             }
         }
 
+    }
+
+    const handleQuantityKg = (e) => {
+        setQuantity(e.target.value);
+        setTotal(calculatePriceQuantity(quantity));
+
+        if(student) {
+            if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae') {
+                setPrice(`R$ 2,00`);
+                if(paymentType === 'cartao' || paymentType === 'pix')
+                    setMoney(`R$ 2,00`)
+            } else if(student.typeAssistance === '50%') {
+                setPrice(`R$ ${total/2}`);
+                if(paymentType === 'cartao' || paymentType === 'pix')
+                    setMoney(`R$ ${total/2}`)
+            }
+        } else {
+            setPrice(total);
+            if(paymentType === 'cartao' || paymentType === 'pix')
+                setMoney(`R$ ${total}`)
+        }
+    }
+
+    function calculatePriceQuantity(quantity) {
+        const price = 39.37;
+        const total = quantity*price;
+        return total.toFixed(2);
+    }
+
+    function handleMoney(e) {
+        let money = e.target.value
+        setMoney(money)
+    }
+
+    const handleSendService = (e) => {
+        e.preventDefault();
+        if(userType === 'externo') {
+            console.log("externo")
+            if(quantity && (paymentType === 'cartao' || paymentType === 'pix')) {
+                alert("ok")
+            } else if(quantity && paymentType === 'dinheiro') {
+                alert("verificar se o valor pago é igual ou superior")
+            } else {
+                alert("digite a quantidade")
+            }
+        
+        } else if(userType === 'interno') {
+            console.log("interno")
+
+            if(student) {
+                if(quantity && (paymentType === 'cartao' || paymentType === 'pix')) {
+                    alert("ok")
+                } else if(quantity && paymentType === 'dinheiro') {
+                    alert("verificar se o valor pago é igual ou superior")
+                } else {
+                    alert("digite a quantidade")
+                }
+            } else {
+                alert("estudante não encontrado")
+            }
+        }
     }
 
     return ( 
@@ -110,114 +189,130 @@ export function ScreenLunch ({children}) {
                                         <label htmlFor="id-interno">Interno</label>
                                     </div>
                                 </div>
-                                <form onSubmit={handleBuscarAluno} className='flex gap-2 flex-col '>
-                                    <label htmlFor="matricula">Nº de matrícula: </label>
-                                    <input 
-                                        required
-                                        type="number" 
-                                        name="interno" 
-                                        id="matricula" 
-                                        value={registration}
-                                        disabled={userType === 'externo'}
-                                        onChange={handleRegistrationChange}
-                                        className='bg-slate-700 rounded-md p-1' 
+                                { userType === 'interno' ? (
+                                    <form onSubmit={handleSearchStudent} className='flex gap-2 flex-col '>
+                                        <label htmlFor="matricula">Nº de matrícula: </label>
+                                        <input 
+                                            required
+                                            type="number" 
+                                            name="interno" 
+                                            id="matricula" 
+                                            value={registration}
+                                            disabled={userType === 'externo'}
+                                            onChange={handleRegistrationChange}
+                                            className='bg-slate-700 rounded-md p-1' 
+                                        />
+                                        <button 
+                                            type="submit" 
+                                            disabled={userType === 'externo'} 
+                                            className='bg-green-600 px-2 rounded-md cursor-pointer flex justify-center items-center gap-2' > 
+                                            <MagnifyingGlassIcon/>Buscar
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <div
+                                        className=' rounded-md p-1 w-[257px]' 
                                     />
-                                    <button 
-                                        type="submit" 
-                                        disabled={userType === 'externo'} 
-                                        className='bg-green-600 px-2 rounded-md cursor-pointer flex justify-center items-center gap-2' > 
-                                        <MagnifyingGlassIcon/>Buscar
-                                    </button>
-                                </form>
+                                )}
+                                
 
                             </div>
                             
                         
                         </div>
-                        <div className=' border border-slate-700 p-5 flex flex-col gap-2 rounded-md items-center'>
-                            <div className='flex w-full'>
-                                <h2 className='font-bold text-lg'>Pesagem</h2>
-                            </div>
-                            <div className='flex flex-col gap-2'>
-                                <div className='flex gap-2 flex-col'>
-                                    <label htmlFor="quantidadekg">Quantidade em quilos: </label>
-                                    <input 
-                                        type="number" 
-                                        name="quantidadekg" 
-                                        id="quantidadekg" 
-                                        className='bg-slate-700 rounded-md p-1' 
-                                    />
+                        <form onSubmit={handleSendService} className='flex gap-3 justify-center'>
+                            <div className=' border border-slate-700 p-5 flex flex-col gap-2 rounded-md items-center'>
+                                <div className='flex w-full'>
+                                    <h2 className='font-bold text-lg'>Pesagem</h2>
                                 </div>
-                                <div className='flex gap-2 flex-col'>
-                                    <label htmlFor="resultado">Valor a ser pago: </label>
-                                    <input 
-                                        type="number" 
-                                        name="resultado" 
-                                        id="idresultado" 
-                                        className='bg-slate-700 rounded-md p-1' 
-                                        disabled
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className=' border border-slate-700 p-5 flex flex-col gap-2 rounded-md items-center'>
-                            <div className='flex w-full'>
-                                <h2 className='font-bold text-lg'>Forma de pagamento</h2>
-                            </div>
-                            <div className='flex flex-col gap-2'>
-                                <div className='flex gap-2 justify-between'>
-                                    <div className='flex gap-2'>
-                                        <input 
-                                            type="radio" 
-                                            name='pagamento' 
-                                            id="id-cartao"  
-                                            onChange={handlePaymentChange}
-                                            value="cartao"
-                                            checked={paymentType === 'cartao'}
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex gap-2 flex-col'>
+                                        <label htmlFor="quantidadekg">Quantidade em quilos: </label>
+                                        <input
+                                            type="number"
+                                            name="quantidadekg"
+                                            id="quantidadekg"
+                                            className='bg-slate-700 rounded-md p-1'
+                                            onChange={handleQuantityKg}
+                                            value={quantity}
+                                            disabled={userType ==='interno' && student === null}
                                         />
-                                        <label htmlFor="id-cartao">Cartão</label>
                                     </div>
-                                    <div className='flex gap-2'>
-                                        <input 
-                                            type="radio" 
-                                            name='pagamento' 
-                                            id="id-pix"  
-                                            onChange={handlePaymentChange}
-                                            value="pix"
-                                            checked={paymentType === 'pix'}
+                                    <div className='flex gap-2 flex-col'>
+                                        <span >Valor a ser pago: </span>
+                                        <input
+                                            type="text"
+                                            name="resultado"
+                                            id="idresultado"
+                                            className='bg-slate-700 rounded-md p-1'
+                                            disabled
+                                            value={price}
                                         />
-                                        <label htmlFor="id-pix">Pix</label>
-                                    </div>
-                                    <div className='flex gap-2'>
-                                        <input 
-                                            type="radio" 
-                                            name='pagamento' 
-                                            id="id-dinheiro"  
-                                            onChange={handlePaymentChange}
-                                            value="dinheiro"
-                                            checked={paymentType === 'dinheiro'}
-                                        />
-                                        <label htmlFor="id-dinheiro">Dinheiro</label>
                                     </div>
                                 </div>
-                                <div className='flex gap-2 flex-col'>
-                                    <label htmlFor="reais">Valor em reais: </label>
-                                    <input 
-                                        type="number" 
-                                        name="reais" 
-                                        id="reais" 
-                                        className='bg-slate-700 rounded-md p-1' 
-                                        value={money}
-                                        disabled={paymentType === 'cartao' || paymentType === 'pix'}
-                                    />
-                                    <Button
-                                        color='bg-green-600'
-                                        text='Confirmar'
-                                        icon={<CheckIcon/>}
-                                    />
+                            </div>
+                            <div className=' border border-slate-700 p-5 flex flex-col gap-2 rounded-md items-center'>
+                                <div className='flex w-full'>
+                                    <h2 className='font-bold text-lg'>Forma de pagamento</h2>
+                                </div>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex gap-2 justify-between'>
+                                        <div className='flex gap-2'>
+                                            <input
+                                                type="radio"
+                                                name='pagamento'
+                                                id="id-cartao"
+                                                onChange={handlePaymentChange}
+                                                value="cartao"
+                                                checked={paymentType === 'cartao'}
+                                            />
+                                            <label htmlFor="id-cartao">Cartão</label>
+                                        </div>
+                                        <div className='flex gap-2'>
+                                            <input
+                                                type="radio"
+                                                name='pagamento'
+                                                id="id-pix"
+                                                onChange={handlePaymentChange}
+                                                value="pix"
+                                                checked={paymentType === 'pix'}
+                                            />
+                                            <label htmlFor="id-pix">Pix</label>
+                                        </div>
+                                        <div className='flex gap-2'>
+                                            <input
+                                                type="radio"
+                                                name='pagamento'
+                                                id="id-dinheiro"
+                                                onChange={handlePaymentChange}
+                                                value="dinheiro"
+                                                checked={paymentType === 'dinheiro'}
+                                            />
+                                            <label htmlFor="id-dinheiro">Dinheiro</label>
+                                        </div>
+                                    </div>
+                                    <div className='flex gap-2 flex-col'>
+                                        <label htmlFor="reais">Valor em reais: </label>
+                                        <input
+                                            type="text"
+                                            name="reais"
+                                            id="reais"
+                                            className='bg-slate-700 rounded-md p-1'
+                                            value={money}
+                                            onChange={handleMoney}
+                                            disabled={paymentType === 'cartao' || paymentType === 'pix'}
+                                        />
+                                        <button
+                                            className='bg-green-600 flex justify-center items-center gap-2 rounded-md'
+                                            type='submit'
+                                        >
+                                            <CheckIcon/>
+                                            Confirmar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </section>
 
 
@@ -245,9 +340,6 @@ export function ScreenLunch ({children}) {
                     )
                 }
             </div>
-
-
-            <Footer/>
         </div>
         )
     )

@@ -246,8 +246,6 @@ export function ScreenCoffee({children}) {
                     }
 
                 </div>
-                
-                <Footer/>
             </div>
         )
     )

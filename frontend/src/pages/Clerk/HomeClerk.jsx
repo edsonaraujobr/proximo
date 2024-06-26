@@ -158,7 +158,6 @@ export function HomeClerk({children}) {
                         </div>
 
                     </div>
-                    <Footer/>
                 </div>
             </Dialog.Root>
         )

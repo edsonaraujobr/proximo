@@ -2,10 +2,9 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { Header } from '../../componentes/Header.jsx'
 import { useState, useContext, useRef } from 'react';
 import { CheckIcon, UploadIcon } from '@radix-ui/react-icons';
-import { ClerkContext } from '../../contexts/ClerkContext.jsx';
+import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
 
 export function HomeAdministrator ({children}) {
-    const login = false;
     const [ registration, setRegistration ] = useState('');
     const [ name, setName ] = useState('');
     const [ course, setCourse ] = useState('');
@@ -18,14 +17,21 @@ export function HomeAdministrator ({children}) {
     const [ passwordClerk, setPasswordClerk ] = useState('');
     const [ shiftClerk, setShiftClerk ] = useState('');
     const [photoClerk, setPhotoClerk] = useState(null);
-    const { clerk } = useContext(ClerkContext);
-    const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes", "Atualizar Aluno", "Atualizar Atendente", "Remover Aluno","Remover Atendente"]
-    const [activeTab, setActiveTab] = useState(itens[0]);
+
+    const { administrator, login: loginAdministrator, logout: logoutAdministrator } = useContext(AdministratorContext);
+
     const inputRef = useRef(null)
     const inputRefClerk = useRef(null)
 
+    const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes", "Atualizar Aluno", "Atualizar Atendente", "Remover Aluno","Remover Atendente"]
+    const [activeTab, setActiveTab] = useState(itens[0]);
+    const login = false;
+
+
     const handleTabChange = (value) => {
       setActiveTab(value);
+      cleanFieldsStudent();
+      cleanFieldsStudent();
     };
 
     const handleCreatedStudent = async (e) => {
@@ -39,6 +45,7 @@ export function HomeAdministrator ({children}) {
             formData.append('noticeNumber', noticeNumber);
             formData.append('dateStartedAssistance', dateStartedAssistance);
             formData.append('photo', photo);  
+            formData.append('idAdministrator', administrator.id)            
 
             const response = await fetch('http://localhost:3030/registrar-aluno', {
                 method: 'POST',
@@ -68,7 +75,7 @@ export function HomeAdministrator ({children}) {
             formData.append('passwordClerk', passwordClerk);
             formData.append('shiftClerk', shiftClerk);
             formData.append('photoClerk', photoClerk);  
-
+            formData.append('idAdministrator', administrator.id)            
             const response = await fetch('http://localhost:3030/registrar-atendente', {
                 method: 'POST',
                 body:formData,
@@ -79,7 +86,6 @@ export function HomeAdministrator ({children}) {
                 alert("Atendente cadastrado")
                 console.log("Atendente cadastrado", result);
                 cleanFieldsClerk()
-                clerk(result);
             } else {
                 alert("Atendente não cadastrado")
                 console.log("Atendente não cadastrado");
@@ -192,7 +198,7 @@ export function HomeAdministrator ({children}) {
                                     key={item}
                                     value={item}
                                     className={` text-white text-sm p-2 ${
-                                    activeTab === item? 'bg-slate-600' : 'bg-gray-900'
+                                    activeTab === item? 'border-b-2 border-b-slate-400' : 'border-b-transparent'
                                     }`}
                                 >
                                 {item}
@@ -202,10 +208,10 @@ export function HomeAdministrator ({children}) {
 
                             <Tabs.Content value={itens[0]}>
                                     <form  onSubmit={handleCreatedStudent} className='flex flex-col justify-center items-center'>
-                                        <div className=' text-white p-8 flex gap-28 items-center justify-center'>
+                                        <div className=' text-white p-8 flex gap-28 items-center justify-center '>
                                             <div className='flex flex-col gap-2 w-[50lvw]'>
                                                 <div className="flex flex-col gap-1 w-full">
-                                                    <label htmlFor="imatricula" className="font-bold">Matricula: </label>
+                                                    <label htmlFor="imatricula" className="font-bold">Matricula: *</label>
                                                     <input
                                                         type="number"
                                                         name="matricula"
@@ -213,11 +219,11 @@ export function HomeAdministrator ({children}) {
                                                         value={registration}
                                                         onChange={handleRegistrationChange}
                                                         required
-                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col gap-1 w-full">
-                                                    <label htmlFor="inome" className="font-bold">Nome: </label>
+                                                    <label htmlFor="inome" className="font-bold">Nome Completo: *</label>
                                                     <input
                                                         type="text"
                                                         name="nome"
@@ -225,11 +231,11 @@ export function HomeAdministrator ({children}) {
                                                         value={name}
                                                         onChange={handleNameChange}
                                                         required
-                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col gap-1 w-full">
-                                                    <label htmlFor="icurso" className="font-bold">Curso: </label>
+                                                    <label htmlFor="icurso" className="font-bold">Curso: *</label>
                                                     <input
                                                         type="text"
                                                         name="curso"
@@ -237,7 +243,7 @@ export function HomeAdministrator ({children}) {
                                                         value={course}
                                                         onChange={handleCourseChange}
                                                         required
-                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col gap-1 w-full">
@@ -248,12 +254,11 @@ export function HomeAdministrator ({children}) {
                                                         id="iedital"
                                                         value={noticeNumber}
                                                         onChange={handleNoticeNumberChange}
-                                                        required
-                                                        className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
                                                     />
                                                 </div>
                                                 <div className="flex gap-4 w-full ">
-                                                    <label htmlFor='iprae' className="font-bold">Tipo de assistência: </label>
+                                                    <label htmlFor='iprae' className="font-bold">Tipo de assistência: *</label>
                                                     <div className='flex gap-4'>
                                                         <div className='flex gap-2'>
                                                             <input type="radio" name="assistance" id="iprae" value="prae" onChange={handleTypeAssistanceChange} required />
@@ -273,15 +278,20 @@ export function HomeAdministrator ({children}) {
                                                     id="idate"
                                                     value={dateStartedAssistance}
                                                     onChange={handleDateStartedAssistanceChange}
-                                                    required
-                                                    className="rounded-md text-white bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"/>
+                                                    className="rounded-md text-white bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"/>
                                                 </div>
+                                                <button 
+                                                    type="submit" 
+                                                    className='w-40 bg-green-600 gap-2 flex items-center justify-center py-1 rounded-md hover:bg-green-700'>
+                                                    <CheckIcon/>
+                                                    Registrar Aluno
+                                                </button> 
                                             </div>
                                             <div className='flex items-center justify-center flex-col gap-4'>
                                                 <h1 className="font-bold">Foto: </h1>
                                                 <div onClick={handleImageStudent}>
                                                     { photo ? <img className='flex justify-center items-center w-80 h-80 rounded-full cursor-pointer' src={URL.createObjectURL(photo)} alt="Foto" /> : (
-                                                        <div className='flex justify-center items-center w-80 h-80 bg-slate-700 rounded-full cursor-pointer'>
+                                                        <div className='flex justify-center items-center w-80 h-80 bg-transparent border border-slate-500 rounded-full cursor-pointer'>
                                                             <UploadIcon className='size-14'/>
                                                         </div>
                                                     )}
@@ -296,13 +306,9 @@ export function HomeAdministrator ({children}) {
                                                     />
                                                 </div>
                                             </div>
+                                            
                                         </div>
-                                        <button 
-                                            type="submit" 
-                                            className='w-56 bg-green-600 gap-2 flex items-center justify-center px-4 py-2 rounded-md hover:bg-green-700'>
-                                            <CheckIcon/>
-                                            Registrar Aluno
-                                        </button>                                    
+                                   
                                     </form>
                             </Tabs.Content>
                             <Tabs.Content value={itens[1]}>
@@ -311,7 +317,7 @@ export function HomeAdministrator ({children}) {
                                     <div className=' text-white p-8 flex gap-28 items-center justify-center'>
                                         <div className='flex flex-col gap-2 w-[50lvw]'> 
                                             <div className="flex flex-col gap-1 w-full">
-                                                <label htmlFor="inome-atendente" className="font-bold">Nome Completo: </label>
+                                                <label htmlFor="inome-atendente" className="font-bold">Nome Completo: *</label>
                                                 <input
                                                     type="text"
                                                     name="nome-atendente"
@@ -319,11 +325,11 @@ export function HomeAdministrator ({children}) {
                                                     value={nameClerk}
                                                     onChange={handleNameClerkChange}
                                                     required
-                                                    className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                    className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
                                                 />
                                             </div>
                                             <div className="flex flex-col gap-1 w-full">
-                                                <label htmlFor="iemail" className="font-bold">Email: </label>
+                                                <label htmlFor="iemail" className="font-bold">Email: *</label>
                                                 <input
                                                     type="email"
                                                     name="email"
@@ -331,11 +337,11 @@ export function HomeAdministrator ({children}) {
                                                     value={emailClerk}
                                                     onChange={handleEmailClerkChange}
                                                     required
-                                                    className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                    className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
                                                 />
                                             </div>
                                             <div className="flex flex-col gap-1 w-full">
-                                                <label htmlFor="isenha" className="font-bold">Senha: </label>
+                                                <label htmlFor="isenha" className="font-bold">Senha: *</label>
                                                 <input
                                                     type="text"
                                                     name="senha"
@@ -343,32 +349,38 @@ export function HomeAdministrator ({children}) {
                                                     value={passwordClerk}
                                                     onChange={handlePasswordClerkChange}
                                                     required
-                                                    className="rounded-md bg-slate-700 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                    className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
                                                 />
                                             </div>
                                             <div className="flex flex-col gap-1 w-full ">
                                                 <div className='flex gap-4'>
-                                                <label htmlFor="imatutino" className="font-bold">Número de edital: </label>
+                                                <label htmlFor="imatutino" className="font-bold">Turno: </label>
                                                     <div className='flex gap-2'>
-                                                        <input type="radio" name="turno" id="imatutino" value="matutino" onChange={handleShift} required />
+                                                        <input type="radio" name="turno" id="imatutino" value="matutino" onChange={handleShift}  />
                                                         <label htmlFor="imatutino">Matutino</label>
                                                     </div>
                                                     <div className='flex gap-2'>
-                                                        <input type="radio" name="turno" id="ivespertino" value="vespertino" onChange={handleShift} required/>
+                                                        <input type="radio" name="turno" id="ivespertino" value="vespertino" onChange={handleShift} />
                                                         <label htmlFor="ivespertino">Vespertino</label>
                                                     </div>
                                                     <div className='flex gap-2'>
-                                                        <input type="radio" name="turno" id="inoturno" value="noturno" onChange={handleShift} required/>
+                                                        <input type="radio" name="turno" id="inoturno" value="noturno" onChange={handleShift} />
                                                         <label htmlFor="inoturno">Noturno</label>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <button 
+                                                type="submit" 
+                                                className='w-48 bg-green-600 gap-2 flex items-center justify-center py-1 rounded-md hover:bg-green-700'>
+                                                <CheckIcon/>
+                                                Registrar Atendente
+                                            </button>
                                         </div>
                                         <div className='flex items-center justify-center flex-col gap-4'>
                                             <h1 className="font-bold">Foto: </h1>
                                             <div onClick={handleImageClerk}>
                                                 { photoClerk ? <img className='flex justify-center items-center w-80 h-80  rounded-full cursor-pointer' src={URL.createObjectURL(photoClerk)} alt="Foto" /> : (
-                                                    <div className='flex justify-center items-center w-80 h-80 bg-slate-700 rounded-full cursor-pointer'>
+                                                    <div className='flex justify-center items-center w-80 h-80 bg-transparent border border-slate-500 rounded-full cursor-pointer'>
                                                         <UploadIcon className='size-14'/>
                                                     </div>
                                                 )}
@@ -384,12 +396,7 @@ export function HomeAdministrator ({children}) {
                                             </div>
                                         </div>
                                     </div>
-                                    <button 
-                                        type="submit" 
-                                        className='w-56 bg-green-600 gap-2 flex items-center justify-center px-4 py-2 rounded-md hover:bg-green-700'>
-                                        <CheckIcon/>
-                                        Registrar Atendente
-                                    </button>
+
                                 </form>
                             </Tabs.Content>
                         </Tabs.Root>

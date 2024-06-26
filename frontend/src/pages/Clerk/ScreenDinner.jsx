@@ -247,8 +247,6 @@ export function ScreenDinner({children}) {
                     }
 
                 </div>
-                
-                <Footer/>
             </div>
         )
     )

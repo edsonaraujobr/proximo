@@ -32,7 +32,7 @@ export const getStudents = (req, res) => {
 };
 
 export const registerStudents = (req,res) => {
-    const { registration, typeAssistance, name, course, noticeNumber, dateStartedAssistance} = req.body;
+    const { registration, typeAssistance, name, course, noticeNumber, dateStartedAssistance,idAdministrator} = req.body;
     const photo = req.file ? req.file.filename : null;
 
     const query = "SELECT * FROM student WHERE registration = ?";
@@ -44,9 +44,9 @@ export const registerStudents = (req,res) => {
         }
 
         if(data.length == 0) {
-            let queryInsert = "INSERT INTO student (registration, type_assistance, name, course, notice_number, date_started_assistance, photo) VALUES (?,?,?,?,?,?,?)" 
+            let queryInsert = "INSERT INTO student (registration, type_assistance, full_name, course, notice_number, date_started_assistance, photo,id_administrator) VALUES (?,?,?,?,?,?,?,?)" 
 
-            db.query(queryInsert,[registration, typeAssistance, name, course, noticeNumber, dateStartedAssistance, photo], (err, data) => {
+            db.query(queryInsert,[registration, typeAssistance, name, course, noticeNumber, dateStartedAssistance, photo, idAdministrator], (err, data) => {
                 if(err) {
                     console.log("deu erro")
                     console.error('Erro ao inserir aluno no banco de dados:', err);

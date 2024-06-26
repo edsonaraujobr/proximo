@@ -47,7 +47,7 @@ export function Login({ typeUser, otherUser}) {
               loginClerk(data.responseClerk)
               navigate(`/atendente/home`)
             } else if(typeUser === 'administrador') {
-              loginAdministrator(data)
+              loginAdministrator(data.user)
               navigate(`/administrador/home`)
             }
 
