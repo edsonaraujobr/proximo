@@ -39,12 +39,15 @@ export function HomeAdministrator ({children}) {
         try {
             const formData = new FormData();
             formData.append('registration', registration);
-            formData.append('typeAssistance', typeAssistance);
-            formData.append('name', name);
-            formData.append('course', course);
-            formData.append('noticeNumber', noticeNumber);
-            formData.append('dateStartedAssistance', dateStartedAssistance);
-            formData.append('photo', photo);  
+            formData.append('typeAssistance', typeAssistance.toUpperCase());
+            formData.append('name', name.toUpperCase());
+            formData.append('course', course.toUpperCase());
+            if(noticeNumber.trim() !== '') 
+                formData.append('noticeNumber', noticeNumber.toUpperCase());
+            if(dateStartedAssistance.trim() !== '') 
+                formData.append('dateStartedAssistance', dateStartedAssistance);
+            if(photo)
+                formData.append('photo', photo);  
             formData.append('idAdministrator', administrator.id)            
 
             const response = await fetch('http://localhost:3030/registrar-aluno', {
@@ -73,8 +76,10 @@ export function HomeAdministrator ({children}) {
             formData.append('nameClerk', nameClerk);
             formData.append('emailClerk', emailClerk);
             formData.append('passwordClerk', passwordClerk);
-            formData.append('shiftClerk', shiftClerk);
-            formData.append('photoClerk', photoClerk);  
+            if(shiftClerk.trim() !== '')
+                formData.append('shiftClerk', shiftClerk);
+            if(photoClerk)
+                formData.append('photoClerk', photoClerk);  
             formData.append('idAdministrator', administrator.id)            
             const response = await fetch('http://localhost:3030/registrar-atendente', {
                 method: 'POST',

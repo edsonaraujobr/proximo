@@ -60,6 +60,16 @@ export function ScreenLunch ({children}) {
 
     const handleSearchStudent = async (e) => {
         e.preventDefault();
+
+        setMoney('');
+        setPrice('');
+        setTotal('');
+        setQuantity('');
+        setFoundUser(false);
+        setSearchUser(false);
+        logoutStudent();
+        setPaymentType('cartao')
+        
         if(registration.length < 9) {
             alert("menor de 9")
         } else {
@@ -149,6 +159,7 @@ export function ScreenLunch ({children}) {
         }
     }
 
+    console.log(student)
     return ( 
         login ? children : (
         <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">

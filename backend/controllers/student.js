@@ -17,7 +17,7 @@ export const getStudents = (req, res) => {
             const responseStudent = {
               registration: student.registration,
               typeAssistance: student.type_assistance,
-              name: student.name,
+              name: student.full_name,
               course: student.course,
               noticeNumber: student.notice_number,
               dateStartedAssistance: student.date_started_assistance,
@@ -44,16 +44,43 @@ export const registerStudents = (req,res) => {
         }
 
         if(data.length == 0) {
-            let queryInsert = "INSERT INTO student (registration, type_assistance, full_name, course, notice_number, date_started_assistance, photo,id_administrator) VALUES (?,?,?,?,?,?,?,?)" 
+            let queryInsert = "INSERT INTO student (registration, type_assistance, full_name, course,id_administrator" 
+            let queryParams = [registration, typeAssistance, name, course, idAdministrator]
 
-            db.query(queryInsert,[registration, typeAssistance, name, course, noticeNumber, dateStartedAssistance, photo, idAdministrator], (err, data) => {
+            if(noticeNumber && noticeNumber.trim() !== '') {
+                queryInsert += ", notice_number";
+                queryParams.push(noticeNumber);
+            }
+            if(dateStartedAssistance && dateStartedAssistance.trim() !== '') {
+                queryInsert += ", date_started_assistance";
+                queryParams.push(dateStartedAssistance);
+            }
+            if(photo) {
+                queryInsert += ", photo";
+                queryParams.push(photo);
+            }
+
+            queryInsert += ") VALUES (?,?,?,?,?";
+
+            if(noticeNumber && noticeNumber.trim() !== '') {
+                queryInsert += ",?";
+            }
+            if(dateStartedAssistance && dateStartedAssistance.trim() !== '') {
+                queryInsert += ",?";
+            }
+            if(photo) {
+                queryInsert += ",?";
+            }
+            queryInsert += ")";
+
+            db.query(queryInsert, queryParams, (err, data) => {
                 if(err) {
                     console.log("deu erro")
                     console.error('Erro ao inserir aluno no banco de dados:', err);
                     return res.status(500).json({ error: 'Erro ao inserir aluno no banco de dados' });
                 } 
                 return res.status(200).json({ message: 'Aluno cadastrado com sucesso'});
-            })
+            });
 
         } else {
             console.error('Usuario já cadastrado!', err);

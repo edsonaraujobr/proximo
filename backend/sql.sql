@@ -19,10 +19,11 @@ CREATE TABLE clerk(
 	photo BLOB,
 	id_administrator INTEGER,
 	FOREIGN KEY (id_administrator) REFERENCES administrator (id)
+);
 
 CREATE TABLE student(
 	registration CHAR(9) PRIMARY KEY NOT NULL,
-	type_Assistance VARCHAR(4) NOT NULL,
+	type_assistance VARCHAR(4) NOT NULL,
 	full_name VARCHAR(50) NOT NULL,
 	course VARCHAR(50) NOT NULL,
 	notice_number VARCHAR(50),
@@ -76,6 +77,7 @@ SELECT * FROM administrator;
 select * from clerk;
 
 SELECT * FROM student;
+
 
 
 
