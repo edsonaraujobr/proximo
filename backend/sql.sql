@@ -19,7 +19,6 @@ CREATE TABLE clerk(
 	photo BLOB,
 	id_administrator INTEGER,
 	FOREIGN KEY (id_administrator) REFERENCES administrator (id)
-);
 
 CREATE TABLE student(
 	registration CHAR(9) PRIMARY KEY NOT NULL,
