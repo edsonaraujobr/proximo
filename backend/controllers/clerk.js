@@ -18,14 +18,11 @@ export const getClerks = (req, res) => {
             bcrypt.compare(password, data[0].password, (err, result) => {
                 if(result) {
                     const clerk = data[0];
-
+                    console.log(clerk.id)
+                    
                     const responseClerk = {
-                      registration: clerk.registration,
-                      typeAssistance: clerk.type_assistance,
-                      name: clerk.name,
-                      course: clerk.course,
-                      noticeNumber: clerk.notice_number,
-                      dateStartedAssistance: clerk.date_started_assistance,
+                      id: clerk.id,
+                      name: clerk.full_name,
                       photo: `http://localhost:3030/uploads/${clerk.photo}`,
                     };
 

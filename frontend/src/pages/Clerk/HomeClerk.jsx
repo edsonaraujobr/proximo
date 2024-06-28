@@ -17,15 +17,34 @@ export function HomeClerk({children}) {
         setTypeService(e.target.value)
     };
 
-    const handleStartedService = (event) => {
+    const handleStartedService = async (event) => {
         event.preventDefault();
-        if(typeService === 'almoco') {
-            navigate('/atendente/almoco')
-        } else if(typeService === 'cafe-manha') {
-            navigate('/atendente/cafe')
-        } else if(typeService === 'jantar') {
-            navigate('/atendente/jantar')
+
+        try {
+            const date = new Date().toISOString();
+            const response = await fetch("http://localhost:3030/atendimento", {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify( {date, type_service: typeService.toLocaleUpperCase, id_clerk:clerk.id} )
+            });
+
+            if(response.ok) {
+                if(typeService === 'almoco') {
+                    navigate('/atendente/almoco')
+                } else if(typeService === 'cafe-manha') {
+                    navigate('/atendente/cafe')
+                } else if(typeService === 'jantar') {
+                    navigate('/atendente/jantar')
+                }
+            } else {
+                alert("erro!")
+            }
+        } catch(error) {
+            console.error("Erro ao conectar ao servidor", error);
         }
+
     } 
 
     return (

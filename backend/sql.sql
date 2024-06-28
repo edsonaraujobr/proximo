@@ -35,25 +35,10 @@ CREATE TABLE student(
 
 CREATE TABLE service(
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	date_service DATE NOT NULL,
+	date_service TIMESTAMP NOT NULL,
+	type_service VARCHAR(10),
 	id_clerk INTEGER,
 	FOREIGN KEY (id_clerk) REFERENCES clerk (id)
-);
-
-CREATE TABLE coffee(
-	id INTEGER PRIMARY KEY AUTO_INCREMENT
-);
-
-CREATE TABLE item (
-	id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	name_item VARCHAR(50) NOT NULL,
-	id_coffee INTEGER,
-	FOREIGN KEY (id_coffee) REFERENCES coffee (id)
-);
-
-CREATE TABLE lunch(
-	id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	quantity FLOAT NOT NULL
 );
 
 CREATE TABLE orders(
@@ -61,13 +46,11 @@ CREATE TABLE orders(
 	price FLOAT NOT NULL,
 	type_payment VARCHAR(10) NOT NULL,
 	registration_student CHAR(9),
+	quantity_lunch FLOAT,
+	quantity_coffee INTEGER,
 	id_service INTEGER,
-	id_lunch INTEGER,
-	id_coffee INTEGER,
 	FOREIGN KEY (registration_student) REFERENCES student (registration),
-	FOREIGN KEY (id_service) REFERENCES service (id),
-	FOREIGN KEY (id_lunch) REFERENCES lunch (id),
-	FOREIGN KEY (id_coffee) REFERENCES coffee (id)
+	FOREIGN KEY (id_service) REFERENCES service (id)
 );
 
 
@@ -77,6 +60,8 @@ SELECT * FROM administrator;
 select * from clerk;
 
 SELECT * FROM student;
+
+SELECT * FROM service;
 
 
 
