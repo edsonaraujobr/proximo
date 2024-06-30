@@ -92,3 +92,87 @@ export const registerClerk = (req,res) => {
         }
     });
 }
+
+let recoveryCodes = {};
+
+import nodemailer from 'nodemailer';
+
+// Função para enviar o código de recuperação
+export const sendRecoveryCode = async (req, res) => {
+    const { email } = req.body;
+
+    // Geração do código de recuperação
+    const recoveryCode = Math.floor(100000 + Math.random() * 900000).toString();
+    recoveryCodes[email] = recoveryCode;
+
+    // Enviar email com o código de recuperação
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'proximoru@gmail.com',
+            pass: 'golo dvuw vifa pmwi'
+        }
+    });
+
+    const mailOptions = {
+        from: 'proximoru@gmail.com',
+        to: email,
+        subject: 'Código de Recuperação de Senha',
+        text: `Seu código de recuperação é: ${recoveryCode}`
+    };
+
+    const query = "SELECT * FROM clerk WHERE email = ?";
+
+    db.query(query, [email], async (err, data) =>{
+        if (err) {
+            console.error('Erro ao consultar banco de dados:', err);
+            return res.status(500).json({ error: 'Erro ao localizar usuário' });
+        }
+
+        if (data.length > 0) {
+            try {
+                await transporter.sendMail(mailOptions);
+                res.status(200).json({ message: 'Código de recuperação enviado' });
+                console.log('Email enviado com sucesso')
+            } catch (emailErr) {
+                console.error('Erro ao enviar email:', emailErr);
+                res.status(500).json({ error: 'Erro ao enviar email' });
+            }
+        } else {
+            console.log('Usuário não encontrado')
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+    });
+};
+
+export const verifyRecoveryCode = (req, res) => {
+    const { email, code } = req.body;
+
+    if (recoveryCodes[email] && recoveryCodes[email] === code) {
+        delete recoveryCodes[email];
+        res.status(200).json({ message: 'Código verificado com sucesso' });
+    } else {
+        res.status(400).json({ error: 'Código de recuperação inválido' });
+    }
+};
+
+export const updatePassword = (req, res) => {
+    const { email, password } = req.body;
+    const query = "UPDATE clerk SET password=? WHERE email=?";
+  
+    db.query(query, [password, email], (err, data) => {
+      if (err) {
+        console.log('Erro ao atualizar a senha no banco de dados:');
+        console.error('Erro ao atualizar a senha no banco de dados:', err);
+        return res.status(500).json({ error: 'Erro ao atualizar a senha' });
+      }
+  
+      if (data.affectedRows > 0) {
+        console.log('Senha atualizada com sucesso');
+        return res.status(200).json({ message: 'Senha atualizada com sucesso' });
+      } else {
+        console.log('usuário não encontrado');
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+      }
+    });
+  };

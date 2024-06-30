@@ -50,7 +50,7 @@ export function HomeAdministrator ({children}) {
                 formData.append('photo', photo);  
             formData.append('idAdministrator', administrator.id)            
 
-            const response = await fetch('http://localhost:3030/registrar-aluno', {
+            const response = await fetch('http://localhost:5173/registrar-aluno', {
                 method: 'POST',
                 body:formData,
             })
@@ -81,7 +81,7 @@ export function HomeAdministrator ({children}) {
             if(photoClerk)
                 formData.append('photoClerk', photoClerk);  
             formData.append('idAdministrator', administrator.id)            
-            const response = await fetch('http://localhost:3030/registrar-atendente', {
+            const response = await fetch('http://localhost:5173/registrar-atendente', {
                 method: 'POST',
                 body:formData,
             })

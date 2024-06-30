@@ -22,7 +22,7 @@ export function HomeClerk({children}) {
 
         try {
             const date = new Date().toISOString();
-            const response = await fetch("http://localhost:3030/atendimento", {
+            const response = await fetch("http://localhost:5173/atendimento", {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json',
