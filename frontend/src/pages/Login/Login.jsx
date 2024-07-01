@@ -22,11 +22,14 @@ export function Login({ typeUser, otherUser}) {
     setPassword(e.target.value);
   };
 
-  const handleUserChange = () => {
+  const cleanFields = () => {
     setEmail('');
     setPassword('');
-    return navigate(`/${otherUser}`)
+  }
 
+  const handleUserChange = () => {
+    cleanFields();
+    return navigate(`/${otherUser}`)
   };
 
   const handleSubmit = async (event) => {

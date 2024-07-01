@@ -7,20 +7,23 @@ import { ClerkContext } from '../../contexts/ClerkContext.jsx';
 import { StudentContext } from '../../contexts/StudentContext.jsx';
 import * as Dialog from '@radix-ui/react-dialog'; 
 import { useNavigate } from 'react-router-dom';
+import { ServiceContext } from '../../contexts/ServiceContext.jsx'
 
 export function ScreenLunch ({children}) {
     const [registration, setRegistration] = useState('');
     const [userType, setUserType] = useState('interno');
     const [paymentType, setPaymentType] = useState('cartao');
-    const [money, setMoney] = useState('');
-    const [price, setPrice] = useState('');
-    const [total, setTotal] = useState('');
+    const [money, setMoney] = useState(0);
+    const [price, setPrice] = useState(0);
+    const [priceTotal, setPriceTotal] = useState(0);
     const [searchUser, setSearchUser] = useState(false);
     const [foundUser, setFoundUser] = useState(false);
-    const [ quantity, setQuantity ] = useState('');
+    const [quantity, setQuantity] = useState(0);
 
     const { clerk } = useContext(ClerkContext);
     const { login: loginStudent, student, logout: logoutStudent } = useContext(StudentContext);
+
+    const { service } = useContext(ServiceContext);
 
     const login = false;
     const navigate = useNavigate();
@@ -34,10 +37,10 @@ export function ScreenLunch ({children}) {
 
     function cleanFieldsStudent() {
         setRegistration('');
-        setMoney('');
-        setPrice('');
-        setTotal('');
-        setQuantity('');
+        setMoney(0);
+        setPrice(0);
+        setPriceTotal(0);
+        setQuantity(0);
         setFoundUser(false);
         setSearchUser(false);
         logoutStudent();
@@ -55,7 +58,7 @@ export function ScreenLunch ({children}) {
     const handlePaymentChange = (e) => {
         setPaymentType(e.target.value);
         if(e.target.value === 'dinheiro') {
-            setMoney('R$ ');
+            setMoney(0);
         } else {
             setMoney(price);
         }
@@ -64,10 +67,10 @@ export function ScreenLunch ({children}) {
     const handleSearchStudent = async (e) => {
         e.preventDefault();
 
-        setMoney('');
-        setPrice('');
-        setTotal('');
-        setQuantity('');
+        setMoney(0);
+        setPrice(0);
+        setPriceTotal(0);
+        setQuantity(0);
         setFoundUser(false);
         setSearchUser(false);
         logoutStudent();
@@ -103,34 +106,35 @@ export function ScreenLunch ({children}) {
 
     const handleQuantityKg = (e) => {
         setQuantity(e.target.value);
-        setTotal(calculatePriceQuantity(quantity));
+        calculatePriceQuantity(quantity)
 
         if(student) {
-            if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae') {
-                setPrice(`R$ 2,00`);
-                if(paymentType === 'cartao' || paymentType === 'pix')
-                    setMoney(`R$ 2,00`)
-            } else if(student.typeAssistance === '50%') {
-                setPrice(`R$ ${total/2}`);
-                if(paymentType === 'cartao' || paymentType === 'pix')
-                    setMoney(`R$ ${total/2}`)
+            if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae' && (paymentType === 'cartao' || paymentType === 'pix')) {
+                setPrice(2.00);
+            } else if(student.typeAssistance === '50%' && (paymentType === 'cartao' || paymentType === 'pix')) {
+                setPrice(priceTotal/2);
             }
         } else {
-            setPrice(total);
             if(paymentType === 'cartao' || paymentType === 'pix')
-                setMoney(`R$ ${total}`)
+                setMoney(priceTotal)
         }
     }
 
     function calculatePriceQuantity(quantity) {
         const price = 39.37;
-        const total = quantity*price;
-        return total.toFixed(2);
+        let total = quantity*price;
+        total = total.toFixed(2)
+        setPriceTotal(total);
+        return total;
     }
 
     function handleMoney(e) {
-        let money = e.target.value
-        setMoney(money)
+        let money = e.target.value;
+        if (money === 'string' && money.startsWith('R$ ')) {
+            money = money.substring(3); 
+        }
+        alert(money);
+        setMoney(money);
     }
 
     const handleSendService = (e) => {
@@ -139,6 +143,7 @@ export function ScreenLunch ({children}) {
             console.log("externo")
             if(quantity && (paymentType === 'cartao' || paymentType === 'pix')) {
                 alert("ok")
+                handleCreateOrder();
             } else if(quantity && paymentType === 'dinheiro') {
                 alert("verificar se o valor pago é igual ou superior")
             } else {
@@ -150,14 +155,21 @@ export function ScreenLunch ({children}) {
 
             if(student) {
                 if(quantity && (paymentType === 'cartao' || paymentType === 'pix')) {
-                    alert("ok")
-                } else if(quantity && paymentType === 'dinheiro') {
-                    alert("verificar se o valor pago é igual ou superior")
+                    alert("Atendimento realizado com sucesso")
+                    handleCreateOrder();
+                } else if(quantity && paymentType === 'dinheiro' ) {
+                    if(money >= price) {
+                        alert("Atendimento realizado com sucesso")
+                        handleCreateOrder();
+                    } else {
+                        alert("money: " + money + " | price: " + price)
+                        alert("Valor insuficiente")
+                    }
                 } else {
-                    alert("digite a quantidade")
+                    alert("ERRO! Digite a quantidade")
                 }
             } else {
-                alert("estudante não encontrado")
+                alert("Estudante não encontrado")
             }
         }
     }
@@ -165,6 +177,27 @@ export function ScreenLunch ({children}) {
     const handleCloseService = (e) => {
         e.preventDefault();
         navigate(`/atendente/home`)
+    }
+
+    const handleCreateOrder = async () => {
+        try {
+            const response = await fetch("http://localhost:3030/order", {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify( {price_total: priceTotal, price , type_payment: paymentType.toUpperCase(), registration_student: student.registration, quantity_kg: quantity, id_service: service} )
+            })
+
+            if(response.ok) {
+                alert("ENVIADO COM SUCESSO");
+                cleanFieldsStudent();
+            } else {
+                alert("ERRO AO ENVIAR PARA O BD");
+            }
+        } catch(error) {
+            console.error("ERRO!", error)
+        }
     }
 
     return ( 
@@ -252,7 +285,7 @@ export function ScreenLunch ({children}) {
                                             id="quantidadekg"
                                             className='bg-slate-700 rounded-md p-1'
                                             onChange={handleQuantityKg}
-                                            value={quantity}
+                                            value={quantity !== 0 ? quantity : ''}
                                             disabled={userType ==='interno' && student === null}
                                         />
                                     </div>
@@ -264,7 +297,7 @@ export function ScreenLunch ({children}) {
                                             id="idresultado"
                                             className='bg-slate-700 rounded-md p-1'
                                             disabled
-                                            value={price}
+                                            value={price !== 0 ? `R$ ${price}` : ''}
                                         />
                                     </div>
                                 </div>
@@ -316,13 +349,14 @@ export function ScreenLunch ({children}) {
                                             name="reais"
                                             id="reais"
                                             className='bg-slate-700 rounded-md p-1'
-                                            value={money}
+                                            value={money !== 0 ? (money.startsWith('R$ ') ? money : `R$ ${money}`) : ''}
                                             onChange={handleMoney}
-                                            disabled={paymentType === 'cartao' || paymentType === 'pix'}
+                                            disabled={paymentType === 'cartao' || paymentType === 'pix' || (userType ==='interno' && student === null) || quantity == 0 }
                                         />
                                         <button
-                                            className='bg-green-600 flex justify-center items-center gap-2 rounded-md hover:bg-green-700'
+                                            className={`${(userType === 'interno' && student === null) || quantity === 0 ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'} flex justify-center items-center gap-2 rounded-md`}
                                             type='submit'
+                                            disabled={(userType ==='interno' && student === null) || quantity === 0}
                                         >
                                             <CheckIcon/>
                                             Confirmar

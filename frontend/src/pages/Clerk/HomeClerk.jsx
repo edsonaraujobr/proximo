@@ -2,16 +2,17 @@ import { PlusCircledIcon, FileTextIcon, EyeOpenIcon, Cross1Icon, CheckIcon} from
 import * as Dialog from '@radix-ui/react-dialog'; 
 import { Button } from '../../componentes/Button.jsx';
 import { Header } from '../../componentes/Header.jsx'
-import { Footer } from '../../componentes/Footer.jsx'
 import { useContext, useState } from "react"
 import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
 import { useNavigate } from 'react-router-dom';
+import { ServiceContext } from '../../contexts/ServiceContext.jsx';
 
 export function HomeClerk({children}) {
     const login = false;
     const [typeService, setTypeService] = useState('');
     const { clerk } = useContext(ClerkContext);
     const navigate = useNavigate()
+    const { openService } = useContext(ServiceContext);
 
     const handleTypeService = (e) => {
         setTypeService(e.target.value)
@@ -27,17 +28,13 @@ export function HomeClerk({children}) {
                 headers: {
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify( {date, type_service: typeService.toLocaleUpperCase, id_clerk:clerk.id} )
+                body: JSON.stringify( {date, type_service: typeService.toUpperCase(), id_clerk:clerk.id} )
             });
 
             if(response.ok) {
-                if(typeService === 'almoco') {
-                    navigate('/atendente/almoco')
-                } else if(typeService === 'cafe-manha') {
-                    navigate('/atendente/cafe')
-                } else if(typeService === 'jantar') {
-                    navigate('/atendente/jantar')
-                }
+                const data = await response.json();
+                navigate(`/atendente/${typeService}`)
+                openService(data.id)
             } else {
                 alert("erro!")
             }
@@ -47,6 +44,10 @@ export function HomeClerk({children}) {
 
     } 
 
+    const handleClickSettings = () => {
+        navigate("/configuracoes")
+    }
+
     return (
         login ? children : ( 
             <Dialog.Root>
@@ -54,6 +55,7 @@ export function HomeClerk({children}) {
                     <Header
                         name={clerk.name}
                         linkPhoto={clerk.photo}
+                        onClickedSettings={handleClickSettings}
                     />
 
                     <div className='flex'>
@@ -79,7 +81,7 @@ export function HomeClerk({children}) {
                                             <div className='flex gap-2 flex-col'>
                                                 <h2 className='font-bold'>Tipo de refeição</h2>
                                                 <div className='flex gap-2'>
-                                                    <input type="radio" name="refeicao" id="id-cafe-manha" value="cafe-manha" onChange={handleTypeService} required />
+                                                    <input type="radio" name="refeicao" id="id-cafe-manha" value="cafe" onChange={handleTypeService} required />
                                                     <label htmlFor="id-cafe-manha">Café da manhã</label>
                                                 </div>
                                                 <div className='flex gap-2'>
