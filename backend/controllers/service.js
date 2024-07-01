@@ -15,7 +15,6 @@ export const createService = (req,res) => {
         }
 
         if (data.affectedRows > 0) {
-            console.log(data.insertId)
             return res.status(200).json({ message: 'Serviço criado com sucesso', id: data.insertId });
         } else {
             return res.status(404).json({ error: 'Serviço não criado.' });
