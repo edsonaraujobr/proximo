@@ -5,16 +5,16 @@ export const StudentContext = createContext();
 export function StudentProvider({ children }) {
   const [student, setStudent] = useState(null);
 
-  const login = (clerkData) => {
+  const save = (clerkData) => {
     setStudent(clerkData); 
   };
 
-  const logout = () => {
+  const remove = () => {
     setStudent(null); 
   };
 
   return (
-    <StudentContext.Provider value={{ student, login, logout }}>
+    <StudentContext.Provider value={{ student, save, remove }}>
       {children}
     </StudentContext.Provider>
   );

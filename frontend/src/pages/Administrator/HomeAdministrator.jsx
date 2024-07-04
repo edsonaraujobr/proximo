@@ -22,8 +22,7 @@ export function HomeAdministrator ({children}) {
 
     const inputRef = useRef(null)
     const inputRefClerk = useRef(null)
-
-    const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes", "Atualizar Aluno", "Atualizar Atendente", "Remover Aluno","Remover Atendente"]
+    const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes"]
     const [activeTab, setActiveTab] = useState(itens[0]);
     const login = false;
 
@@ -403,6 +402,12 @@ export function HomeAdministrator ({children}) {
                                     </div>
 
                                 </form>
+                            </Tabs.Content>
+                            <Tabs.Content value={itens[2]}>
+                                <span>Visualizar aluno</span>
+                            </Tabs.Content>
+                            <Tabs.Content value={itens[3]}>
+                                <span>Visualizar atendente</span>
                             </Tabs.Content>
                         </Tabs.Root>
                 </div>  

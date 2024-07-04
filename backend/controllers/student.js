@@ -87,3 +87,7 @@ export const registerStudents = (req,res) => {
         }
     });
 }
+
+export const getAllStudents = () => {
+    
+}
