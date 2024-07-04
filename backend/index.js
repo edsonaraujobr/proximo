@@ -18,6 +18,7 @@ app.use("/", clerkRoutes);
 app.use("/", studentRoutes);
 app.use("/", servicesRoutes);
 app.use("/", servicesOrders);
+
 app.use('/uploads', express.static('uploads'));
 
 app.listen('3030',() => {
