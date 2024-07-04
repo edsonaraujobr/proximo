@@ -22,7 +22,6 @@ export function HomeAdministrator ({children}) {
 
     const inputRef = useRef(null)
     const inputRefClerk = useRef(null)
-
     const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes"]
     const [activeTab, setActiveTab] = useState(itens[0]);
     const login = false;
