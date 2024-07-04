@@ -13,7 +13,7 @@ import { useRef, useEffect } from 'react';
 export function ScreenLunch ({children}) {
     const [registration, setRegistration] = useState('');
     const [userType, setUserType] = useState('interno');
-    const [paymentType, setPaymentType] = useState('cartao');
+    const [paymentType, setPaymentType] = useState('cartão');
     const [money, setMoney] = useState(0);
     const [price, setPrice] = useState(0);
     const [priceTotal, setPriceTotal] = useState(0);
@@ -88,7 +88,7 @@ export function ScreenLunch ({children}) {
         setFoundUser(false);
         setSearchUser(false);
         removeStudent();
-        setPaymentType('cartao')
+        setPaymentType('cartão')
     }
 
     const handleUserTypeChange = (e) => {
@@ -119,7 +119,7 @@ export function ScreenLunch ({children}) {
         setFoundUser(false);
         setSearchUser(false);
         removeStudent();
-        setPaymentType('cartao');
+        setPaymentType('cartão');
         
         try {
             setSearchUser(true)
@@ -155,15 +155,15 @@ export function ScreenLunch ({children}) {
             calculatePriceQuantity(handleQuantity);
 
             if(student) {
-                if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae' && (paymentType === 'cartao' || paymentType === 'pix')) {
+                if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae' && (paymentType === 'cartão' || paymentType === 'pix')) {
                     setPrice(2.00);
                     setMoney(2.00);
-                } else if(student.typeAssistance === '50%' && (paymentType === 'cartao' || paymentType === 'pix')) {
+                } else if(student.typeAssistance === '50%' && (paymentType === 'cartão' || paymentType === 'pix')) {
                     setPrice(total/2);
                     setMoney(total/2);
                 }
             } else {
-                if(paymentType === 'cartao' || paymentType === 'pix') {
+                if(paymentType === 'cartão' || paymentType === 'pix') {
                     setMoney(total);
                     setPrice(total);
                 }
@@ -188,7 +188,7 @@ export function ScreenLunch ({children}) {
     const handleSendService = (e) => {
         e.preventDefault();
         if(userType === 'externo') {
-            if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartao' || paymentType === 'pix')) {
+            if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartão' || paymentType === 'pix')) {
                 handleCreateOrder();
             } else if(quantity > 0 && priceTotal > 0 && money > 0 && paymentType === 'dinheiro') {
                 if(money >= price) {
@@ -203,7 +203,7 @@ export function ScreenLunch ({children}) {
         } else if(userType === 'interno') {
 
             if(student) {
-                if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartao' || paymentType === 'pix')) {
+                if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartão' || paymentType === 'pix')) {
                     handleCreateOrder();
                 } else if(quantity >0 && priceTotal > 0 && money > 0 && paymentType === 'dinheiro' ) {
                     if(money >= price) {
@@ -250,6 +250,7 @@ export function ScreenLunch ({children}) {
             if(response.ok) {
                 cleanFieldsStudent();
                 alert("Atendimento realizado com sucesso");
+                alert("Troco: " + (money-price).toFixed(2))
             } else {
                 alert("Erro no servidor");
             }
@@ -372,12 +373,12 @@ export function ScreenLunch ({children}) {
                                             <input
                                                 type="radio"
                                                 name='pagamento'
-                                                id="id-cartao"
+                                                id="id-cartão"
                                                 onChange={handlePaymentChange}
-                                                value="cartao"
-                                                checked={paymentType === 'cartao'}
+                                                value="cartão"
+                                                checked={paymentType === 'cartão'}
                                             />
-                                            <label htmlFor="id-cartao">Cartão</label>
+                                            <label htmlFor="id-cartão">Cartão</label>
                                         </div>
                                         <div className='flex gap-2'>
                                             <input
