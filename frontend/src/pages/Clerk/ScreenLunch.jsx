@@ -32,7 +32,6 @@ export function ScreenLunch ({children}) {
     const login = false;
     const navigate = useNavigate();
     const priceFood = 39.37;
-    var total = 0;
 
     const focusInputQuantity = () => {
         if(inputQuantityRef.current) {
@@ -111,15 +110,6 @@ export function ScreenLunch ({children}) {
 
     const handleSearchStudent = async (e) => {
         e.preventDefault();
-
-        setMoney(0);
-        setPrice(0);
-        setPriceTotal(0);
-        setQuantity(0);
-        setFoundUser(false);
-        setSearchUser(false);
-        removeStudent();
-        setPaymentType('cartão');
         
         try {
             setSearchUser(true)
@@ -152,37 +142,41 @@ export function ScreenLunch ({children}) {
         }
         if(handleQuantity.length === 5) {
             setQuantity(handleQuantity);
-            calculatePriceQuantity(handleQuantity);
+            let totalLocale = calculatePriceQuantity(handleQuantity);
 
             if(student) {
                 if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae' && (paymentType === 'cartão' || paymentType === 'pix')) {
                     setPrice(2.00);
                     setMoney(2.00);
                 } else if(student.typeAssistance === '50%' && (paymentType === 'cartão' || paymentType === 'pix')) {
-                    setPrice(total/2);
-                    setMoney(total/2);
+                    setPrice(totalLocale/2);
+                    setMoney(totalLocale/2);
                 }
             } else {
                 if(paymentType === 'cartão' || paymentType === 'pix') {
-                    setMoney(total);
-                    setPrice(total);
+                    setMoney(totalLocale);
+                    setPrice(totalLocale);
                 }
             }
         }
     }
 
     function calculatePriceQuantity(quantity) {
-        total = quantity*priceFood;
+        let total = quantity*priceFood;
         total = parseFloat(total.toFixed(2));
         setPriceTotal(total);
+        return total;
     }
 
     function handleMoney(e) {
         let money = e.target.value;
-        if (typeof money === 'string' && money.startsWith('R$ ')) {
-            money = money.substring(3); 
+        if(money.length < 10) {
+            if (typeof money === 'string' && money.startsWith('R$ ')) {
+                money = money.substring(3); 
+            }
+    
+            setMoney(money);
         }
-        setMoney(money);
     }
 
     const handleSendService = (e) => {
@@ -228,11 +222,11 @@ export function ScreenLunch ({children}) {
     const handleCreateOrder = async () => {
         try {
             const  orderData = {
-                price_total: priceTotal,
-                price: price,
+                price_total: Number(priceTotal),
+                price: Number(price),
                 type_payment: paymentType.toUpperCase(),
-                quantity_kg: quantity,
-                id_service: service
+                quantity_kg: Number(quantity),
+                id_service: Number(service)
             }
 
             if(student && student.registration) {

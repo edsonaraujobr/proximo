@@ -1,5 +1,5 @@
 
-export function Item({countItem, handleRemoveItem, handleAddItem, nameItem, colorButton, hoverColorButton}) {
+export function Item({countItem, handleRemoveItem, handleAddItem, nameItem, colorButton, hoverColorButton, disabled}) {
     return (
         <div className='relative'>
             { countItem !== 0 ?  (
@@ -14,6 +14,7 @@ export function Item({countItem, handleRemoveItem, handleAddItem, nameItem, colo
                 </div>
             ) : null}   
             <button 
+                disabled={disabled}
                 className={`${colorButton} w-24 rounded-md hover:${hoverColorButton}`}
                 type="button"
                 onClick={handleAddItem}
