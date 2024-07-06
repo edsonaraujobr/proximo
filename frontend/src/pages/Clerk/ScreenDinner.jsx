@@ -412,21 +412,58 @@ export function ScreenDinner ({children}) {
                         if(counterBread < 2)
                             handleAddItem(counterBread, setCounterBread, "counterBread")();
                         break;
-                    case 37:
-                        if((counterPotato + counterCassava + counterUndefined) < 1) 
+                    case 48:
+                        if((counterPotato + counterCassava + counterUndefined) < 1 && !(event.shiftKey)) 
                             handleAddItem(counterCassava, setCounterCassava, "counterCassava")();
                         break;
-                    case 40:
+                    case 189:
                         if((counterPotato + counterCassava + counterUndefined) < 1) 
                             handleAddItem(counterPotato, setCounterPotato, "counterPotato")();
                         break;
-                    case 39:
-                        if((counterPotato + counterCassava + counterUndefined) < 1) 
+                    case 187:
+                        if((counterPotato + counterCassava + counterUndefined) < 1 && !(event.shiftKey)) 
                             handleAddItem(counterUndefined, setCounterUndefined, "counterUndefined")();
                         break;
-
-
                 }
+                if(event.shiftKey) {
+                    if ((event.shiftKey && event.keyCode === 36) && counterCoffee > 0) {
+                        handleRemoveItem(counterCoffee, setCounterCoffee, "counterCoffee")();
+                    }
+                    if((event.shiftKey && event.keyCode === 38) && counterJuice > 0) {
+                        handleRemoveItem(counterJuice, setCounterJuice, "counterJuice")();
+                    } 
+                    if((event.shiftKey && event.keyCode === 33) && counterPap > 0) {
+                        handleRemoveItem(counterPap, setCounterPap, "counterPap")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 37) && counterEgg > 0) {
+                        handleRemoveItem(counterEgg, setCounterEgg, "counterEgg")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 12) && counterSausage > 0) {
+                        handleRemoveItem(counterSausage, setCounterSausage, "counterSausage")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 39) && counterChesse > 0) {
+                        handleRemoveItem(counterChesse, setCounterChesse, "counterChesse")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 35) && counterHam > 0) {
+                        handleRemoveItem(counterHam, setCounterHam, "counterHam")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 40) && counterMeat > 0) {
+                        handleRemoveItem(counterMeat, setCounterMeat, "counterMeat")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 34) && counterBread > 0) {
+                        handleRemoveItem(counterBread, setCounterBread, "counterBread")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 48) && counterCassava > 0) {
+                        handleRemoveItem(counterCassava, setCounterCassava, "counterCassava")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 189) && counterPotato > 0) {
+                        handleRemoveItem(counterPotato, setCounterPotato, "counterPotato")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 187) && counterUndefined > 0) {
+                        handleRemoveItem(counterUndefined, setCounterUndefined, "counterUndefined")();
+                    } 
+                }
+
             }
 
         };
