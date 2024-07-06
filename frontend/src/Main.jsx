@@ -6,15 +6,18 @@ import MainRoutes from './routes.jsx';
 import { ClerkProvider } from './contexts/ClerkContext.jsx'; 
 import { AdministratorProvider } from './contexts/AdministratorContext.jsx'; 
 import { StudentProvider } from './contexts/StudentContext.jsx';
+import { ServiceProvider } from './contexts/ServiceContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <ClerkProvider>
-      <AdministratorProvider>
-        <StudentProvider>
-          <MainRoutes/>
-        </StudentProvider>
-      </AdministratorProvider>
-    </ClerkProvider>
+    <ServiceProvider>
+      <ClerkProvider>
+        <AdministratorProvider>
+          <StudentProvider>
+            <MainRoutes/>
+          </StudentProvider>
+        </AdministratorProvider>
+      </ClerkProvider>
+    </ServiceProvider>
   </BrowserRouter>
 )

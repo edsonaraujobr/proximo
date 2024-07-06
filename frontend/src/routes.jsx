@@ -6,6 +6,7 @@ import { Home } from "./pages/Home/Home";
 import { HomeClerk } from "./pages/Clerk/HomeClerk";
 import { HomeAdministrator } from "./pages/Administrator/HomeAdministrator";
 import { ScreenLunch } from "./pages/Clerk/ScreenLunch";
+import { SettingsClerk } from "./pages/Clerk/SettingsClerk";
 
 function MainRoutes() {
     return (
@@ -62,6 +63,7 @@ function MainRoutes() {
                 </HomeClerk>
             }
             />
+            <Route path="/configuracoes" element={<SettingsClerk/>} />
         </Routes>
     )
 }

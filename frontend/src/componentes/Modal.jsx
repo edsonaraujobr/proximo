@@ -27,12 +27,15 @@
     alignItems: 'center', 
     justifyContent: 'flex-start'
   }
-  export default function Modal({isOpen,children}) {
+
+  export default function Modal({isOpen,children, customStyles = {} }) {
+
+    const combinedModalStyle = { ...modal_STYLE, ...customStyles };
 
       if(isOpen){
         return (
         <div style={background_STYLE}>
-          <div style={modal_STYLE}>{children}</div>
+          <div style={combinedModalStyle}>{children}</div>
         </div>
         )
       }

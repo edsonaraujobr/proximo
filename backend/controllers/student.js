@@ -75,7 +75,6 @@ export const registerStudents = (req,res) => {
 
             db.query(queryInsert, queryParams, (err, data) => {
                 if(err) {
-                    console.log("deu erro")
                     console.error('Erro ao inserir aluno no banco de dados:', err);
                     return res.status(500).json({ error: 'Erro ao inserir aluno no banco de dados' });
                 } 
@@ -87,4 +86,8 @@ export const registerStudents = (req,res) => {
             return res.status(500).json({ error: 'Já existe esse usuário cadastrado' });
         }
     });
+}
+
+export const getAllStudents = () => {
+    
 }
