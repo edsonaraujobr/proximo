@@ -56,15 +56,12 @@ export function HomeAdministrator ({children}) {
 
             if(response.ok) {
                 alert("estudante cadastrado");
-                console.log("Estudante cadastrado");
                 cleanFieldsStudent();
             } else {
                 alert("estudante não cadastrado")
-                console.log("Estudante não cadastrado");
             }
         } catch(error) {
-            console.log("erro ao conectar com banco de dados", error)
-
+            alert("erro ao conectar com banco de dados", error)
         }
     }
 
@@ -88,14 +85,12 @@ export function HomeAdministrator ({children}) {
             if(response.ok) {
                 const result = await response.json();
                 alert("Atendente cadastrado")
-                console.log("Atendente cadastrado", result);
                 cleanFieldsClerk()
             } else {
                 alert("Atendente não cadastrado")
-                console.log("Atendente não cadastrado");
             }
         } catch(error) {
-            console.log("erro ao conectar banco de dados", error);
+            alert("erro ao conectar banco de dados", error);
         }
     }
 

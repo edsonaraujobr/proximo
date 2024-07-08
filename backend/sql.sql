@@ -73,3 +73,25 @@ SELECT * FROM orders;
 
 SELECT * FROM service;
 
+SELECT price_total, price_paid, type_payment, registration_student, quantity_kg, quantity_items 
+FROM orders WHERE id_service = 47;
+
+SELECT date_service, type_service, clerk.full_name
+FROM service
+INNER JOIN clerk ON id_clerk = clerk.id AND service.id = 47;
+
+SELECT COUNT(*) AS total_rows
+FROM (
+    SELECT * FROM orders WHERE id_service = 47
+) AS result_set;
+
+
+
+       SELECT service.id,date_service, type_service,COUNT(service.id) AS total_services 
+        FROM service
+        INNER JOIN orders ON id_service = service.id 
+        WHERE service.id_clerk = 1
+        GROUP BY service.id      
+        ORDER BY date_service 
+        DESC LIMIT 2, 10; 
+

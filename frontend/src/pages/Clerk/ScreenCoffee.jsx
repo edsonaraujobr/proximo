@@ -363,6 +363,133 @@ export function ScreenCoffee ({children}) {
         }
     }
 
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if((userType === 'externo' || student) && paymentType !== 'dinheiro') {
+                switch(event.keyCode) {
+                    case 55:
+                    case 103:
+                        if(((counterJuice + counterPap + counterCoffee) < 2 )) 
+                            handleAddItem(counterCoffee, setCounterCoffee, "counterCoffee")();
+                        break;
+                    case 56:
+                    case 104:
+                        if(((counterJuice + counterPap + counterCoffee) < 2 )) 
+                            handleAddItem(counterJuice, setCounterJuice, "counterJuice")();
+                        break;
+                    case 57:
+                    case 105:
+                        if(((counterJuice + counterPap + counterCoffee) < 2 )) 
+                            handleAddItem(counterPap, setCounterPap, "counterPap")();
+                        break;
+                    case 49:
+                    case 97:
+                        if ((counterChesse + counterEgg + counterHam + counterSausage + counterMeat) < 1)
+                            handleAddItem(counterHam, setCounterHam, "counterHam")();
+                        break;
+                    case 50:
+                    case 98:
+                        if ((counterChesse + counterEgg + counterHam + counterSausage + counterMeat) < 1)
+                            handleAddItem(counterMeat, setCounterMeat, "counterMeat")();
+                        break;
+                    case 52:
+                    case 100:
+                        if ((counterChesse + counterEgg + counterHam + counterSausage + counterMeat) < 1)
+                            handleAddItem(counterEgg, setCounterEgg, "counterEgg")();
+                        break;
+                    case 53:
+                    case 101:
+                        if ((counterChesse + counterEgg + counterHam + counterSausage + counterMeat) < 1)
+                            handleAddItem(counterSausage, setCounterSausage, "counterSausage")();
+                        break;
+                    case 54:
+                    case 102:
+                        if ((counterChesse + counterEgg + counterHam + counterSausage + counterMeat) < 1)
+                            handleAddItem(counterChesse, setCounterChesse, "counterChesse")();
+                        break;
+                    case 51:
+                    case 99:
+                        if(counterBread < 2)
+                            handleAddItem(counterBread, setCounterBread, "counterBread")();
+                        break;
+                    case 48:
+                        if((counterPotato + counterCassava + counterUndefined) < 1 && !(event.shiftKey)) 
+                            handleAddItem(counterCassava, setCounterCassava, "counterCassava")();
+                        break;
+                    case 189:
+                        if((counterPotato + counterCassava + counterUndefined) < 1) 
+                            handleAddItem(counterPotato, setCounterPotato, "counterPotato")();
+                        break;
+                    case 187:
+                        if((counterPotato + counterCassava + counterUndefined) < 1 && !(event.shiftKey)) 
+                            handleAddItem(counterUndefined, setCounterUndefined, "counterUndefined")();
+                        break;
+                }
+                if(event.shiftKey) {
+                    if ((event.shiftKey && event.keyCode === 36) && counterCoffee > 0) {
+                        handleRemoveItem(counterCoffee, setCounterCoffee, "counterCoffee")();
+                    }
+                    if((event.shiftKey && event.keyCode === 38) && counterJuice > 0) {
+                        handleRemoveItem(counterJuice, setCounterJuice, "counterJuice")();
+                    } 
+                    if((event.shiftKey && event.keyCode === 33) && counterPap > 0) {
+                        handleRemoveItem(counterPap, setCounterPap, "counterPap")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 37) && counterEgg > 0) {
+                        handleRemoveItem(counterEgg, setCounterEgg, "counterEgg")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 12) && counterSausage > 0) {
+                        handleRemoveItem(counterSausage, setCounterSausage, "counterSausage")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 39) && counterChesse > 0) {
+                        handleRemoveItem(counterChesse, setCounterChesse, "counterChesse")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 35) && counterHam > 0) {
+                        handleRemoveItem(counterHam, setCounterHam, "counterHam")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 40) && counterMeat > 0) {
+                        handleRemoveItem(counterMeat, setCounterMeat, "counterMeat")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 34) && counterBread > 0) {
+                        handleRemoveItem(counterBread, setCounterBread, "counterBread")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 48) && counterCassava > 0) {
+                        handleRemoveItem(counterCassava, setCounterCassava, "counterCassava")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 189) && counterPotato > 0) {
+                        handleRemoveItem(counterPotato, setCounterPotato, "counterPotato")();
+                    } 
+                    if ((event.shiftKey && event.keyCode === 187) && counterUndefined > 0) {
+                        handleRemoveItem(counterUndefined, setCounterUndefined, "counterUndefined")();
+                    } 
+                }
+
+            }
+
+        };
+    
+        document.addEventListener('keydown', handleKeyDown);
+    
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleAddItem, counterCoffee, setCounterCoffee, quantity, userType, student, priceTotal, addPriceMoney]);
+    
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.keyCode === 55 && event.shiftKey) { 
+                handleAddItem(counterCoffee, setCounterCoffee, "counterCoffee")();
+            }
+        };
+    
+        document.addEventListener('keydown', handleKeyDown);
+    
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleAddItem, counterCoffee, setCounterCoffee, quantity, userType, student, priceTotal, addPriceMoney]);
+    
+
     return ( 
         login ? children : (
         <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">

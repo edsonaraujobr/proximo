@@ -1,6 +1,5 @@
 
 export function Student({registration, name, course, typeAssistance, photo}) {
-    console.log(photo)
     return (
         <div className="flex gap-4">
             { photo && photo !== 'http://localhost:3030/uploads/null' ?

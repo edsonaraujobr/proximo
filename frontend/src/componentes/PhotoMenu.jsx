@@ -5,7 +5,6 @@ import './PhotoMenu.css';
 
 export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClickedSupport, onClickedAbout, onClickedExit }) {
     
-    console.log(linkPhoto)
     return (
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>

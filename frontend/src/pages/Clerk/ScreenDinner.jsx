@@ -365,7 +365,7 @@ export function ScreenDinner ({children}) {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if((userType === 'externo' || student) ) {
+            if((userType === 'externo' || student) && paymentType !== 'dinheiro') {
                 switch(event.keyCode) {
                     case 55:
                     case 103:
@@ -479,7 +479,6 @@ export function ScreenDinner ({children}) {
         const handleKeyDown = (event) => {
             if (event.keyCode === 55 && event.shiftKey) { 
                 handleAddItem(counterCoffee, setCounterCoffee, "counterCoffee")();
-                console.log("foi")
             }
         };
     
