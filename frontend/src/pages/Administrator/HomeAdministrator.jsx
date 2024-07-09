@@ -88,6 +88,7 @@ export function HomeAdministrator ({children}) {
             if (response.ok) {
                 const data = await response.json();
                 setListClerk(data.results);
+                console.log(listClerk)
                 setTotalPagesClerk(data.totalPages)
             } else {
                 console.log("Erro ao buscar alunos");
@@ -114,18 +115,23 @@ export function HomeAdministrator ({children}) {
     const handleCreatedStudent = async (e) => {
         e.preventDefault();
         try {
+            console.log("aqui")
             const formData = new FormData();
             formData.append('registration', registration);
             formData.append('typeAssistance', typeAssistance.toUpperCase());
             formData.append('name', name.toUpperCase());
             formData.append('course', course.toUpperCase());
-            if(noticeNumber.trim() !== '') 
+            console.log("aqui")          
+            if(noticeNumber && noticeNumber.trim() !== '') 
                 formData.append('noticeNumber', noticeNumber.toUpperCase());
-            if(dateStartedAssistance.trim() !== '') 
+            if(dateStartedAssistance && dateStartedAssistance.trim() !== '') 
                 formData.append('dateStartedAssistance', dateStartedAssistance);
             if(photo)
-                formData.append('photo', photo);  
-            formData.append('idAdministrator', administrator.id)            
+                formData.append('photo', photo);
+            console.log("aqui")    
+            console.log(administrator.id)      
+            formData.append('idAdministrator', administrator.id)  
+            console.log("aqui")          
             const response = await fetch('http://localhost:3030/registrar-aluno', {
                 method: 'POST',
                 body:formData,

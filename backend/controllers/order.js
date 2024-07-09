@@ -33,7 +33,6 @@ export const createOrder = (req,res) => {
 
     db.query(queryInsert, queryParams, (err, data) => {
         if (err) {
-            console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao criar comanda' });
         }
 

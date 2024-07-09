@@ -97,7 +97,7 @@ export const getAllClerks = (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
 
-    const query = "SELECT * FROM clerk ORDER BY full_name ASC LIMIT ?,? ";
+    const query = "SELECT id, full_name, email, shift FROM clerk ORDER BY full_name ASC LIMIT ?,? ";
     const totalRowsQuery = "SELECT COUNT(*) AS total_rows FROM clerk";
 
     db.query(totalRowsQuery, (err, totalRowsData) => {

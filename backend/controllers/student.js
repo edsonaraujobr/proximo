@@ -93,7 +93,7 @@ export const getAllStudents = (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
 
-    const query = "SELECT * FROM student ORDER BY full_name ASC LIMIT ?,? ";
+    const query = "SELECT registration, type_assistance, full_name, course, notice_number, date_started_assistance FROM student ORDER BY full_name ASC LIMIT ?,? ";
     const totalRowsQuery = "SELECT COUNT(*) AS total_rows FROM student";
 
     db.query(totalRowsQuery, (err, totalRowsData) => {

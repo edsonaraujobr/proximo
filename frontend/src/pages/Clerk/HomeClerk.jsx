@@ -209,21 +209,21 @@ export function HomeClerk({children}) {
 
                     <div className='flex'>
                         <div className='flex gap-2 px-10 justify-end w-full'>
-                            {data ? (
+                            {/* {data ? (
                                 <input 
                                     type="search" 
                                     className='bg-slate-900 rounded-md p-1 font-light ' 
                                     placeholder='Pesquise atendimentos...' 
                                 />
-                            ): null }
+                            ): null } */}
                             <Dialog.Trigger>
-                                <Button
-                                    color='bg-green-700'
-                                    text='Novo Atendimento'
-                                    hover='bg-green-900'
-                                    icon={<PlusCircledIcon/>}
-                                    
-                                />
+                                <button 
+                                    type="button"
+                                    className='bg-green-700 hover:bg-green-900 rounded-md flex justify-center items-center gap-1 p-1 text-sm'
+                                >
+                                        <PlusCircledIcon/>
+                                        Novo atendimento
+                                </button>
                             </Dialog.Trigger>
                             <Dialog.Portal>
                                 <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
