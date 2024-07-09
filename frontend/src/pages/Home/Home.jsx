@@ -5,7 +5,7 @@ export function Home() {
     
     return (
         <div className="min-h-screen bg-slate-800 text-white">
-            <header className="fixed top-0 left-0 w-full  bg-gradient-to-r from-slate-950 to-slate-900 px-10 py-4 flex justify-between items-center z-10">
+            <header className="fixed top-0 left-0 w-full  bg-gradient-to-r from-slate-700 to-slate-800 px-10 py-4 flex justify-between items-center z-10">
                 <div className="flex gap-4 items-center">
                     <img src={logo} className="logo" alt="Logo" />
                 </div>
@@ -19,7 +19,7 @@ export function Home() {
             </header>
             <main className="pt-24">
                 {/* Hero Section */}
-                <section id="home" className="px-10 py-24 bg-gradient-to-r from-slate-950 to-slate-900 flex justify-center items-center gap-20 ">
+                <section id="home" className="px-10 py-24 bg-gradient-to-r from-slate-700 to-slate-800 flex justify-center items-center gap-20 ">
                     <div className="flex flex-col gap-4 ">
                         <h1 className="text-5xl font-bold text-lime-500">Bem-vindo ao Próximo</h1>
                         <p className="text-lg font-light ">Esta é uma aplicação completa para realizar a <strong className="font-bold">administração das vendas </strong><br /> do restaurante universitário de forma <strong className="font-bold">simplificada e completamente digital.</strong></p>
@@ -34,21 +34,21 @@ export function Home() {
                 <section id="features" className="px-10 py-10 bg-slate-800">
                     <h2 className="text-4xl font-bold mb-8 text-center text-lime-500">Funcionalidades</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="hover:scale-110 duration-300 transition ease-in-out delay-150 bg-gradient-to-t from-slate-950 to-slate-900 p-6 rounded text-center">
+                        <div className="hover:scale-110 duration-300 transition ease-in-out delay-150 bg-gradient-to-t from-slate-700 to-slate-800 p-6 rounded text-center">
                             <div className="h-48 bg-slate-700 mb-4 flex justify-center items-center overflow-hidden">
                                 <img src="../../../public/interface.jpeg" alt="atendimento" />
                             </div>
                             <h3 className="text-2xl font-bold mb-2">Gestão de Pedidos</h3>
                             <p className="text-lg text-center">Na Próximo há agilidade para realização do pedido.</p>
                         </div>
-                        <div className="hover:scale-110 duration-300 transition ease-in-out delay-150 bg-gradient-to-t from-slate-950 to-slate-900 p-6 rounded text-center">
+                        <div className="hover:scale-110 duration-300 transition ease-in-out delay-150 bg-gradient-to-t from-slate-700 to-slate-800 p-6 rounded text-center">
                             <div className="h-48 bg-slate-700 mb-4 flex justify-center items-center overflow-hidden">
                                 <img src="../../../public/financeiro.jpeg" alt="controle financeiro" className="size-[410px]"/>
                             </div>
                             <h3 className="text-2xl font-bold mb-2">Controle financeiro</h3>
                             <p className="text-lg text-center">Na Próximo as formas de pagamento ficam salvas para organização da empresa.</p>
                         </div>
-                        <div className="hover:scale-110 duration-300 transition ease-in-out delay-150 bg-gradient-to-t from-slate-950 to-slate-900 p-6 rounded text-center">
+                        <div className="hover:scale-110 duration-300 transition ease-in-out delay-150 bg-gradient-to-t from-slate-700 to-slate-800 p-6 rounded text-center">
                             <div className="h-48 bg-slate-700 mb-4 flex justify-center items-center overflow-hidden">
                                  <img src="../../../public/relatorio.jpeg" alt="relatorio" className="scale-100"/>
                             </div>
@@ -59,7 +59,7 @@ export function Home() {
                 </section>
 
                 {/* Benefits Section */}
-                <section id="benefits" className="px-10 py-10 bg-gradient-to-r from-slate-950 to-slate-900">
+                <section id="benefits" className="px-10 py-10 bg-gradient-to-r from-slate-700 to-slate-800">
                     <h2 className="text-4xl font-bold mb-8 text-center text-lime-500">Benefícios</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="hover:scale-110 duration-300 transition ease-in-out delay-150 bg-transparent border border-white text-white p-6 rounded text-center">
@@ -102,7 +102,7 @@ export function Home() {
                 </section>
 
                 {/* Contact Section */}
-                <section id="contact" className="px-10 py-10 bg-gradient-to-r from-slate-950 to-slate-900 text-center">
+                <section id="contact" className="px-10 py-10 bg-gradient-to-r from-slate-700 to-slate-800 text-center">
                     <h2 className="text-4xl font-bold mb-8 text-lime-500">Contato</h2>
                     <div className="flex flex-col md:flex-row items-center justify-center gap-8">
                         <form className="w-full md:w-1/2 p-6 rounded flex flex-col bg-transparent  ">
@@ -128,7 +128,7 @@ export function Home() {
                     </div>
                 </section>
             </main>
-            <footer className="w-full bg-gradient-to-r from-slate-950 to-slate-900 py-4 text-center mt-24">
+            <footer className="w-full bg-gradient-to-r from-slate-700 to-slate-800 py-4 text-center mt-24">
                 <p className="text-sm text-center text-white">&copy; 2024 - Próximo. Todos os direitos reservados.</p>
             </footer>
         </div>

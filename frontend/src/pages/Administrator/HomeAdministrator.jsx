@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { CheckIcon, UploadIcon, ChevronLeftIcon, ChevronRightIcon, Cross2Icon, GearIcon, LockClosedIcon } from '@radix-ui/react-icons';
 import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
 import * as Dialog from '@radix-ui/react-dialog'; 
+import moment from 'moment';
 
 export function HomeAdministrator ({children}) {
     const [ registration, setRegistration ] = useState('');
@@ -661,7 +662,7 @@ export function HomeAdministrator ({children}) {
                                                             <td className="border px-4 py-2 text-center">{student.course}</td>
                                                             <td className="border px-4 py-2 text-center">{student.type_assistance}</td>
                                                             { student.notice_number ? <td className="border px-4 py-2 text-center">{student.notice_number}</td> : <td className="border px-4 py-2 text-center">DESCONHECIDO</td> }
-                                                            { student.date_started_assistance ? <td className="border px-4 py-2 text-center">{student.date_started_assistance}</td> : <td className="border px-4 py-2 text-center">DESCONHECIDO</td> }
+                                                            { student.date_started_assistance ? <td className="border px-4 py-2 text-center">{moment(student.date_started_assistance).format("DD-MM-YYYY")}</td> : <td className="border px-4 py-2 text-center">DESCONHECIDO</td> }
                                                             <td className='border text-center'>
                                                                 <Dialog.Root>
                                                                     <Dialog.Trigger>
