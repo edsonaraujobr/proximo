@@ -1,8 +1,9 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import { Header } from '../../componentes/Header.jsx'
-import { useState, useContext, useRef } from 'react';
-import { CheckIcon, UploadIcon } from '@radix-ui/react-icons';
+import { useState, useContext, useRef, useEffect, useCallback } from 'react';
+import { CheckIcon, UploadIcon, ChevronLeftIcon, ChevronRightIcon, Cross2Icon, GearIcon } from '@radix-ui/react-icons';
 import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
+import * as Dialog from '@radix-ui/react-dialog'; 
 
 export function HomeAdministrator ({children}) {
     const [ registration, setRegistration ] = useState('');
@@ -11,13 +12,22 @@ export function HomeAdministrator ({children}) {
     const [ typeAssistance, setTypeAssistance ] = useState('');
     const [ noticeNumber, setNoticeNumber ] = useState('');
     const [ dateStartedAssistance, setDateStartedAssistance ] = useState('');
-    const [photo, setPhoto] = useState(null);
+    const [ photo, setPhoto ] = useState(null);
     const [ nameClerk, setNameClerk ] = useState('');
     const [ emailClerk, setEmailClerk ] = useState('');
     const [ passwordClerk, setPasswordClerk ] = useState('');
     const [ shiftClerk, setShiftClerk ] = useState('');
-    const [photoClerk, setPhotoClerk] = useState(null);
+    const [ photoClerk, setPhotoClerk ] = useState(null);
+    const [ idClerk, setIdClerk ] = useState(null) 
+    const [listStudent, setListStudent] = useState([]);
+    const [currentPageStudent, setCurrentPageStudent] = useState(1);
+    const [totalPagesStudent, setTotalPagesStudent] = useState(0);
 
+    const [listClerk, setListClerk] = useState([]);
+    const [currentPageClerk, setCurrentPageClerk] = useState(1);
+    const [totalPagesClerk, setTotalPagesClerk] = useState(0);
+    const [changesMade, setChangesMade] = useState(false);
+    
     const { administrator, login: loginAdministrator, logout: logoutAdministrator } = useContext(AdministratorContext);
 
     const inputRef = useRef(null)
@@ -26,11 +36,78 @@ export function HomeAdministrator ({children}) {
     const [activeTab, setActiveTab] = useState(itens[0]);
     const login = false;
 
+    const nextPageStudent = () => {
+        if (currentPageStudent < totalPagesStudent) {
+            setCurrentPageStudent(currentPageStudent + 1);
+            fetchStudent(currentPageStudent + 1);
+        }
+    };
+
+    const prevPageStudent = () => {
+        if (currentPageStudent > 1) {
+            setCurrentPageStudent(currentPageStudent - 1);
+            fetchStudent(currentPageStudent + 1);
+        }
+    };
+
+    const fetchStudent = useCallback (async (page) => {
+        try {
+            console.log("chamou aqui")
+            const response = await fetch(`http://localhost:3030/listar-alunos?page=${page}&limit=10`);
+            if (response.ok) {
+                const data = await response.json();
+                setListStudent(data.results);
+                setTotalPagesStudent(data.totalPages)
+            } else {
+                console.log("Erro ao buscar alunos");
+            }
+        } catch (error) {
+            alert("Erro ao conectar com o servidor", error);
+        }
+    }, []);
+
+    const nextPageClerk = () => {
+        if (currentPageClerk < totalPagesClerk) {
+            setCurrentPageClerk(currentPageClerk + 1);
+            fetchClerk(currentPageClerk + 1);
+        }
+    };
+
+    const prevPageClerk = () => {
+        if (currentPageClerk > 1) {
+            setCurrentPageClerk(currentPageClerk - 1);
+            fetchClerk(currentPageClerk - 1);
+        }
+    };
+
+    const fetchClerk = useCallback(async (page) =>{
+        try {
+            console.log("chamou fetchClerk")
+            const response = await fetch(`http://localhost:3030/listar-atendentes?page=${page}&limit=10`);
+            if (response.ok) {
+                const data = await response.json();
+                setListClerk(data.results);
+                setTotalPagesClerk(data.totalPages)
+            } else {
+                console.log("Erro ao buscar alunos");
+            }
+        } catch (error) {
+            console.log("Erro ao conectar com o servidor", error);
+        }
+    }, []);
+
+    const handleClickClerk = () => {
+        fetchClerk(currentPageClerk);
+    }
+
+    const handleClickStudent = () => {
+        fetchStudent(currentPageStudent);
+    }
 
     const handleTabChange = (value) => {
       setActiveTab(value);
       cleanFieldsStudent();
-      cleanFieldsStudent();
+      cleanFieldsClerk();
     };
 
     const handleCreatedStudent = async (e) => {
@@ -48,7 +125,6 @@ export function HomeAdministrator ({children}) {
             if(photo)
                 formData.append('photo', photo);  
             formData.append('idAdministrator', administrator.id)            
-
             const response = await fetch('http://localhost:3030/registrar-aluno', {
                 method: 'POST',
                 body:formData,
@@ -69,11 +145,11 @@ export function HomeAdministrator ({children}) {
         e.preventDefault();
         try {
             const formData = new FormData();
-            formData.append('nameClerk', nameClerk);
+            formData.append('nameClerk', nameClerk.toUpperCase());
             formData.append('emailClerk', emailClerk);
             formData.append('passwordClerk', passwordClerk);
             if(shiftClerk.trim() !== '')
-                formData.append('shiftClerk', shiftClerk);
+                formData.append('shiftClerk', shiftClerk.toUpperCase());
             if(photoClerk)
                 formData.append('photoClerk', photoClerk);  
             formData.append('idAdministrator', administrator.id)            
@@ -109,11 +185,13 @@ export function HomeAdministrator ({children}) {
     const handleNameClerkChange = (e) => {
         const value = e.target.value;
         setNameClerk(value);
+        setChangesMade(true);
     };
 
     const handleEmailClerkChange = (e) => {
         const value = e.target.value;
         setEmailClerk(value);
+        setChangesMade(true);
     };
 
     const handlePasswordClerkChange = (e) => {
@@ -124,6 +202,7 @@ export function HomeAdministrator ({children}) {
     const handleShift = (e) => {
         const value = e.target.value;
         setShiftClerk(value);
+        setChangesMade(true);
     }
 
     const handleCourseChange = (e) => {
@@ -182,6 +261,75 @@ export function HomeAdministrator ({children}) {
         inputRefClerk.current.click();
     }
 
+    const handleEditClerk = (name, email, shift, id) => {
+        setNameClerk(name);
+        setEmailClerk(email);
+        setShiftClerk(shift);
+        setIdClerk(id);
+        setChangesMade(false)
+    }
+
+    const handleSettingsClerk = async (e) => {
+        e.preventDefault();
+        try {
+            const data = {
+                id: idClerk, 
+                nameClerk: nameClerk.toUpperCase(), 
+                emailClerk: emailClerk 
+            };
+
+            if(shiftClerk && shiftClerk.trim() !== '')
+                data.shiftClerk = shiftClerk.toUpperCase();
+
+            const response = await fetch('http://localhost:3030/atualizar-atendente', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+
+            if(response.ok) {
+                alert("Atendente atualizado!")
+                window.location.reload();
+            } else {
+                alert("Atendente não atualizado")
+            }
+        } catch(error) {
+            alert("Erro ao conectar banco de dados!");
+        }
+    }
+
+    const handleRemoveClerkDatas = (id) => {
+        setIdClerk(id);
+    }
+
+    const handleRemoveClerk = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:3030/remover-atendente', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({id: idClerk})
+            })
+
+            if(response.ok) {
+                alert("Atendente REMOVIDO!")
+                window.location.reload();
+            } else {
+                alert("Atendente não removido")
+            }
+        } catch(error) {
+            alert("Erro ao conectar banco de dados!");
+        }
+
+    }
+
+    const oi = () => {
+        console.log("oi")
+    }
     return (
         login ? children : ( 
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4 fixed'>
@@ -193,15 +341,16 @@ export function HomeAdministrator ({children}) {
                             <Header/>
                             <Tabs.List className="flex px-10 bg-gray-900 justify-start items-center gap-1 rounded-t-md">
                                 {itens.map((item) => (
-                                <Tabs.Trigger
-                                    key={item}
-                                    value={item}
-                                    className={` text-white text-sm p-2 ${
-                                    activeTab === item? 'border-b-2 border-b-slate-400' : 'border-b-transparent'
-                                    }`}
-                                >
-                                {item}
-                                </Tabs.Trigger>
+                                    <Tabs.Trigger
+                                        onClick={item === "Visualizar Atendentes" ? handleClickClerk : item === "Visualizar Alunos" ? handleClickStudent : undefined}
+                                        key={item}
+                                        value={item}
+                                        className={` text-white text-sm p-2 ${
+                                        activeTab === item? 'border-b-2 border-b-slate-400' : 'border-b-transparent'
+                                        }`}
+                                    >
+                                    {item}
+                                    </Tabs.Trigger>
                                 ))}
                             </Tabs.List>
 
@@ -342,7 +491,7 @@ export function HomeAdministrator ({children}) {
                                             <div className="flex flex-col gap-1 w-full">
                                                 <label htmlFor="isenha" className="font-bold">Senha: *</label>
                                                 <input
-                                                    type="text"
+                                                    type="password"
                                                     name="senha"
                                                     id="isenha"
                                                     value={passwordClerk}
@@ -398,11 +547,212 @@ export function HomeAdministrator ({children}) {
 
                                 </form>
                             </Tabs.Content>
-                            <Tabs.Content value={itens[2]}>
-                                <span>Visualizar aluno</span>
+                            <Tabs.Content value={itens[2]} >
+                                { listStudent.length > 0 ? (
+                                    <div>
+                                        <div className="p-4 flex gap-28 items-center justify-center">
+                                            <table className="min-w-full">
+                                                <thead>
+                                                    <tr>
+                                                        <th className="py-2">Matrícula</th>
+                                                        <th className="py-2">Nome</th>
+                                                        <th className="py-2">Curso</th>
+                                                        <th className="py-2">Tipo de Assistência</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {listStudent.map((student) => (
+                                                        <tr key={student.registration}>
+                                                            <td className="border px-4 py-2 text-center">{student.registration}</td>
+                                                            <td className="border px-4 py-2 text-center">{student.full_name}</td>
+                                                            <td className="border px-4 py-2 text-center">{student.course}</td>
+                                                            <td className="border px-4 py-2 text-center">{student.type_assistance}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        { totalPagesStudent !== 1 ? (
+                                            <div className='flex justify-center gap-2  items-center'>
+                                                <div className='bg-slate-700 flex gap-0 rounded-full'>
+                                                    <button
+                                                        onClick={prevPageStudent}
+                                                        disabled={currentPageStudent === 1}
+                                                        className='cursor-pointer'
+                                                    >
+                                                        <ChevronLeftIcon className='size-6 hover:text-slate-950'/>
+                                                    </button>
+                                                    <span>{currentPageStudent} de {totalPagesStudent}</span>
+                                                    <button
+                                                        onClick={nextPageStudent}
+                                                        disabled={currentPageStudent === totalPagesStudent}
+                                                        className=' cursor-pointer'
+                                                    >
+                                                        <ChevronRightIcon className='size-6 hover:text-slate-950'/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : null }
+                                    </div>
+                                ) : (
+                                    <div className='w-full h-lvh flex justify-center items-center'>
+                                        <span className='text-xl'> Nenhum estudante cadastrado</span>
+                                    </div>
+                                )}
+                                
                             </Tabs.Content>
                             <Tabs.Content value={itens[3]}>
-                                <span>Visualizar atendente</span>
+                            { listClerk.length > 0 ? (
+                                    <div>
+                                        <div className="p-4 flex gap-28 items-center justify-center">
+                                            <table className="min-w-full">
+                                                <thead>
+                                                    <tr>
+                                                        <th className="py-2">Nome</th>
+                                                        <th className="py-2">Email</th>
+                                                        <th className="py-2">Turno</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className='text-center'>
+                                                    {listClerk.map((clerk) => (
+                                                        <tr key={clerk.id} className='hover:bg-slate-700'>
+                                                            <td className="border px-4 py-2 text-center">{clerk.full_name}</td>
+                                                            <td className="border px-4 py-2 text-center">{clerk.email}</td>
+                                                            { clerk.shift ? (
+                                                                <td className="border px-4 py-2 text-center">{clerk.shift}</td>
+                                                            ) : (
+                                                                <td className="border px-4 py-2 text-center">DESCONHECIDO</td>
+                                                            )}
+                                                            <td className='border text-center'>
+                                                                <Dialog.Root>
+                                                                    <Dialog.Trigger>
+                                                                        <button type="button" className='px-4 py-2 text-center hover:text-slate-950' onClick={() => handleEditClerk(clerk.full_name, clerk.email, clerk.shift, clerk.id)}>
+                                                                            <GearIcon/>
+                                                                        </button>
+                                                                    </Dialog.Trigger>
+                                                                    <Dialog.Portal>
+                                                                        <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
+                                                                        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[25vw] md:h-[50vh] bg-slate-700 md:rounded-md flex flex-col outline-none text-white justify-center items-center'>
+                                                                            <Dialog.Close className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
+                                                                                <Cross2Icon/>
+                                                                            </Dialog.Close>
+                                                                            <form onSubmit={handleSettingsClerk} className='flex flex-col gap-4 w-full h-full justify-center items-center p-6'>
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <label htmlFor="inome-atendente" className="font-bold">Nome Completo: *</label>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        name="nome-atendente"
+                                                                                        id="inome-atendente"
+                                                                                        value={nameClerk}
+                                                                                        onChange={handleNameClerkChange}
+                                                                                        required
+                                                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                                                    />
+                                                                                </div>   
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <label htmlFor="iemail" className="font-bold">Email: *</label>
+                                                                                    <input
+                                                                                        type="email"
+                                                                                        name="email"
+                                                                                        id="iemail"
+                                                                                        value={emailClerk}
+                                                                                        onChange={handleEmailClerkChange}
+                                                                                        required
+                                                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                                                    />
+                                                                                </div> 
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <div className='flex gap-4 flex-col'>
+                                                                                    <label htmlFor="imatutino" className="font-bold">Turno: </label>
+                                                                                        <div className='flex gap-3'>
+                                                                                            <div className='flex gap-2'>
+                                                                                                <input type="radio" name="turno" id="imatutino" value="MATUTINO" onChange={handleShift} checked={shiftClerk === 'MATUTINO'} />
+                                                                                                <label htmlFor="imatutino">Matutino</label>
+                                                                                            </div>
+                                                                                            <div className='flex gap-2'>
+                                                                                                <input type="radio" name="turno" id="ivespertino" value="VESPERTINO" onChange={handleShift}  checked={shiftClerk === 'VESPERTINO'}/>
+                                                                                                <label htmlFor="ivespertino">Vespertino</label>
+                                                                                            </div>
+                                                                                            <div className='flex gap-2'>
+                                                                                                <input type="radio" name="turno" id="inoturno" value="NOTURNO" onChange={handleShift} checked={shiftClerk === 'NOTURNO'}/>
+                                                                                                <label htmlFor="inoturno">Noturno</label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                
+                                                                                <button 
+                                                                                    type="submit" 
+                                                                                    className={`w-48 ${changesMade ? 'bg-green-600 hover:bg-green-700' : 'bg-slate-800'}  gap-2 flex items-center justify-center py-1 rounded-md `}
+                                                                                    disabled={!changesMade}
+                                                                                >
+                                                                                    
+                                                                                    <CheckIcon/>
+                                                                                    Salvar alterações
+                                                                                </button>                                                 
+                                                                            </form>
+                                                                        </Dialog.Content>
+                                                                    </Dialog.Portal>
+                                                                </Dialog.Root>
+                                                                <Dialog.Root>
+                                                                    <Dialog.Trigger>
+                                                                        <button type="button" className='px-4 py-2 text-center hover:text-red-800' onClick={() => handleRemoveClerkDatas(clerk.id)}>
+                                                                            <Cross2Icon/>
+                                                                        </button>
+                                                                    </Dialog.Trigger>
+                                                                    <Dialog.Portal>
+                                                                    <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
+                                                                        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[15vw] md:h-[35vh] bg-slate-700 md:rounded-md flex flex-col outline-none'>
+                                                                            <Dialog.Close className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
+                                                                                <Cross2Icon/>
+                                                                            </Dialog.Close>
+                                                                            <form onSubmit={handleRemoveClerk} className='flex flex-col gap-4 p-4 text-white justify-center items-center h-full'>
+                                                                                <span className='text-center'>Deseja remover o atendente {clerk.full_name}?</span>
+                                                                                <div className='flex gap-2 w-full justify-center items-end'>
+                                                                                    <Dialog.Close>
+                                                                                        <button type="button" className='bg-red-600 px-2 rounded-md hover:bg-red-700'>Cancelar</button>
+                                                                                    </Dialog.Close>
+                                                                                    <button type="submit" className='bg-green-600 px-2 rounded-md hover:bg-green-700 '>Confirmar</button>
+                                                                                </div>
+                                                                            </form>
+                                                                        </Dialog.Content>
+
+                                                                    </Dialog.Portal>
+                                                                </Dialog.Root>
+                                                            </td>
+
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {totalPagesClerk !== 1 ? (
+                                            <div className='flex justify-center gap-2  items-center'>
+                                                <div className='bg-slate-700 flex gap-0 rounded-full'>
+                                                    <button
+                                                        onClick={prevPageClerk}
+                                                        disabled={currentPageClerk === 1}
+                                                        className='cursor-pointer'
+                                                    >
+                                                        <ChevronLeftIcon className='size-6 hover:text-slate-950'/>
+                                                    </button>
+                                                    <span>{currentPageClerk} de {totalPagesClerk}</span>
+                                                    <button
+                                                        onClick={nextPageClerk}
+                                                        disabled={currentPageClerk === totalPagesClerk}
+                                                        className=' cursor-pointer'
+                                                    >
+                                                        <ChevronRightIcon className='size-6 hover:text-slate-950'/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                ) : (
+                                    <div className='w-full h-lvh flex justify-center items-center'>
+                                        <span className='text-xl'> Nenhum atendente cadastrado</span>
+                                    </div>
+                                )}
                             </Tabs.Content>
                         </Tabs.Root>
                 </div>  

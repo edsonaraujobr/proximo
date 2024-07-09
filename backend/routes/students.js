@@ -1,5 +1,5 @@
 import express from "express";
-import { getStudents, registerStudents, getAllStudents } from "../controllers/student.js";
+import { getStudent, registerStudents, getAllStudents } from "../controllers/student.js";
 import multer from "multer"
 import path from "path";
 
@@ -15,8 +15,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("/aluno", getStudents)
+router.post("/aluno", getStudent)
 router.post("/registrar-aluno", upload.single('photo'),registerStudents)
-router.get("lista-alunos", getAllStudents)
+router.get("/listar-alunos", getAllStudents)
 
 export default router

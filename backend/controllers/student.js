@@ -1,6 +1,6 @@
 import db from "../db.js";
 
-export const getStudents = (req, res) => {
+export const getStudent = (req, res) => {
     const { registration } = req.body;
 
     const query = "SELECT * FROM student WHERE registration = ?";
@@ -88,6 +88,39 @@ export const registerStudents = (req,res) => {
     });
 }
 
-export const getAllStudents = () => {
+export const getAllStudents = (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+
+    const query = "SELECT * FROM student ORDER BY full_name ASC LIMIT ?,? ";
+    const totalRowsQuery = "SELECT COUNT(*) AS total_rows FROM student";
+
+    db.query(totalRowsQuery, (err, totalRowsData) => {
+        if (err) {
+            return res.status(500).json({ error: "Erro ao buscar total de alunos" });
+        }
     
+        const totalRows = totalRowsData[0].total_rows;
+
+        db.query(query, [startIndex, limit], (err, data) => {
+            if(err) {
+                return res.status(500).json({error: "Erro ao buscar alunos"});
+            }
+    
+            if(data.length > 0) {
+                const totalPages = Math.ceil(totalRows / limit)
+    
+    
+                return res.status(200).json({
+                    totalPages,
+                    currentPage: page,
+                    results: data,
+                    next: page < totalPages ? page + 1 : null,
+                    previous: page > 1 ? page - 1 : null
+                });
+            }
+        })
+    })
+
 }

@@ -8,15 +8,15 @@ USE ru;
 
 CREATE TABLE administrator (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    full_name VARCHAR(50) NOT NULL,
-    email VARCHAR(250) NOT NULL,
+    full_name VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(250) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE clerk (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    full_name VARCHAR(50) NOT NULL,
-    email VARCHAR(250) NOT NULL,
+    full_name VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(250) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     shift VARCHAR(50),
     photo BLOB,
@@ -41,7 +41,7 @@ CREATE TABLE service (
     date_service TIMESTAMP NOT NULL,
     type_service VARCHAR(10) NOT NULL,
     id_clerk INTEGER,
-    FOREIGN KEY (id_clerk) REFERENCES clerk (id)
+    FOREIGN KEY (id_clerk) REFERENCES clerk (id) ON DELETE SET NULL
 );
 
 CREATE TABLE orders (
@@ -53,7 +53,7 @@ CREATE TABLE orders (
     quantity_kg DECIMAL(4,3),
     quantity_items INTEGER,
     id_service INTEGER NOT NULL,
-    FOREIGN KEY (registration_student) REFERENCES student (registration),
+    FOREIGN KEY (registration_student) REFERENCES student (registration) ON DELETE SET NULL,
     FOREIGN KEY (id_service) REFERENCES service (id)
 );
 
@@ -68,30 +68,4 @@ VALUES (
 SELECT * FROM clerk;
 
 SELECT * FROM student;
-
-SELECT * FROM orders;
-
-SELECT * FROM service;
-
-SELECT price_total, price_paid, type_payment, registration_student, quantity_kg, quantity_items 
-FROM orders WHERE id_service = 47;
-
-SELECT date_service, type_service, clerk.full_name
-FROM service
-INNER JOIN clerk ON id_clerk = clerk.id AND service.id = 47;
-
-SELECT COUNT(*) AS total_rows
-FROM (
-    SELECT * FROM orders WHERE id_service = 47
-) AS result_set;
-
-
-
-       SELECT service.id,date_service, type_service,COUNT(service.id) AS total_services 
-        FROM service
-        INNER JOIN orders ON id_service = service.id 
-        WHERE service.id_clerk = 1
-        GROUP BY service.id      
-        ORDER BY date_service 
-        DESC LIMIT 2, 10; 
 

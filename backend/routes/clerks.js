@@ -1,5 +1,5 @@
 import express from "express";
-import { getClerks, registerClerk } from "../controllers/clerk.js";
+import { getClerk, registerClerk, getAllClerks, updateClerk, removeClerk} from "../controllers/clerk.js";
 import multer from "multer"
 import path from "path";
 
@@ -16,7 +16,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("/atendente", getClerks)
+router.post("/atendente", getClerk)
 router.post("/registrar-atendente", upload.single('photoClerk'), registerClerk)
+router.get("/listar-atendentes", getAllClerks)
+router.put("/atualizar-atendente", updateClerk)
+router.delete("/remover-atendente", removeClerk)
 
 export default router

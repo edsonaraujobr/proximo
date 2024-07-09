@@ -18,6 +18,30 @@ export function HomeClerk({children}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
+    // const [searchService, setSearchService] = useState('');
+    // const itemsPerPage = 3;
+    // const [filterData, setFilterData] = useState([]);
+
+    // const handleSearchService = (event) => {
+    //     setSearchService(event.target.value)
+    // }
+
+    // const applyfilterData = () => {
+    //     if(searchService === '') {
+    //         setFilterData(data);
+    //     } else {
+    //         const filteredData = data.filter(item =>
+    //             item.type_service.toLowerCase().includes(searchService.toLowerCase())
+    //         );
+    
+    //         setFilterData(filteredData)
+               
+    //         const total = Math.ceil(filteredData.length / itemsPerPage);
+    //         setTotalPages(total);
+    //     }
+    // }
+
+
     const handlePrintReport = async (id) => {
         try {
             const response = await fetch('http://localhost:3030/getRelatorios', {
@@ -185,7 +209,13 @@ export function HomeClerk({children}) {
 
                     <div className='flex'>
                         <div className='flex gap-2 px-10 justify-end w-full'>
-                            <input type="search" className='bg-slate-900 rounded-md p-1 font-light ' placeholder='Pesquise atendimentos...' />
+                            {data ? (
+                                <input 
+                                    type="search" 
+                                    className='bg-slate-900 rounded-md p-1 font-light ' 
+                                    placeholder='Pesquise atendimentos...' 
+                                />
+                            ): null }
                             <Dialog.Trigger>
                                 <Button
                                     color='bg-green-700'
@@ -231,7 +261,7 @@ export function HomeClerk({children}) {
                             </Dialog.Portal>
                         </div>
                     </div>
-                    { totalPages !== 0 ? (
+                    { data.length > 0 ? (
                         <div className='flex flex-col gap-3 px-10'>
                             <h2 className='text-2xl'>Ultimos Atendimentos</h2>
 
