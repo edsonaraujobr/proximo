@@ -168,3 +168,11 @@
     transform: translateX(0);
   }
 }
+
+p{ text-align: justify;}
+
+section{
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+}

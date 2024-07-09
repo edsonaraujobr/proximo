@@ -48,8 +48,11 @@ CREATE TABLE orders (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     price_total DECIMAL(6,2) NOT NULL,
     price_paid DECIMAL(6,2) NOT NULL,
+    price_total DECIMAL(6,2) NOT NULL,
+    price_paid DECIMAL(6,2) NOT NULL,
     type_payment VARCHAR(10) NOT NULL,
     registration_student CHAR(9),
+    quantity_kg DECIMAL(4,3),
     quantity_kg DECIMAL(4,3),
     quantity_items INTEGER,
     id_service INTEGER NOT NULL,
@@ -68,4 +71,6 @@ VALUES (
 SELECT * FROM clerk;
 
 SELECT * FROM student;
+
+SELECT * FROM administrator;
 

@@ -125,7 +125,7 @@ export function HomeClerk({children}) {
 
         try {
             const date = new Date().toISOString();
-            const response = await fetch("http://localhost:3030/atendimento", {
+            const response = await fetch("http://localhost:5173/atendimento", {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json',
@@ -158,7 +158,7 @@ export function HomeClerk({children}) {
     } 
 
     const handleClickSettings = () => {
-        navigate("/configuracoes")
+        navigate("/atendente/configuracoes")
     }
 
     useEffect(() => {
@@ -196,6 +196,10 @@ export function HomeClerk({children}) {
             setCurrentPage(currentPage - 1);
         }
     };
+
+    const handleClickExit = () => {
+        navigate("/")
+    }
     
     return (
         login ? children : ( 
@@ -205,6 +209,7 @@ export function HomeClerk({children}) {
                         name={clerk.name}
                         linkPhoto={clerk.photo}
                         onClickedSettings={handleClickSettings}
+                        onClickedExit={handleClickExit}
                     />
 
                     <div className='flex'>

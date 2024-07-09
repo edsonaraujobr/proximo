@@ -6,7 +6,6 @@ import studentRoutes from "./routes/students.js";
 import servicesRoutes from "./routes/services.js";
 import servicesOrders from "./routes/orders.js";
 
-
 const app = express();
 
 app.use(express.json());
@@ -21,6 +20,6 @@ app.use("/", servicesOrders);
 
 app.use('/uploads', express.static('uploads'));
 
-app.listen('3030',() => {
-    console.log("Running server port 3030");
-})
+app.listen('3030', () => {
+  console.log(`Server is running on port 3030`);
+});

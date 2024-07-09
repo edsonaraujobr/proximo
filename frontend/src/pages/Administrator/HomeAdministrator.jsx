@@ -1,6 +1,7 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import { Header } from '../../componentes/Header.jsx'
 import { useState, useContext, useRef, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckIcon, UploadIcon, ChevronLeftIcon, ChevronRightIcon, Cross2Icon, GearIcon, LockClosedIcon } from '@radix-ui/react-icons';
 import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
 import * as Dialog from '@radix-ui/react-dialog'; 
@@ -35,6 +36,7 @@ export function HomeAdministrator ({children}) {
     const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes"]
     const [activeTab, setActiveTab] = useState(itens[0]);
     const login = false;
+    const navigate = useNavigate()
 
     const nextPageStudent = () => {
         if (currentPageStudent < totalPagesStudent) {
@@ -155,11 +157,13 @@ export function HomeAdministrator ({children}) {
             formData.append('nameClerk', nameClerk.toUpperCase());
             formData.append('emailClerk', emailClerk);
             formData.append('passwordClerk', passwordClerk);
-            if(shiftClerk.trim() !== '')
+            if(shiftClerk && shiftClerk.trim() !== '')
                 formData.append('shiftClerk', shiftClerk.toUpperCase());
             if(photoClerk)
                 formData.append('photoClerk', photoClerk);  
-            formData.append('idAdministrator', administrator.id)            
+            console.log(administrator.id)
+            formData.append('idAdministrator', administrator.id)    
+            console.log("aqui")        
             const response = await fetch('http://localhost:3030/registrar-atendente', {
                 method: 'POST',
                 body:formData,
@@ -410,6 +414,11 @@ export function HomeAdministrator ({children}) {
         }
 
     }
+
+    const handleClickExit = () => {
+        navigate("/")
+    }
+
     return (
         login ? children : ( 
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4 fixed'>
@@ -418,7 +427,9 @@ export function HomeAdministrator ({children}) {
                             onValueChange={handleTabChange}
                             className="flex flex-col w-full"
                         >
-                            <Header/>
+                            <Header
+                                onClickedExit={handleClickExit}
+                            />
                             <Tabs.List className="flex px-10 bg-gray-900 justify-start items-center gap-1 rounded-t-md">
                                 {itens.map((item) => (
                                     <Tabs.Trigger
@@ -722,11 +733,11 @@ export function HomeAdministrator ({children}) {
                                                                                     <label htmlFor='iprae' className="font-bold">Tipo de assistência: *</label>
                                                                                     <div className='flex gap-4'>
                                                                                         <div className='flex gap-2'>
-                                                                                            <input type="radio" name="assistance" id="iprae" value="PRAE" onChange={handleTypeAssistanceChange} required checked={"PRAE" === student.type_assistance} />
+                                                                                            <input type="radio" name="assistance" id="iprae" value="PRAE" onChange={handleTypeAssistanceChange} required checked={"PRAE" === typeAssistance} />
                                                                                             <label htmlFor="iprae">PRAE</label>
                                                                                         </div>
                                                                                         <div className='flex gap-2'>
-                                                                                            <input type="radio" name="assistance" id="i50%" value="50%" onChange={handleTypeAssistanceChange} required checked={"50%" === student.type_assistance}/>
+                                                                                            <input type="radio" name="assistance" id="i50%" value="50%" onChange={handleTypeAssistanceChange} required checked={"50%" === typeAssistance}/>
                                                                                             <label htmlFor="i50%">50%</label>
                                                                                         </div>
                                                                                     </div>
