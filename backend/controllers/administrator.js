@@ -102,3 +102,45 @@ export const updatePassword = (req, res) => {
       }
     });
   };
+
+  export const updatePasswordId = (req, res) => {
+    const { id, password, current } = req.body;
+
+    const queryGetPassword = "SELECT password FROM administrator WHERE id = ?";
+
+    db.query(queryGetPassword, [id], (err, data) => {
+        if (err) {
+            console.error('Erro ao consultar banco de dados:', err);
+            return res.status(500).json({ error: 'Erro ao localizar usuário' });
+        }
+        
+        if (data.length > 0) {
+            
+            const storedPassword = data[0].password;
+
+            if(storedPassword==current){
+                
+                const queryUpdatePassword = "UPDATE administrator SET password = ? WHERE id = ?";
+
+                db.query(queryUpdatePassword, [password, id], (err, result) => {
+                    if (err) {
+                        
+                        console.error('Erro ao atualizar a senha no banco de dados:', err);
+                        
+                        return res.status(500).json({ error: 'Erro ao atualizar a senha' });
+                    }
+
+                    if (result.affectedRows > 0) {
+                        return res.status(200).json({ message: 'Senha atualizada com sucesso' });
+                    } else {
+                        return res.status(404).json({ error: 'Usuário não encontrado' });
+                    }
+                });
+            }else {
+                return res.status(400).json({ error: 'Senha atual incorreta' });
+            }
+        } else {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+    });
+};

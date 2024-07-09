@@ -3,6 +3,7 @@ import { getClerks, registerClerk } from "../controllers/clerk.js";
 import { sendRecoveryCode} from '../controllers/clerk.js';
 import { verifyRecoveryCode } from "../controllers/clerk.js";
 import { updatePassword } from "../controllers/clerk.js";
+import { updatePasswordId } from "../controllers/clerk.js";
 import multer from "multer"
 import path from "path";
 
@@ -24,5 +25,7 @@ router.post("/registrar-atendente/atendente", upload.single('photoClerk'), regis
 router.post('/send-recovery-code/atendente', sendRecoveryCode);
 router.post('/verify-recovery-code/atendente', verifyRecoveryCode);
 router.post('/update-password/atendente', updatePassword);
+router.post('/update-password-id/atendente', updatePasswordId);
+
 
 export default router

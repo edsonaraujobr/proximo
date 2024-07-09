@@ -96,15 +96,12 @@ let recoveryCodes = {};
 
 import nodemailer from 'nodemailer';
 
-// Função para enviar o código de recuperação
 export const sendRecoveryCode = async (req, res) => {
     const { email } = req.body;
 
-    // Geração do código de recuperação
     const recoveryCode = Math.floor(100000 + Math.random() * 900000).toString();
     recoveryCodes[email] = recoveryCode;
 
-    // Enviar email com o código de recuperação
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -157,21 +154,74 @@ export const verifyRecoveryCode = (req, res) => {
 
 export const updatePassword = (req, res) => {
     const { email, password } = req.body;
-    const query = "UPDATE clerk SET password=? WHERE email=?";
-  
-    db.query(query, [password, email], (err, data) => {
-      if (err) {
-        console.log('Erro ao atualizar a senha no banco de dados:');
-        console.error('Erro ao atualizar a senha no banco de dados:', err);
-        return res.status(500).json({ error: 'Erro ao atualizar a senha' });
-      }
-  
-      if (data.affectedRows > 0) {
-        console.log('Senha atualizada com sucesso');
-        return res.status(200).json({ message: 'Senha atualizada com sucesso' });
-      } else {
-        console.log('usuário não encontrado');
-        return res.status(404).json({ error: 'Usuário não encontrado' });
-      }
-    });
+    bcrypt.hash(password, saltRounds, (err,hash) => {
+        const query = `UPDATE clerk SET password='${hash}' WHERE email='${email}'`;
+        db.query(query, [password, email], (err, data) => {
+            if (err) {
+              console.error('Erro ao atualizar a senha no banco de dados:', err);
+              return res.status(500).json({ error: 'Erro ao atualizar a senha' });
+            }
+        
+            if (data.affectedRows > 0) {
+              return res.status(200).json({ message: 'Senha atualizada com sucesso' });
+            } else {
+              return res.status(404).json({ error: 'Usuário não encontrado' });
+            }
+          });
+    })
   };
+
+
+  export const updatePasswordId = (req, res) => {
+    const { id, password, current } = req.body;
+
+    const queryGetPassword = "SELECT password FROM clerk WHERE id = ?";
+
+    db.query(queryGetPassword, [id], (err, data) => {
+        if (err) {
+            console.error('Erro ao consultar banco de dados:', err);
+            return res.status(500).json({ error: 'Erro ao localizar usuário' });
+        }
+        
+        if (data.length > 0) {
+            const storedPassword = data[0].password;
+
+            bcrypt.compare(current, storedPassword, (err, isMatch) => {
+                if (err) {
+                    console.error('Erro ao comparar senhas:', err);
+                    return res.status(500).json({ error: 'Erro ao verificar senha' });
+                }
+
+                if (isMatch) {
+                    bcrypt.hash(password, saltRounds, (err, hash) => {
+                        if (err) {
+                            console.error('Erro ao hashear a nova senha:', err);
+                            return res.status(500).json({ error: 'Erro ao processar nova senha' });
+                        }
+
+                        const queryUpdatePassword = "UPDATE clerk SET password = ? WHERE id = ?";
+
+                        db.query(queryUpdatePassword, [hash, id], (err, result) => {
+                            if (err) {
+                                console.error('Erro ao atualizar a senha no banco de dados:', err);
+                                
+                                return res.status(500).json({ error: 'Erro ao atualizar a senha' });
+                            }
+
+                            if (result.affectedRows > 0) {
+                                return res.status(200).json({ message: 'Senha atualizada com sucesso' });
+                            } else {
+                                return res.status(404).json({ error: 'Usuário não encontrado' });
+                            }
+                        });
+                    });
+                } else {
+                    return res.status(400).json({ error: 'Senha atual incorreta' });
+                }
+            });
+        } else {
+            
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+    });
+};

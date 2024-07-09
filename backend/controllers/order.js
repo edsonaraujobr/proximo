@@ -10,10 +10,11 @@ export const createOrder = (req,res) => {
         queryInsert += ", registration_student"
         queryParams.push(registration_student)
     }
-    if(quantity_kg !== 0) {
+    if(quantity_kg !== 0 && quantity_kg) {
         queryInsert += ", quantity_kg"
         queryParams.push(quantity_kg)
-    } else if(quantity_items !== 0) {
+    }
+    if(quantity_items !== 0 && quantity_items) {
         queryInsert += ", quantity_items"
         queryParams.push(quantity_items)
     }

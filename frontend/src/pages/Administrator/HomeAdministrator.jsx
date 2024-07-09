@@ -3,6 +3,7 @@ import { Header } from '../../componentes/Header.jsx'
 import { useState, useContext, useRef } from 'react';
 import { CheckIcon, UploadIcon } from '@radix-ui/react-icons';
 import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export function HomeAdministrator ({children}) {
     const [ registration, setRegistration ] = useState('');
@@ -22,11 +23,11 @@ export function HomeAdministrator ({children}) {
 
     const inputRef = useRef(null)
     const inputRefClerk = useRef(null)
-
     const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes"]
     const [activeTab, setActiveTab] = useState(itens[0]);
     const login = false;
 
+    const navigate = useNavigate();
 
     const handleTabChange = (value) => {
       setActiveTab(value);
@@ -188,6 +189,10 @@ export function HomeAdministrator ({children}) {
         inputRefClerk.current.click();
     }
 
+    const handleClickSettings = () => {
+        navigate("/administrador/configuracoes")
+    }
+
     return (
         login ? children : ( 
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4 fixed'>
@@ -196,7 +201,9 @@ export function HomeAdministrator ({children}) {
                             onValueChange={handleTabChange}
                             className="flex flex-col w-full"
                         >
-                            <Header/>
+                            <Header
+                                onClickedSettings={handleClickSettings}
+                            />
                             <Tabs.List className="flex px-10 bg-gray-900 justify-start items-center gap-1 rounded-t-md">
                                 {itens.map((item) => (
                                 <Tabs.Trigger

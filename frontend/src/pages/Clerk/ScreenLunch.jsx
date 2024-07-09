@@ -13,51 +13,61 @@ import { useRef, useEffect } from 'react';
 export function ScreenLunch ({children}) {
     const [registration, setRegistration] = useState('');
     const [userType, setUserType] = useState('interno');
-    const [paymentType, setPaymentType] = useState('cartao');
+    const [paymentType, setPaymentType] = useState('cartão');
     const [money, setMoney] = useState(0);
     const [price, setPrice] = useState(0);
     const [priceTotal, setPriceTotal] = useState(0);
     const [searchUser, setSearchUser] = useState(false);
     const [foundUser, setFoundUser] = useState(false);
     const [quantity, setQuantity] = useState(0);
+
     const inputQuantityRef = useRef(null)
     const inputPaymentRef = useRef(null)
+    const inputRegistrationRef = useRef(null)
 
     const { clerk } = useContext(ClerkContext);
     const { save: saveStudent, student, remove: removeStudent } = useContext(StudentContext);
-
     const { service } = useContext(ServiceContext);
 
     const login = false;
     const navigate = useNavigate();
+    const priceFood = 39.37;
 
-    const handleFocusInputQuantity = () => {
+    const focusInputQuantity = () => {
         if(inputQuantityRef.current) {
             inputQuantityRef.current.focus();
         }
     }
 
-    const handleFocusInputPayment = () => {
+    const focusInputPayment = () => {
         if(inputPaymentRef.current) {
             inputPaymentRef.current.focus();
         }
     }
 
+    const focusInputRegistration = () => {
+        if(inputRegistrationRef.current) {
+            inputRegistrationRef.current.focus();
+        }
+    }
+
     useEffect(() => {
         if (userType === 'externo') {
-            handleFocusInputQuantity();
+            focusInputQuantity();
+        } else if(userType === 'interno'){
+            focusInputRegistration();
         }
     }, [userType]);
 
     useEffect(() => {
         if (student) {
-            handleFocusInputQuantity();
+            focusInputQuantity();
         }
     }, [student]);
 
     useEffect(() => {
         if (paymentType === 'dinheiro') {
-            handleFocusInputPayment();
+            focusInputPayment();
         }
     }, [paymentType]);
 
@@ -77,7 +87,7 @@ export function ScreenLunch ({children}) {
         setFoundUser(false);
         setSearchUser(false);
         removeStudent();
-        setPaymentType('cartao')
+        setPaymentType('cartão')
     }
 
     const handleUserTypeChange = (e) => {
@@ -88,25 +98,18 @@ export function ScreenLunch ({children}) {
     }
 
     const handlePaymentChange = (e) => {
-        setPaymentType(e.target.value);
-        if(e.target.value === 'dinheiro') {
-            setMoney(0);
-        } else {
-            setMoney(price);
+        if(price >= 0 && quantity >= 0 && quantity.length === 5) {
+            setPaymentType(e.target.value);
+            if(e.target.value === 'dinheiro') {
+                setMoney(0);
+            } else {
+                setMoney(price);
+            }
         }
     }
 
     const handleSearchStudent = async (e) => {
         e.preventDefault();
-
-        setMoney(0);
-        setPrice(0);
-        setPriceTotal(0);
-        setQuantity(0);
-        setFoundUser(false);
-        setSearchUser(false);
-        removeStudent();
-        setPaymentType('cartao');
         
         try {
             setSearchUser(true)
@@ -122,7 +125,7 @@ export function ScreenLunch ({children}) {
                 const data = await response.json();
                 setFoundUser(true);
                 saveStudent(data.responseStudent);
-                handleFocusInputQuantity();
+                focusInputQuantity();
             } else {
                 setFoundUser(false);
             }
@@ -139,28 +142,27 @@ export function ScreenLunch ({children}) {
         }
         if(handleQuantity.length === 5) {
             setQuantity(handleQuantity);
-            calculatePriceQuantity(quantity);
+            let totalLocale = calculatePriceQuantity(handleQuantity);
 
             if(student) {
-                if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae' && (paymentType === 'cartao' || paymentType === 'pix')) {
+                if(student.typeAssistance === 'PRAE' || student.typeAssistance === 'prae' && (paymentType === 'cartão' || paymentType === 'pix')) {
                     setPrice(2.00);
                     setMoney(2.00);
-                } else if(student.typeAssistance === '50%' && (paymentType === 'cartao' || paymentType === 'pix')) {
-                    setPrice(priceTotal/2);
-                    setMoney(priceTotal/2);
+                } else if(student.typeAssistance === '50%' && (paymentType === 'cartão' || paymentType === 'pix')) {
+                    setPrice(totalLocale/2);
+                    setMoney(totalLocale/2);
                 }
             } else {
-                if(paymentType === 'cartao' || paymentType === 'pix') {
-                    setMoney(priceTotal);
-                    setPrice(priceTotal);
+                if(paymentType === 'cartão' || paymentType === 'pix') {
+                    setMoney(totalLocale);
+                    setPrice(totalLocale);
                 }
             }
         }
     }
 
     function calculatePriceQuantity(quantity) {
-        const price = 39.37;
-        let total = quantity*price;
+        let total = quantity*priceFood;
         total = parseFloat(total.toFixed(2));
         setPriceTotal(total);
         return total;
@@ -168,16 +170,19 @@ export function ScreenLunch ({children}) {
 
     function handleMoney(e) {
         let money = e.target.value;
-        if (typeof money === 'string' && money.startsWith('R$ ')) {
-            money = money.substring(3); 
+        if(money.length < 10) {
+            if (typeof money === 'string' && money.startsWith('R$ ')) {
+                money = money.substring(3); 
+            }
+    
+            setMoney(money);
         }
-        setMoney(money);
     }
 
     const handleSendService = (e) => {
         e.preventDefault();
         if(userType === 'externo') {
-            if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartao' || paymentType === 'pix')) {
+            if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartão' || paymentType === 'pix')) {
                 handleCreateOrder();
             } else if(quantity > 0 && priceTotal > 0 && money > 0 && paymentType === 'dinheiro') {
                 if(money >= price) {
@@ -192,7 +197,7 @@ export function ScreenLunch ({children}) {
         } else if(userType === 'interno') {
 
             if(student) {
-                if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartao' || paymentType === 'pix')) {
+                if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartão' || paymentType === 'pix')) {
                     handleCreateOrder();
                 } else if(quantity >0 && priceTotal > 0 && money > 0 && paymentType === 'dinheiro' ) {
                     if(money >= price) {
@@ -216,13 +221,12 @@ export function ScreenLunch ({children}) {
 
     const handleCreateOrder = async () => {
         try {
-
             const  orderData = {
-                price_total: priceTotal,
-                price: price,
+                price_total: Number(priceTotal),
+                price: Number(price),
                 type_payment: paymentType.toUpperCase(),
-                quantity_kg: quantity,
-                id_service: service
+                quantity_kg: Number(quantity),
+                id_service: Number(service)
             }
 
             if(student && student.registration) {
@@ -240,6 +244,7 @@ export function ScreenLunch ({children}) {
             if(response.ok) {
                 cleanFieldsStudent();
                 alert("Atendimento realizado com sucesso");
+                alert("Troco: " + (money-price).toFixed(2))
             } else {
                 alert("Erro no servidor");
             }
@@ -292,6 +297,7 @@ export function ScreenLunch ({children}) {
                                     <form onSubmit={handleSearchStudent} className='flex gap-2 flex-col '>
                                         <label htmlFor="matricula">Nº de matrícula: </label>
                                         <input 
+                                            ref={inputRegistrationRef}
                                             required
                                             type="number" 
                                             name="interno" 
@@ -299,12 +305,12 @@ export function ScreenLunch ({children}) {
                                             value={registration}
                                             disabled={userType === 'externo'}
                                             onChange={handleRegistrationChange}
-                                            className='bg-slate-700 rounded-md p-1' 
+                                            className='bg-slate-700 rounded-md p-1 outline-none' 
                                         />
                                         <button 
                                             type="submit" 
-                                            disabled={userType === 'externo' || registration.length < 9 || student} 
-                                            className={`${(userType === 'externo' || registration.length < 9 || student ) ? 'bg-gray-500 ' : 'bg-green-600 hover:bg-green-700'}px-2 rounded-md flex justify-center items-center gap-2`} > 
+                                            disabled={userType === 'externo' || registration.length < 9 || student || registration < 190000000} 
+                                            className={`${(userType === 'externo' || registration.length < 9 || student || registration < 190000000 ) ? 'bg-gray-500 ' : 'bg-green-600 hover:bg-green-700'}px-2 rounded-md flex justify-center items-center gap-2`} > 
                                             <MagnifyingGlassIcon/>Buscar
                                         </button>
                                     </form>
@@ -320,7 +326,7 @@ export function ScreenLunch ({children}) {
                         
                         </div>
                         <form onSubmit={handleSendService} className='flex gap-3 justify-center'>
-                        <div className={`${ userType === 'externo' || student ? 'border-green-700 hover:border-green-500' : 'border-slate-700 hover:border-slate-500' } border  p-5 flex flex-col gap-2 rounded-md items-center`}>
+                        <div className={`${ userType === 'externo' || student ? 'border-green-700 hover:border-green-500' : 'border-slate-700 ' } border  p-5 flex flex-col gap-2 rounded-md items-center`}>
                                 <div className='flex w-full'>
                                     <h2 className='font-bold text-lg'>Pesagem</h2>
                                 </div>
@@ -332,9 +338,9 @@ export function ScreenLunch ({children}) {
                                             type="number"
                                             name="quantidadekg"
                                             id="quantidadekg"
-                                            className='bg-slate-700 rounded-md p-1'
+                                            className='bg-slate-700 rounded-md p-1 outline-none'
                                             onChange={handleQuantityKg}
-                                            value={quantity !== 0 ? quantity : ''}
+                                            value={quantity >= 0 ? quantity : ''}
                                             disabled={userType ==='interno' && student === null}
                                         />
                                     </div>
@@ -346,12 +352,12 @@ export function ScreenLunch ({children}) {
                                             id="idresultado"
                                             className='bg-slate-700 rounded-md p-1'
                                             disabled
-                                            value={price > 0 && quantity > 0 && quantity.length === 5 ? `R$ ${price}` : ''}
+                                            value={price >= 0 && quantity >= 0 && quantity.length === 5 ? `R$ ${price}` : ''}
                                         />
                                     </div>
                                 </div>
                             </div>
-                            <div className=' border border-slate-700 hover:border-slate-500 p-5 flex flex-col gap-2 rounded-md items-center'>
+                            <div className={`${ price >= 0 && quantity >= 0 && quantity.length === 5 ? 'border-green-700 hover:border-green-500' : 'border-slate-700' } border  p-5 flex flex-col gap-2 rounded-md items-center`}>
                                 <div className='flex w-full'>
                                     <h2 className='font-bold text-lg'>Forma de pagamento</h2>
                                 </div>
@@ -361,12 +367,12 @@ export function ScreenLunch ({children}) {
                                             <input
                                                 type="radio"
                                                 name='pagamento'
-                                                id="id-cartao"
+                                                id="id-cartão"
                                                 onChange={handlePaymentChange}
-                                                value="cartao"
-                                                checked={paymentType === 'cartao'}
+                                                value="cartão"
+                                                checked={paymentType === 'cartão'}
                                             />
-                                            <label htmlFor="id-cartao">Cartão</label>
+                                            <label htmlFor="id-cartão">Cartão</label>
                                         </div>
                                         <div className='flex gap-2'>
                                             <input
@@ -398,15 +404,15 @@ export function ScreenLunch ({children}) {
                                             type="text"
                                             name="reais"
                                             id="reais"
-                                            className='bg-slate-700 rounded-md p-1'
+                                            className='bg-slate-700 rounded-md p-1 outline-none'
                                             value={money > 0 && quantity > 0 && quantity.length === 5 ? (typeof money === 'string' && money.startsWith('R$ ') ? money : `R$ ${money}`) : ''}
                                             onChange={handleMoney}
-                                            disabled={(userType ==='interno' && student === null) || quantity <= 0 || quantity.length !== 5 }
+                                            disabled={(userType ==='interno' && student === null) || quantity <= 0 || quantity.length !== 5 || paymentType !== 'dinheiro'}
                                         />
                                         <button
-                                            className={`${(userType === 'interno' && student === null) || quantity <= 0 || quantity.length !== 5 || money <= 0 || price <= 0 || priceTotal <= 0 ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'} flex justify-center items-center gap-2 rounded-md`}
+                                            className={`${(userType === 'interno' && student === null) || quantity <= 0 || quantity.length !== 5 || money <= 0 || price <= 0 || priceTotal <= 0 || money < price ? 'bg-gray-500' : 'bg-green-600 hover:bg-green-700'} flex justify-center items-center gap-2 rounded-md`}
                                             type='submit'
-                                            disabled={(userType ==='interno' && student === null) || quantity <= 0 || quantity.length !== 5 || money <= 0 || price <= 0 || priceTotal <= 0}
+                                            disabled={(userType ==='interno' && student === null) || quantity <= 0 || quantity.length !== 5 || money <= 0 || price <= 0 || priceTotal <= 0|| money < price}
                                         >
                                             <CheckIcon/>
                                             Confirmar

@@ -7,6 +7,7 @@ import { HomeClerk } from "./pages/Clerk/HomeClerk";
 import { HomeAdministrator } from "./pages/Administrator/HomeAdministrator";
 import { ScreenLunch } from "./pages/Clerk/ScreenLunch";
 import { SettingsClerk } from "./pages/Clerk/SettingsClerk";
+import { SettingsAdministrator } from "./pages/Administrator/SettingsAdministrator";
 
 function MainRoutes() {
     return (
@@ -63,7 +64,8 @@ function MainRoutes() {
                 </HomeClerk>
             }
             />
-            <Route path="/configuracoes" element={<SettingsClerk/>} />
+            <Route path="/atendente/configuracoes" element={<SettingsClerk/>} />
+            <Route path="/administrador/configuracoes" element={<SettingsAdministrator/>} />
         </Routes>
     )
 }

@@ -83,21 +83,11 @@ export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClick
                     <p><strong>Relatórios:</strong> Atendentes devem gerar e revisar relatórios de fim de turno conforme necessário para a administração do RU.</p>
                     <p><strong>Segurança:</strong> Atendentes devem manter a confidencialidade das informações dos usuários e seguir as práticas de segurança estabelecidas.</p>
                 
-                
-                
-                
-                
-
             <h3 class="text-lg font-semibold text-lime-500 mt-4">1.2. Para Administradores</h3>
                     <p><strong>Gestão de Usuários:</strong> Administradores são responsáveis por registrar novos usuários do PRAE e 50%, e remover usuários desatualizados do banco de dados.</p>
                     <p><strong>Gestão de Atendentes:</strong> Administradores devem gerenciar o cadastro e remoção de atendentes no sistema.</p>
                     <p><strong>Manutenção:</strong> Administradores são responsáveis pela manutenção do sistema e devem garantir que o sistema esteja funcionando de maneira estável e eficiente.</p>
                     <p><strong>Segurança:</strong> Administradores devem assegurar que todas as informações pessoais e dados dos usuários sejam protegidos de acordo com a legislação aplicável.</p>
-                
-                
-                
-                
-           
         </section>
 
         <section class="mb-6">
@@ -128,8 +118,6 @@ export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClick
             <p>&copy; 2024 PRÓXIMO. Todos os direitos reservados.</p>
         </footer>
  
-
-
             <button type="" className="w-20 bg-lime-700 text-white rounded-md h-7 hover:bg-lime-600 " onClick={() => setOpenModalTerms(false)}>Fechar</button>
 
         </Modal></>       

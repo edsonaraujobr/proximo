@@ -69,6 +69,8 @@ export function Login({ typeUser, otherUser}) {
   const [EmailNaoEncontrado, setEmailNaoEncontrado] = useState(false);
   const [recoveryCode, setRecoveryCode] = useState('');
   const [codeInvalid, setCodeInvalid] = useState(false);
+  const [passwordsDifferent, setPasswordDifferent] = useState(false);
+  const [passwordUpdate, setPasswordUpdate] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
@@ -84,8 +86,8 @@ export function Login({ typeUser, otherUser}) {
 
       if (response.ok) {
         setEmailNaoEncontrado(false);
-        setOpenModalCode(true);
         setOpenModal(false);
+        setOpenModalCode(true);
       } else {
         setEmailNaoEncontrado(true);
       }
@@ -123,7 +125,8 @@ export function Login({ typeUser, otherUser}) {
   const handleUpdatePassword = async (event) => {
     event.preventDefault();
     if (newPassword !== confirmNewPassword) {
-      alert('As senhas não coincidem');
+
+      setPasswordDifferent(true)
       return;
     }
 
@@ -135,8 +138,10 @@ export function Login({ typeUser, otherUser}) {
       });
 
       if (response.ok) {
+        setPasswordUpdate(true);
         setOpenModalNewPassword(false);
-        alert('Senha atualizada com sucesso');
+
+       
       } else {
         alert('Erro ao atualizar a senha');
       }
@@ -167,6 +172,7 @@ export function Login({ typeUser, otherUser}) {
               value={email}
               onChange={handleEmailChange}
               required
+              onClick={()=>setPasswordUpdate(false)}
               className="rounded-md bg-slate-800 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"/>
           </div>
           <div className="flex flex-col gap-1 w-full">
@@ -181,6 +187,7 @@ export function Login({ typeUser, otherUser}) {
               value={password}
               onChange={handlePasswordChange}
               required
+              onClick={()=>setPasswordUpdate(false)}
               className="rounded-md bg-slate-800 outline-none focus:ring-1 focus:ring-lime-400 p-2 h-7 font-light"/>
           </div>
         </div>
@@ -199,6 +206,12 @@ export function Login({ typeUser, otherUser}) {
           <span className="flex w-full justify-center items-center font-light text-sm text-yellow-300">
             Usuário não encontrado
           </span>
+      ) }
+
+      { passwordUpdate && (
+            <span className="flex w-full justify-center items-center font-light text-sm text-yellow-300">
+              Senha atualizada com sucesso!
+            </span>
       ) }
       
 <Modal isOpen={openModal}>
@@ -279,6 +292,12 @@ export function Login({ typeUser, otherUser}) {
               onClick={() => setOpenModalNewPassword(false)}>X
             </button>
           </div>
+          { passwordsDifferent && (
+          <span className="flex w-full justify-center items-center font-light text-sm text-yellow-300">
+            As senhas não coincidem
+          </span>
+          ) }
+
           <input 
             type="password"
             name="newPassword"

@@ -4,15 +4,15 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "../../componentes/Button.jsx";
 import { Header } from "../../componentes/Header.jsx";
 import { useContext } from "react";
-import { ClerkContext } from "../../contexts/ClerkContext.jsx";
+import { AdministratorContext } from "../../contexts/AdministratorContext.jsx";
 import { useNavigate } from "react-router-dom";
 
-export function SettingsClerk({ children }) {
-  const { clerk } = useContext(ClerkContext);
+export function SettingsAdministrator({ children }) {
+  const { administrator } = useContext(AdministratorContext);
   const navigate = useNavigate();
 
   const handleClickBack = () => {
-    navigate("../atendente/home");
+    navigate("../administrador/home");
   };
 
   const [newPassword, setNewPassword] = useState('');
@@ -36,9 +36,9 @@ export function SettingsClerk({ children }) {
       return;
     }
 
-    const id=clerk.id;
+    const id=administrator.id;
     try {
-      const response = await fetch(`http://localhost:3000/update-password-id/atendente`, {
+      const response = await fetch(`http://localhost:3000/update-password-id/administrador`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, password: newPassword, current:currentPassword}),
@@ -66,22 +66,15 @@ export function SettingsClerk({ children }) {
     <Dialog.Root>
       <div className="flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4">
         <Header
-          name={clerk.name}
-          linkPhoto={clerk.photo}
+          name={administrator.name}
           onClickedSettings={handleClickBack}
         />
 
         <div className="flex flex-col px-10">
-          <h2 className="text-2xl mb-4">Configurações do Atendente</h2>
+          <h2 className="text-2xl mb-4">Configurações do Administrador</h2>
 
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <h3 className="text-xl font-bold">Alterar Foto</h3>
-              <div className="flex items-center gap-2">
-                <CameraIcon className="w-6 h-6" />
-                <input type="file" accept="image/*" className="text-white" />
-              </div>
-            </div>
+      
 
             <form onSubmit={handleUpdatePassword}>
               <div className="flex flex-col gap-2">
@@ -143,10 +136,10 @@ export function SettingsClerk({ children }) {
               Senha atualizada com sucesso
             </span>
             )}
-          
             <button type="submit" className="w-full mt-4 bg-green-700 text-white rounded-md h-7 hover:bg-green-900">Salvar Alterações</button>
             </form>
-            <button type="submit" className="w-full bg-green-700 text-white rounded-md h-7 hover:bg-green-900" onClick={handleClickBack}>Voltar</button>
+            <button type="" className="w-full  bg-green-700 text-white rounded-md h-7 hover:bg-green-900" onClick={handleClickBack}>Voltar</button>
+            
             
           </div>
         </div>

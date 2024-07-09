@@ -45,7 +45,7 @@ export function HomeClerk({children}) {
     } 
 
     const handleClickSettings = () => {
-        navigate("/configuracoes")
+        navigate("/atendente/configuracoes")
     }
 
     return (
