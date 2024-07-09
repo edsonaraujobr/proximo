@@ -124,3 +124,49 @@ export const getAllStudents = (req, res) => {
     })
 
 }
+
+export const updateStudent = (req, res) => {
+    const { registration, course, type_assistance, notice_number, date_started_assistance} = req.body;
+    console.log("chegou aqui")
+    if (!registration) {
+        return res.status(400).send('Dados insuficientes');
+    }
+
+    const query = `UPDATE student SET course = ?, type_assistance = ?, notice_number = ?, date_started_assistance = ? WHERE registration = ?`;
+    const values = [course, type_assistance, notice_number || null , date_started_assistance || null , registration];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            return res.status(500).send('Erro ao atualizar aluno');
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).send('Aluno não encontrado');
+        }
+
+        res.send('Aluno atualizado com sucesso');
+    });
+
+}
+
+export const removeStudent = (req, res) => {
+    const { registration } = req.body;
+
+    if (!registration) {
+        return res.status(400).send('Dados insuficientes');
+    }
+
+    const query = `DELETE FROM student WHERE registration = ?`;
+    
+    db.query(query, registration, (err, result) => {
+        if(err) {
+            return res.status(500).send('Erro ao remover aluno');
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).send('Aluno não encontrado');
+        }
+
+        res.status(200).send('Aluno removido com sucesso');
+    })
+}

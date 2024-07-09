@@ -1,7 +1,7 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import { Header } from '../../componentes/Header.jsx'
 import { useState, useContext, useRef, useEffect, useCallback } from 'react';
-import { CheckIcon, UploadIcon, ChevronLeftIcon, ChevronRightIcon, Cross2Icon, GearIcon } from '@radix-ui/react-icons';
+import { CheckIcon, UploadIcon, ChevronLeftIcon, ChevronRightIcon, Cross2Icon, GearIcon, LockClosedIcon } from '@radix-ui/react-icons';
 import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
 import * as Dialog from '@radix-ui/react-dialog'; 
 
@@ -57,6 +57,7 @@ export function HomeAdministrator ({children}) {
             if (response.ok) {
                 const data = await response.json();
                 setListStudent(data.results);
+                console.log(listStudent);
                 setTotalPagesStudent(data.totalPages)
             } else {
                 console.log("Erro ao buscar alunos");
@@ -208,21 +209,26 @@ export function HomeAdministrator ({children}) {
     const handleCourseChange = (e) => {
         const value = e.target.value;
         setCourse(value);
+        setChangesMade(true);
     };
 
     const handleTypeAssistanceChange = (e) => {
         const value = e.target.value;
+        console.log(value)
         setTypeAssistance(value);
+        setChangesMade(true);
     };
 
     const handleNoticeNumberChange = (e) => {
         const value = e.target.value;
         setNoticeNumber(value);
+        setChangesMade(true);
     };
 
     const handleDateStartedAssistanceChange = (e) => {
         const value = e.target.value;
         setDateStartedAssistance(value);
+        setChangesMade(true);
     };
 
     const handlePhotoChange = (e) => {
@@ -327,8 +333,76 @@ export function HomeAdministrator ({children}) {
 
     }
 
-    const oi = () => {
-        console.log("oi")
+    const handleSettingsStudent = async(e) => {
+        e.preventDefault();
+        try {
+            const data = {
+                registration: registration, 
+                course: course.toUpperCase(), 
+                type_assistance: typeAssistance.toUpperCase(),
+            };
+
+            if(noticeNumber && noticeNumber.trim() !== '') {
+                data.notice_number = noticeNumber;
+            }
+
+            if(dateStartedAssistance && noticeNumber.trim() !== '') {
+                data.date_started_assistance = dateStartedAssistance;
+            }
+            const response = await fetch('http://localhost:3030/atualizar-aluno', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+
+            if(response.ok) {
+                alert("Aluno atualizado!")
+                window.location.reload();
+            } else {
+                alert("Aluno não atualizado")
+            }
+        } catch(error) {
+            alert("Erro ao conectar banco de dados!");
+        }
+    }
+
+    const handleEditStudent = (registration, name, course, type_assistance, notice_number, date_started_assistance) => {
+        setRegistration(registration);
+        setName(name);
+        setCourse(course);
+        setTypeAssistance(type_assistance);
+        setNoticeNumber(notice_number);
+        setDateStartedAssistance(date_started_assistance);
+        setChangesMade(false);
+    }
+
+    const handleRemoveStudentDatas = (registration) => {
+        setRegistration(registration);
+    }
+
+    const handleRemoveStudent = async(e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:3030/remover-aluno', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({registration: registration})
+            })
+
+            if(response.ok) {
+                alert("Aluno REMOVIDO!")
+                window.location.reload();
+            } else {
+                alert("Aluno não removido")
+            }
+        } catch(error) {
+            alert("Erro ao conectar banco de dados!");
+        }
+
     }
     return (
         login ? children : ( 
@@ -558,15 +632,152 @@ export function HomeAdministrator ({children}) {
                                                         <th className="py-2">Nome</th>
                                                         <th className="py-2">Curso</th>
                                                         <th className="py-2">Tipo de Assistência</th>
+                                                        <th className="py-2">Número de edital</th>
+                                                        <th className="py-2">Data início da assistência</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody className='text-center'>
                                                     {listStudent.map((student) => (
-                                                        <tr key={student.registration}>
+                                                        <tr key={student.registration} className='hover:bg-slate-700'>
                                                             <td className="border px-4 py-2 text-center">{student.registration}</td>
                                                             <td className="border px-4 py-2 text-center">{student.full_name}</td>
                                                             <td className="border px-4 py-2 text-center">{student.course}</td>
                                                             <td className="border px-4 py-2 text-center">{student.type_assistance}</td>
+                                                            { student.notice_number ? <td className="border px-4 py-2 text-center">{student.notice_number}</td> : <td className="border px-4 py-2 text-center">DESCONHECIDO</td> }
+                                                            { student.date_started_assistance ? <td className="border px-4 py-2 text-center">{student.date_started_assistance}</td> : <td className="border px-4 py-2 text-center">DESCONHECIDO</td> }
+                                                            <td className='border text-center'>
+                                                                <Dialog.Root>
+                                                                    <Dialog.Trigger>
+                                                                        <button type="button" className='px-4 py-2 text-center hover:text-slate-950' onClick={() => handleEditStudent(student.registration,student.full_name,student.course, student.type_assistance, student.notice_number, student.date_started_assistance)}>
+                                                                            <GearIcon/>
+                                                                        </button>
+                                                                    </Dialog.Trigger>
+                                                                    <Dialog.Portal>
+                                                                        <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
+                                                                        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[25vw] md:h-[70vh] bg-slate-700 md:rounded-md flex flex-col outline-none text-white justify-center items-center'>
+                                                                            <Dialog.Close className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
+                                                                                <Cross2Icon/>
+                                                                            </Dialog.Close>
+                                                                            <form onSubmit={handleSettingsStudent} className='flex flex-col gap-4 w-full h-full justify-center items-center p-6'>
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <label htmlFor="imatricula" className="font-bold">Matricula: </label>
+                                                                                    <div className='flex justify-center items-center w-full gap-2 '>
+                                                                                        <LockClosedIcon/>
+                                                                                        <input
+                                                                                            disabled
+                                                                                            type="number"
+                                                                                            name="matricula"
+                                                                                            id="imatricula"
+                                                                                            value={registration}
+                                                                                            required
+                                                                                            className="w-full rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <label htmlFor="inome-aluno" className="font-bold">Nome Completo: </label>
+                                                                                    <div className='flex justify-center items-center w-full gap-2 '>
+                                                                                        <LockClosedIcon/>
+                                                                                        <input
+                                                                                            disabled
+                                                                                            type="text"
+                                                                                            name="nome-aluno"
+                                                                                            id="inome-aluno"
+                                                                                            value={name}
+                                                                                            required
+                                                                                            className="w-full rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>   
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <label htmlFor="icurso" className="font-bold">Curso: *</label>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        name="curso"
+                                                                                        id="icurso"
+                                                                                        value={course}
+                                                                                        onChange={handleCourseChange}
+                                                                                        required
+                                                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <label htmlFor="iedital" className="font-bold">Número de edital: </label>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        name="edital"
+                                                                                        id="iedital"
+                                                                                        value={noticeNumber}
+                                                                                        onChange={handleNoticeNumberChange}
+                                                                                        className="rounded-md bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="flex gap-4 w-full ">
+                                                                                    <label htmlFor='iprae' className="font-bold">Tipo de assistência: *</label>
+                                                                                    <div className='flex gap-4'>
+                                                                                        <div className='flex gap-2'>
+                                                                                            <input type="radio" name="assistance" id="iprae" value="PRAE" onChange={handleTypeAssistanceChange} required checked={"PRAE" === student.type_assistance} />
+                                                                                            <label htmlFor="iprae">PRAE</label>
+                                                                                        </div>
+                                                                                        <div className='flex gap-2'>
+                                                                                            <input type="radio" name="assistance" id="i50%" value="50%" onChange={handleTypeAssistanceChange} required checked={"50%" === student.type_assistance}/>
+                                                                                            <label htmlFor="i50%">50%</label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="flex flex-col gap-1 w-full">
+                                                                                    <label htmlFor="idate" className="font-bold">Data início de assistência: </label>
+                                                                                    <input
+                                                                                        type="date"
+                                                                                        name="date"
+                                                                                        id="idate"
+                                                                                        value={dateStartedAssistance}
+                                                                                        onChange={handleDateStartedAssistanceChange}
+                                                                                        className="rounded-md text-white bg-transparent border border-slate-500 outline-none focus:ring-1 focus:ring-lime-400 p-2  h-7 font-light"
+                                                                                    />
+                                                                                </div>
+                                                                                 
+                                                
+                                                                                <button 
+                                                                                    type="submit" 
+                                                                                    className={`w-48 ${changesMade ? 'bg-green-600 hover:bg-green-700' : 'bg-slate-800'}  gap-2 flex items-center justify-center py-1 rounded-md `}
+                                                                                    disabled={!changesMade}
+                                                                                >
+                                                                                    
+                                                                                    <CheckIcon/>
+                                                                                    Salvar alterações
+                                                                                </button>                                                 
+                                                                            </form>
+                                                                        </Dialog.Content>
+                                                                    </Dialog.Portal>
+                                                                </Dialog.Root>
+                                                                <Dialog.Root>
+                                                                    <Dialog.Trigger>
+                                                                        <button type="button" className='px-4 py-2 text-center hover:text-red-800' onClick={() => handleRemoveStudentDatas(student.registration)}>
+                                                                            <Cross2Icon/>
+                                                                        </button>
+                                                                    </Dialog.Trigger>
+                                                                    <Dialog.Portal>
+                                                                    <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
+                                                                        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[15vw] md:h-[35vh] bg-slate-700 md:rounded-md flex flex-col outline-none'>
+                                                                            <Dialog.Close className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
+                                                                                <Cross2Icon/>
+                                                                            </Dialog.Close>
+                                                                            <form onSubmit={handleRemoveStudent} className='flex flex-col gap-4 p-4 text-white justify-center items-center h-full'>
+                                                                                <span className='text-center'>Deseja remover o aluno {student.full_name}?</span>
+                                                                                <div className='flex gap-2 w-full justify-center items-end'>
+                                                                                    <Dialog.Close>
+                                                                                        <button type="button" className='bg-red-600 px-2 rounded-md hover:bg-red-700'>Cancelar</button>
+                                                                                    </Dialog.Close>
+                                                                                    <button type="submit" className='bg-green-600 px-2 rounded-md hover:bg-green-700 '>Confirmar</button>
+                                                                                </div>
+                                                                            </form>
+                                                                        </Dialog.Content>
+
+                                                                    </Dialog.Portal>
+                                                                </Dialog.Root>
+                                                            </td>
                                                         </tr>
                                                     ))}
                                                 </tbody>

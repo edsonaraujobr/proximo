@@ -169,6 +169,6 @@ export const removeClerk = (req, res) => {
             return res.status(404).send('Atendente não encontrado');
         }
 
-        res.send('Atendente removido com sucesso');
+        res.status(200).send('Atendente removido com sucesso');
     })
 }
