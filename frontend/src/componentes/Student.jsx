@@ -1,11 +1,11 @@
 
 export function Student({registration, name, course, typeAssistance, photo}) {
     return (
-        <div className="flex gap-4">
+        <div className="flex justify-center items-center gap-4">
             { photo && photo !== 'http://localhost:3030/uploads/null' ?
             (
             <div className="w-24">
-                <img src={photo} alt="Foto do Estudante" />
+                <img src={photo} alt="Foto do Estudante"/>
             </div>
             ) : null }
 

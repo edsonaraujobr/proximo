@@ -672,7 +672,7 @@ export function HomeAdministrator ({children}) {
                                                                     </Dialog.Trigger>
                                                                     <Dialog.Portal>
                                                                         <Dialog.Overlay className='inset-0 fixed bg-black/70'/>
-                                                                        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[25vw] md:h-[70vh] bg-slate-700 md:rounded-md flex flex-col outline-none text-white justify-center items-center'>
+                                                                        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:top-1/2 md:max-w-[640px] w-[25vw] md:h-[80vh] bg-slate-700 md:rounded-md flex flex-col outline-none text-white justify-center items-center'>
                                                                             <Dialog.Close className='absolute top-0 right-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100'>
                                                                                 <Cross2Icon/>
                                                                             </Dialog.Close>

@@ -121,11 +121,12 @@ export function HomeClerk({children}) {
     };
 
     const handleStartedService = async (event) => {
+        console.log("aqui")
         event.preventDefault();
 
         try {
             const date = new Date().toISOString();
-            const response = await fetch("http://localhost:5173/atendimento", {
+            const response = await fetch("http://localhost:3030/atendimento", {
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json',
