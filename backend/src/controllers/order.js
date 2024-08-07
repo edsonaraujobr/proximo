@@ -1,4 +1,5 @@
-import db from "../db.js";
+import db from "../database/db.js";
+
 
 export const createOrder = (req,res) => {
     const { price_total, price, type_payment, registration_student, quantity_kg, quantity_items, id_service } = req.body;

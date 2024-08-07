@@ -1,5 +1,6 @@
-import db from "../db.js";
 import moment from 'moment-timezone';
+import db from "../database/db.js";
+
 
 export const createService = (req,res) => {
     const { date, type_service, id_clerk } = req.body

@@ -420,6 +420,10 @@ export function HomeAdministrator ({children}) {
         navigate("/")
     }
 
+    const handleClickSettings = () => {
+        navigate("/administrador/configuracoes")
+    }
+
     return (
         login ? children : ( 
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4 fixed'>
@@ -430,6 +434,7 @@ export function HomeAdministrator ({children}) {
                         >
                             <Header
                                 onClickedExit={handleClickExit}
+                                onClickedSettings={handleClickSettings}
                             />
                             <Tabs.List className="flex px-10 bg-gray-900 justify-start items-center gap-1 rounded-t-md">
                                 {itens.map((item) => (

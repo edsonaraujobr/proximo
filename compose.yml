@@ -1,13 +1,12 @@
 version: '3.8'
 
 services:
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - mysql
-  #     - backend
+  frontend:
+    build: ./frontend
+    ports:
+      - "9000:5173"
+    depends_on:
+      - backend
     
   mysql:
     image: mysql:8.0.36
@@ -15,19 +14,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3300:3306"
+      - "3306:3306"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - ./backend/src/database/sql.sql:/docker-entrypoint-initdb.d/sql.sql
 
-  # backend:
-  #   build: ./backend
-  #   ports:
-  #     - "8800:8800"
-  #   depends_on:
-  #     - mysql
-  #   volumes:
-  #     - ./backend:/backend
-  #   working_dir: /backend
-
-volumes:
-  mysql-data:
+  backend:
+    build: ./backend
+    ports:
+      - "3030:3030"
+    depends_on:
+      - mysql
