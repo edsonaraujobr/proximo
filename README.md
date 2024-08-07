@@ -53,15 +53,15 @@ Essas são as tecnologias utilizadas nesse projeto
 
 ## 📝 License
 
-Este projeto está sob a licença PRIVADA. Consulte o [LICENSE](LICENSE.md) para obter detalhes.
+Este projeto está sob a licença PRIVADA. Consulte o [LICENSE](https://github.com/edsonaraujobr/software-ru/blob/main/LICENSE) para obter detalhes.
 
 ---
 
-Feito por Edson Araújo :wave: [Entre em contato comigo!](https://www.linkedin.com/in/edsonaraujobr/)
-:email: [edsonaraujodesouzaneto@gmail.com](mailto:yuriduartedev@gmail.com) &nbsp;
-GitHub: [github.com/edsonaraujobr](https://github.com/yuriduarte) &nbsp;
-<br>
-, Matheus Souza, Pedro Lucca, Deyvson Luís e Cristhian Kauan
+Feito por Edson Araújo <br>
+:wave: [Entre em contato comigo!](https://www.linkedin.com/in/edsonaraujobr/) <br>
+:email: [edsonaraujodesouzaneto@gmail.com](mailto:yuriduartedev@gmail.com) &nbsp;<br>
+GitHub: [github.com/edsonaraujobr](https://github.com/yuriduarte) &nbsp; <br>
+, Matheus Souza, Pedro Lucca, Deyvson Luís e Cristhian Kauan.
 
 
 
