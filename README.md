@@ -28,8 +28,8 @@ $ docker compose down -v
 
 Essas são as tecnologias utilizadas nesse projeto
 
-**Backend:** [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/pt-br/), [MySQL](https://www.mysql.com/).
-**Backend:** [ReactJS](https://react.dev/), [TailwindCSS](https://tailwindcss.com/docs/guides/vite), [Vite](https://vitejs.dev/)
+**Backend:** [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/pt-br/), [MySQL](https://www.mysql.com/). <br>
+**Frontend:** [ReactJS](https://react.dev/), [TailwindCSS](https://tailwindcss.com/docs/guides/vite), [Vite](https://vitejs.dev/).
 
 ## 📺 Slide de apresentação 
 
