@@ -18,7 +18,7 @@ $ git clone https://github.com/edsonaraujobr/software-ru
 $ docker compose up --build
 
 # Acesse a aplicação do navegador
-$ http://localhost/9000
+$ http://localhost:9000
 
 # Para encerrar a aplicação
 $ docker compose down -v
