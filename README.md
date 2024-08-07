@@ -57,11 +57,7 @@ Este projeto está sob a licença PRIVADA. Consulte o [LICENSE](https://github.c
 
 ---
 
-Feito por Edson Araújo <br>
-:wave: [Entre em contato comigo!](https://www.linkedin.com/in/edsonaraujobr/) <br>
-:email: [edsonaraujodesouzaneto@gmail.com](mailto:yuriduartedev@gmail.com) &nbsp;<br>
-GitHub: [github.com/edsonaraujobr](https://github.com/yuriduarte) &nbsp; <br>
-, Matheus Souza, Pedro Lucca, Deyvson Luís e Cristhian Kauan.
+Feito por Edson Araújo, Matheus Souza, Pedro Lucca, Deyvson Luís e Cristhian Kauan.
 
 
 
