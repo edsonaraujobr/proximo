@@ -1,63 +1,63 @@
 ## 📋 Projeto
 
-Este projeto foi desenvolvido como trabalho final para disciplina **Banco de Dados I** ministrada pela doscente **Maísa Soares Dos Santos Lopes** do curso de **Ciência da Computação**. 
+This project was deleveped as final project of the database discipline taught by the teacher **Maísa Soares Dos Santos Lopes** from Computer Science Course.
 
-Intitulado **próximo**, é software que busca solucionar um problema real enfrentado pelos estudantes que consomem diariamente no Restaurante Universitário da UESB de Vitória da Conquista. <br>
+Named as **próximo**, it's a software that aims to solve a real problem faced by students who consume at the university resturant at UESB, Vitória da Conquista. <br>
 
-## 💻 Como usar
 
-Para clonar e rodar essa aplicação você precisará do [Git](https://git-scm.com) e [Docker](https://www.docker.com/). 
+## 💻 How to use
+
+To clone and run this application you need to have [Git](https://git-scm.com) and [Docker](https://www.docker.com/) installed on your computer
 <br>
-Na sua linha de comando:
+In your command line
 
 ```bash
-# Clone esse repositório
-$ git clone https://github.com/edsonaraujobr/software-ru
+# Clone the repository
+$ git clone https://github.com/edsonaraujobr/undefined_api
 
-# Rode a aplicação via docker
+# Run the application through docker
 $ docker compose up --build
 
-# Acesse a aplicação do navegador
+# Access the application in your browser
 $ http://localhost:9000
 
-# Para encerrar a aplicação
+# To close the application
 $ docker compose down -v
+
 ```
 
-## 👨‍💻 Tecnologias
+## 👨‍💻 Technologies
 
-Essas são as tecnologias utilizadas nesse projeto
+These are the technologies used in this project
 
 **Backend:** [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/pt-br/), [MySQL](https://www.mysql.com/). <br>
 **Frontend:** [ReactJS](https://react.dev/), [TailwindCSS](https://tailwindcss.com/docs/guides/vite), [Vite](https://vitejs.dev/).
 
-## 📺 Slide de apresentação 
+## 📺 Presentation Slide
 
  [Baixe o slide aqui](https://github.com/edsonaraujobr/software-ru/blob/main/Apresenta%C3%A7%C3%A3oProximo.pptx)
 
-## 🎲 Modelo Conceitual 
+## 🎲 Conceptual Model
 
  [Visualize aqui](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloConceitual.png)
 
-## 💎 Modelo Lógico 
+## 💎 Logic Model
 
- [Visualize aqui](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloLogico.png)
+  [View here](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloLogico.png)
 
-## 📃 Documento de requisitos 
+## 📃 Requirements Document
 
-[Baixe aqui](https://github.com/edsonaraujobr/software-ru/blob/main/documentoRequisitosBD.pdf)
+[Download here](https://github.com/edsonaraujobr/software-ru/blob/main/documentoRequisitosBD.pdf)
  
-## 🎬 Execução 
+## 🎬 Running 
 
 ![5bfca227-4930-4071-bc94-2e0c2565684a](https://github.com/edsonaraujobr/software-ru/assets/137104822/55bc23f1-22b0-4a0b-82f3-b2b407ce6cd6)
 
 ## 📝 License
 
-Este projeto está sob a licença PRIVADA. Consulte o [LICENSE](https://github.com/edsonaraujobr/software-ru/blob/main/LICENSE) para obter detalhes.
+This project are is under the MIT license. See the [LICENSE](https://github.com/edsonaraujobr/software-ru/blob/main/LICENSE) to get more details.
 
----
 
-Feito por Edson Araújo, Matheus Souza, Pedro Lucca, Deyvson Luís e Cristhian Kauan.
 
 
 
