@@ -35,11 +35,11 @@ These are the technologies used in this project
 
 ## 📺 Presentation Slide
 
- [Baixe o slide aqui](https://github.com/edsonaraujobr/software-ru/blob/main/Apresenta%C3%A7%C3%A3oProximo.pptx)
+ [Download here](https://github.com/edsonaraujobr/software-ru/blob/main/Apresenta%C3%A7%C3%A3oProximo.pptx)
 
 ## 🎲 Conceptual Model
 
- [Visualize aqui](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloConceitual.png)
+ [View here](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloConceitual.png)
 
 ## 💎 Logic Model
 
