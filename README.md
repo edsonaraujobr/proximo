@@ -1,4 +1,4 @@
-## 📋 Projeto
+## 📋 Project
 
 This project was deleveped as final project of the database discipline taught by the teacher **Maísa Soares Dos Santos Lopes** from Computer Science Course.
 
