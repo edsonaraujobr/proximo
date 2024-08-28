@@ -21,10 +21,8 @@ $ docker compose up --build
 # Access the application in your browser
 $ http://localhost:9000
 
-# To close the application
-$ docker compose down -v
-
 ```
+Now, you need to create an account for the clerk after logging in as the admin with the email admin@gmail.com and password admin. Then, you can access the system as the clerk using the account you just created.
 
 ## 👨‍💻 Technologies
 
