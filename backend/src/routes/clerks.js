@@ -1,9 +1,5 @@
 import express from "express";
-import { getClerk, registerClerk, getAllClerks, updateClerk, removeClerk} from "../controllers/clerk.js";
-import { sendRecoveryCode} from '../controllers/clerk.js';
-import { verifyRecoveryCode } from "../controllers/clerk.js";
-import { updatePassword } from "../controllers/clerk.js";
-import { updatePasswordId } from "../controllers/clerk.js";
+import { login, registerClerk, getAllClerks, updateClerk, removeClerk, sendRecoveryCode, verifyRecoveryCode, updatePassword, updatePasswordId} from "../controllers/clerk.js";
 import multer from "multer"
 import path from "path";
 
@@ -20,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("/atendente", getClerk)
+router.post("/atendente", login)
 router.get("/listar-atendentes", getAllClerks)
 router.put("/atualizar-atendente", updateClerk)
 router.delete("/remover-atendente", removeClerk)

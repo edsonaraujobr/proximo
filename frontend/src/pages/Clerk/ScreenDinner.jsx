@@ -11,7 +11,7 @@ import { ServiceContext } from '../../contexts/ServiceContext.jsx';
 import { useRef, useEffect } from 'react';
 import { Item } from "../../componentes/Item.jsx";
 
-export function ScreenDinner ({children}) {
+export function ScreenDinner () {
     const [registration, setRegistration] = useState('');
     const [userType, setUserType] = useState('interno');
     const [paymentType, setPaymentType] = useState('cartão');
@@ -29,7 +29,6 @@ export function ScreenDinner ({children}) {
     const { save: saveStudent, student, remove: removeStudent } = useContext(StudentContext);
     const { service } = useContext(ServiceContext);
 
-    const login = false;
     const navigate = useNavigate();
 
     const [counterCoffee, setCounterCoffee] = useState(0);
@@ -489,9 +488,32 @@ export function ScreenDinner ({children}) {
         };
     }, [handleAddItem, counterCoffee, setCounterCoffee, quantity, userType, student, priceTotal, addPriceMoney]);
     
-
+    useEffect(() => {
+        const token = localStorage.getItem('atendente_authToken');
+        const tokenExpiration = localStorage.getItem('atendente_tokenExpiration');
+        
+        if (token && tokenExpiration) {
+            const isExpired = Date.now() > tokenExpiration;
+            
+            if (isExpired) {
+                handleLogout();
+            } else {
+                const timeout = setTimeout(() => {
+                    handleLogout();
+                }, tokenExpiration - Date.now());
+                
+                return () => clearTimeout(timeout);
+            }
+        } else 
+            handleLogout()
+    }, []);
+    
+      const handleLogout = () => {
+          localStorage.removeItem('atendente_authToken');
+          localStorage.removeItem('atendente_tokenExpiration');
+          navigate("/atendente"); 
+      }
     return ( 
-        login ? children : (
         <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
             <Header
                 name={clerk.name}
@@ -822,5 +844,4 @@ export function ScreenDinner ({children}) {
             </Dialog.Root>
         </div>
         )
-    )
 }

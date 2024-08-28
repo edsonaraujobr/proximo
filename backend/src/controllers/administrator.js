@@ -1,19 +1,44 @@
-import db from "../database/db.js";
+import database from "../database/connection.db.js";
 import nodemailer from 'nodemailer';
+import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
 
-export const getAdministrators = (req, res) => {
+dotenv.config();
+
+const SECRET = process.env.SECRET
+
+export const login = (req, res) => {
     const { email, password } = req.body;
 
     const query = "SELECT * FROM administrator WHERE email = ? AND password = ?";
 
-    db.query(query, [email, password], (err, data) =>{
+    database.query(query, [email, password], (err, data) =>{
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao autenticar usuário' });
         }
 
         if (data.length > 0) {
-            return res.status(200).json({ message: 'Usuário autenticado com sucesso', user: data[0] });
+            const adm = data[0];
+
+            const token = jwt.sign(
+                {
+                    name: adm.full_name,
+                    email: adm.email
+                }, 
+                SECRET,
+                {
+                    expiresIn: '1m' 
+                }
+            )
+
+            const responseAdministrator = {
+                id: adm.id,
+                name: adm.full_name,
+                token: token
+            };
+
+            return res.status(200).json({ message: 'Usuário autenticado com sucesso', user: responseAdministrator });
         } else {
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
@@ -45,7 +70,7 @@ export const sendRecoveryCode = async (req, res) => {
 
     const query = "SELECT * FROM administrator WHERE email = ?";
 
-    db.query(query, [email], async (err, data) =>{
+    database.query(query, [email], async (err, data) =>{
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao localizar usuário' });
@@ -82,7 +107,7 @@ export const updatePassword = (req, res) => {
     const { email, password } = req.body;
     const query = "UPDATE administrator SET password=? WHERE email=?";
   
-    db.query(query, [password, email], (err, data) => {
+    database.query(query, [password, email], (err, data) => {
       if (err) {
         console.log('Erro ao atualizar a senha no banco de dados:');
         console.error('Erro ao atualizar a senha no banco de dados:', err);
@@ -104,7 +129,7 @@ export const updatePasswordId = (req, res) => {
 
     const queryGetPassword = "SELECT password FROM administrator WHERE id = ?";
 
-    db.query(queryGetPassword, [id], (err, data) => {
+    database.query(queryGetPassword, [id], (err, data) => {
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao localizar usuário' });
@@ -118,7 +143,7 @@ export const updatePasswordId = (req, res) => {
                 
                 const queryUpdatePassword = "UPDATE administrator SET password = ? WHERE id = ?";
 
-                db.query(queryUpdatePassword, [password, id], (err, result) => {
+                database.query(queryUpdatePassword, [password, id], (err, result) => {
                     if (err) {
                         
                         console.error('Erro ao atualizar a senha no banco de dados:', err);

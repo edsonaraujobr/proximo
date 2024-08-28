@@ -1,28 +1,45 @@
-import db from "../database/db.js";
+import database from "../database/connection.db.js";
 import bcrypt from "bcrypt";
 import nodemailer from 'nodemailer';
-const saltRounds = 10;
+import jwt from "jsonwebtoken";
 
-export const getClerk = (req, res) => {
+import * as dotenv from "dotenv";
+
+const saltRounds = 10;
+dotenv.config();
+
+const SECRET = process.env.SECRET;
+
+export const login = (req, res) => {
     const { email, password } = req.body;
 
     const query = "SELECT * FROM clerk WHERE email = ?";
 
-    db.query(query, [email], (err, data) =>{
-        if (err) {
-            console.error('Erro ao consultar banco de dados:', err);
-            return res.status(500).json({ error: 'Erro ao autenticar usuário' });
-        }
-
+    database.query(query, [email], (err, data) =>{
+        if (err) 
+            return res.status(400).json({ error: 'Erro ao autenticar usuário' });
+        
         if (data.length > 0) {
             bcrypt.compare(password, data[0].password, (err, result) => {
                 if(result) {
                     const clerk = data[0];
-                    
+
+                    const token = jwt.sign(
+                        {
+                            name: clerk.full_name,
+                            email: clerk.email
+                        }, 
+                        SECRET,
+                        {
+                            expiresIn: '1m' 
+                        }
+                    )
+
                     const responseClerk = {
-                      id: clerk.id,
-                      name: clerk.full_name,
-                      photo: `http://localhost:3030/uploads/${clerk.photo}`,
+                        id: clerk.id,
+                        name: clerk.full_name,
+                        photo: `http://localhost:3030/uploads/${clerk.photo}`,
+                        token: token
                     };
 
                     return res.status(200).json({ message: 'Usuário autenticado com sucesso', responseClerk });
@@ -41,10 +58,9 @@ export const registerClerk = (req,res) => {
     const { nameClerk, emailClerk, passwordClerk, shiftClerk, idAdministrator } = req.body;
     const photoClerk = req.file ? req.file.filename : null;
 
-    console.log("aqui")
     const query = "SELECT * FROM clerk WHERE email = ?";
 
-    db.query(query, [emailClerk], (err,data) => {
+    database.query(query, [emailClerk], (err,data) => {
         if(err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao buscar atendente' });
@@ -75,7 +91,7 @@ export const registerClerk = (req,res) => {
 
                 queryInsert += ")";
 
-                db.query(queryInsert, queryParams, (err, data) => {
+                database.query(queryInsert, queryParams, (err, data) => {
                     if(err) {
                         console.error('Erro ao inserir atendente no banco de dados:', err);
                         return res.status(500).json({ error: 'Erro ao inserir atendente no banco de dados' });
@@ -101,14 +117,14 @@ export const getAllClerks = (req, res) => {
     const query = "SELECT id, full_name, email, shift FROM clerk ORDER BY full_name ASC LIMIT ?,? ";
     const totalRowsQuery = "SELECT COUNT(*) AS total_rows FROM clerk";
 
-    db.query(totalRowsQuery, (err, totalRowsData) => {
+    database.query(totalRowsQuery, (err, totalRowsData) => {
         if (err) {
             return res.status(500).json({ error: "Erro ao buscar total de atendentes" });
         }
     
         const totalRows = totalRowsData[0].total_rows;
 
-        db.query(query, [startIndex, limit], (err, data) => {
+        database.query(query, [startIndex, limit], (err, data) => {
             if(err) {
                 return res.status(500).json({error: "Erro ao buscar atendentes"});
             }
@@ -138,7 +154,7 @@ export const updateClerk = (req, res) => {
     const query = `UPDATE clerk SET full_name = ?, email = ?, shift = ? WHERE id = ?`;
     const values = [nameClerk, emailClerk, shiftClerk || null, id];
 
-    db.query(query, values, (err, result) => {
+    database.query(query, values, (err, result) => {
         if (err) {
             return res.status(500).send('Erro ao atualizar atendente');
         }
@@ -161,7 +177,7 @@ export const removeClerk = (req, res) => {
 
     const query = `DELETE FROM clerk WHERE id = ?`;
     
-    db.query(query, id, (err, result) => {
+    database.query(query, id, (err, result) => {
         if(err) {
             return res.status(500).send('Erro ao remover atendente');
         }
@@ -198,7 +214,7 @@ export const sendRecoveryCode = async (req, res) => {
 
     const query = "SELECT * FROM clerk WHERE email = ?";
 
-    db.query(query, [email], async (err, data) =>{
+    database.query(query, [email], async (err, data) =>{
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao localizar usuário' });
@@ -235,7 +251,7 @@ export const updatePassword = (req, res) => {
     const { email, password } = req.body;
     bcrypt.hash(password, saltRounds, (err,hash) => {
         const query = `UPDATE clerk SET password='${hash}' WHERE email='${email}'`;
-        db.query(query, [password, email], (err, data) => {
+        database.query(query, [password, email], (err, data) => {
             if (err) {
               console.error('Erro ao atualizar a senha no banco de dados:', err);
               return res.status(500).json({ error: 'Erro ao atualizar a senha' });
@@ -256,7 +272,7 @@ export const updatePassword = (req, res) => {
 
     const queryGetPassword = "SELECT password FROM clerk WHERE id = ?";
 
-    db.query(queryGetPassword, [id], (err, data) => {
+    database.query(queryGetPassword, [id], (err, data) => {
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao localizar usuário' });
@@ -280,7 +296,7 @@ export const updatePassword = (req, res) => {
 
                         const queryUpdatePassword = "UPDATE clerk SET password = ? WHERE id = ?";
 
-                        db.query(queryUpdatePassword, [hash, id], (err, result) => {
+                        database.query(queryUpdatePassword, [hash, id], (err, result) => {
                             if (err) {
                                 console.error('Erro ao atualizar a senha no banco de dados:', err);
                                 

@@ -416,12 +416,34 @@ export function HomeAdministrator ({children}) {
 
     }
 
-    const handleClickExit = () => {
-        navigate("/")
-    }
-
     const handleClickSettings = () => {
         navigate("/administrador/configuracoes")
+    }
+
+    useEffect(() => {
+        const token = localStorage.getItem('administrador_authToken');
+        const tokenExpiration = localStorage.getItem('administrador_tokenExpiration');
+        
+        if (token && tokenExpiration) {
+            const isExpired = Date.now() > tokenExpiration;
+            
+            if (isExpired) {
+                handleLogout();
+            } else {
+                const timeout = setTimeout(() => {
+                    handleLogout();
+                }, tokenExpiration - Date.now());
+                
+                return () => clearTimeout(timeout);
+            }
+        } else 
+            handleLogout()
+    }, []);
+    
+    const handleLogout = () => {
+        localStorage.removeItem('administrador_authToken');
+        localStorage.removeItem('administrador_tokenExpiration');
+        navigate("/administrador"); 
     }
 
     return (
@@ -433,7 +455,7 @@ export function HomeAdministrator ({children}) {
                             className="flex flex-col w-full"
                         >
                             <Header
-                                onClickedExit={handleClickExit}
+                                onClickedExit={handleLogout}
                                 onClickedSettings={handleClickSettings}
                             />
                             <Tabs.List className="flex px-10 bg-gray-900 justify-start items-center gap-1 rounded-t-md">

@@ -1,11 +1,11 @@
-import db from "../database/db.js";
+import database from "../database/connection.db.js";
 
 export const getStudent = (req, res) => {
     const { registration } = req.body;
 
     const query = "SELECT * FROM student WHERE registration = ?";
 
-    db.query(query, [registration], (err, data) =>{
+    database.query(query, [registration], (err, data) =>{
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao autenticar usuário' });
@@ -37,7 +37,7 @@ export const registerStudents = (req,res) => {
 
     const query = "SELECT * FROM student WHERE registration = ?";
 
-    db.query(query, [registration], (err,data) => {
+    database.query(query, [registration], (err,data) => {
         if(err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao buscar estudante' });
@@ -73,7 +73,7 @@ export const registerStudents = (req,res) => {
             }
             queryInsert += ")";
 
-            db.query(queryInsert, queryParams, (err, data) => {
+            database.query(queryInsert, queryParams, (err, data) => {
                 if(err) {
                     console.error('Erro ao inserir aluno no banco de dados:', err);
                     return res.status(500).json({ error: 'Erro ao inserir aluno no banco de dados' });
@@ -96,14 +96,14 @@ export const getAllStudents = (req, res) => {
     const query = "SELECT registration, type_assistance, full_name, course, notice_number, date_started_assistance FROM student ORDER BY full_name ASC LIMIT ?,? ";
     const totalRowsQuery = "SELECT COUNT(*) AS total_rows FROM student";
 
-    db.query(totalRowsQuery, (err, totalRowsData) => {
+    database.query(totalRowsQuery, (err, totalRowsData) => {
         if (err) {
             return res.status(500).json({ error: "Erro ao buscar total de alunos" });
         }
     
         const totalRows = totalRowsData[0].total_rows;
 
-        db.query(query, [startIndex, limit], (err, data) => {
+        database.query(query, [startIndex, limit], (err, data) => {
             if(err) {
                 return res.status(500).json({error: "Erro ao buscar alunos"});
             }
@@ -135,7 +135,7 @@ export const updateStudent = (req, res) => {
     const query = `UPDATE student SET course = ?, type_assistance = ?, notice_number = ?, date_started_assistance = ? WHERE registration = ?`;
     const values = [course, type_assistance, notice_number || null , date_started_assistance || null , registration];
 
-    db.query(query, values, (err, result) => {
+    database.query(query, values, (err, result) => {
         if (err) {
             return res.status(500).send('Erro ao atualizar aluno');
         }
@@ -158,7 +158,7 @@ export const removeStudent = (req, res) => {
 
     const query = `DELETE FROM student WHERE registration = ?`;
     
-    db.query(query, registration, (err, result) => {
+    database.query(query, registration, (err, result) => {
         if(err) {
             return res.status(500).send('Erro ao remover aluno');
         }

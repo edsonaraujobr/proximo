@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom"
 import { useContext } from "react"
@@ -58,11 +58,30 @@ export function Login({ typeUser, otherUser}) {
         if (response.ok) {
             const data = await response.json();
             if(typeUser === 'atendente') {
-              loginClerk(data.responseClerk)
+
+              const clerk = data.responseClerk
+              loginClerk(clerk)
+
+              const decodedToken = JSON.parse(atob(clerk.token.split('.')[1]));
+              const expirationTime = decodedToken.exp * 1000; 
+      
+              localStorage.setItem(`${typeUser}_authToken`, clerk.token);
+              localStorage.setItem(`${typeUser}_tokenExpiration`, expirationTime);
+
               navigate(`/atendente/home`)
             } else if(typeUser === 'administrador') {
-              loginAdministrator(data.user)
+              
+              const adm = data.user;
+              loginAdministrator(adm)
+
+              const decodedToken = JSON.parse(atob(adm.token.split('.')[1]));
+              const expirationTime = decodedToken.exp * 1000; 
+
+              localStorage.setItem(`${typeUser}_authToken`, adm.token);
+              localStorage.setItem(`${typeUser}_tokenExpiration`, expirationTime);
+
               navigate(`/administrador/home`)
+            
             }
 
         } else {
@@ -148,6 +167,16 @@ export function Login({ typeUser, otherUser}) {
       alert('Erro ao conectar ao servidor');
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem(`${typeUser}_authToken`);
+    const tokenExpiration = localStorage.getItem(`${typeUser}_tokenExpiration`);
+    
+    if (token && tokenExpiration) {
+      localStorage.removeItem(`${typeUser}_authToken`);
+      localStorage.removeItem(`${typeUser}_tokenExpiration`);
+    }
+  })
 
   return (
     <div className='w-lvw h-lvh bg-gradient-to-t from-slate-800 to-slate-900 text-white flex gap-4 flex-col justify-center items-center'>

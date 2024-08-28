@@ -1,216 +1,237 @@
-import { PlusCircledIcon, FileTextIcon, EyeOpenIcon, Cross1Icon, CheckIcon, ChevronLeftIcon, ChevronRightIcon} from '@radix-ui/react-icons';
-import * as Dialog from '@radix-ui/react-dialog'; 
-import { Button } from '../../componentes/Button.jsx';
-import { Header } from '../../componentes/Header.jsx'
-import { useContext, useState, useEffect } from "react"
-import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
-import { useNavigate } from 'react-router-dom';
-import { ServiceContext } from '../../contexts/ServiceContext.jsx';
-import moment from 'moment';
+    import { PlusCircledIcon, EyeOpenIcon, Cross1Icon, ChevronLeftIcon, ChevronRightIcon} from '@radix-ui/react-icons';
+    import * as Dialog from '@radix-ui/react-dialog'; 
+    import { Button } from '../../componentes/Button.jsx';
+    import { Header } from '../../componentes/Header.jsx'
+    import { useContext, useState, useEffect } from "react"
+    import { ClerkContext } from '../../contexts/ClerkContext.jsx'; 
+    import { useNavigate } from 'react-router-dom';
+    import { ServiceContext } from '../../contexts/ServiceContext.jsx';
+    import moment from 'moment';
 
-export function HomeClerk({children}) {
-    const login = false;
-    const [typeService, setTypeService] = useState('');
-    const { clerk } = useContext(ClerkContext);
-    const navigate = useNavigate()
-    const { openService } = useContext(ServiceContext);
-    const [data, setData] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
+    export function HomeClerk() {
+        const [typeService, setTypeService] = useState('');
+        const { clerk } = useContext(ClerkContext);
+        const navigate = useNavigate()
+        const { openService } = useContext(ServiceContext);
+        const [data, setData] = useState([]);
+        const [currentPage, setCurrentPage] = useState(1);
+        const [totalPages, setTotalPages] = useState(0);
 
-    // const [searchService, setSearchService] = useState('');
-    // const itemsPerPage = 3;
-    // const [filterData, setFilterData] = useState([]);
+        // const [searchService, setSearchService] = useState('');
+        // const itemsPerPage = 3;
+        // const [filterData, setFilterData] = useState([]);
 
-    // const handleSearchService = (event) => {
-    //     setSearchService(event.target.value)
-    // }
+        // const handleSearchService = (event) => {
+        //     setSearchService(event.target.value)
+        // }
 
-    // const applyfilterData = () => {
-    //     if(searchService === '') {
-    //         setFilterData(data);
-    //     } else {
-    //         const filteredData = data.filter(item =>
-    //             item.type_service.toLowerCase().includes(searchService.toLowerCase())
-    //         );
-    
-    //         setFilterData(filteredData)
-               
-    //         const total = Math.ceil(filteredData.length / itemsPerPage);
-    //         setTotalPages(total);
-    //     }
-    // }
+        // const applyfilterData = () => {
+        //     if(searchService === '') {
+        //         setFilterData(data);
+        //     } else {
+        //         const filteredData = data.filter(item =>
+        //             item.type_service.toLowerCase().includes(searchService.toLowerCase())
+        //         );
+        
+        //         setFilterData(filteredData)
+                
+        //         const total = Math.ceil(filteredData.length / itemsPerPage);
+        //         setTotalPages(total);
+        //     }
+        // }
 
 
-    const handlePrintReport = async (id) => {
-        try {
-            const response = await fetch('http://localhost:3030/getRelatorios', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({id})
-            });
-            if(response.ok) {
-                const data = await response.json();
-                const dataLocale = data.data;
-                const printWindow = window.open('', '', `height=${screen.height},width=${screen.width}`);
-                printWindow.document.write('<html><head><title>Relatório de Serviço</title>');
-                printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">');
-                printWindow.document.write('</head><body class="flex flex-col p-5">');
-                printWindow.document.write(`<h1 class="flex justify-center items-center w-full text-xl font-bold">Relatório de Atendimento</h1>`);
-                printWindow.document.write(`<main class="flex flex-col gap-4">`)
-                printWindow.document.write(`<div class="flex flex-col w-full ">`)
-                printWindow.document.write(`<span>Tipo de Serviço: ${dataLocale.type_service}</span>`);
-                printWindow.document.write(`<span>Atendente: ${dataLocale.name_clerk.toUpperCase()}</span>`);
-                printWindow.document.write(`<span>Data: ${moment(dataLocale.date_service).format("DD-MM-YYYY")}</span>`);
-                printWindow.document.write(`<span>Horário: ${moment(dataLocale.date_service).format("HH:mm:ss")}</span>`);
-                printWindow.document.write(`<span>Total de clientes: ${dataLocale.total_clients}</span>`);
-                printWindow.document.write(`</div>`)
-                printWindow.document.write(`<div class="flex justify-between w-full font-bold mb-2">`)
-                printWindow.document.write(`<span class="flex-1">Preço total</span>`);
-                printWindow.document.write(`<span class="flex-1">Preço pago</span>`);
-                printWindow.document.write(`<span class="flex-1">Tipo de pagamento</span>`);
-                printWindow.document.write(`<span class="flex-1">Tipo de usuário</span>`);
-                printWindow.document.write(`<span class="flex-1">Matricula</span>`);
-                if(dataLocale.ordersData[0].quantity_items) {
-                    printWindow.document.write(`<span class="flex-1">Quantidade de itens</span>`);
-                }
-                if(dataLocale.ordersData[0].quantity_kg) {
-                    printWindow.document.write(`<span class="flex-1">Peso`);
-                }
-                printWindow.document.write(`</div>`)
-                printWindow.document.write(`</main>`)
-                printWindow.document.write(`<div class="bg-black w-full h-1 mb-2"></div>`)
-                dataLocale.ordersData.forEach(item => {
-                    printWindow.document.write(`<div class="flex justify-between mb-2">`)
-                    printWindow.document.write(`<p class="flex-1">R$ ${item.price_total}</p>`);
-                    printWindow.document.write(`<p class="flex-1">R$ ${item.price_paid}</p>`);
-                    printWindow.document.write(`<p class="flex-1">${item.type_payment}</p>`);
-                    if(item.type_assistance) {
-                        printWindow.document.write(`<p class="flex-1">${item.type_assistance}</p>`);
-                    } else {
-                        printWindow.document.write(`<p class="flex-1">EXTERNO</p>`);
+        const handlePrintReport = async (id) => {
+            try {
+                const response = await fetch('http://localhost:3030/getRelatorios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': clerk.token
+                    },
+                    body: JSON.stringify({id})
+                });
+                if(response.ok) {
+                    const data = await response.json();
+                    const dataLocale = data.data;
+                    const printWindow = window.open('', '', `height=${screen.height},width=${screen.width}`);
+                    printWindow.document.write('<html><head><title>Relatório de Serviço</title>');
+                    printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">');
+                    printWindow.document.write('</head><body class="flex flex-col p-5">');
+                    printWindow.document.write(`<h1 class="flex justify-center items-center w-full text-xl font-bold">Relatório de Atendimento</h1>`);
+                    printWindow.document.write(`<main class="flex flex-col gap-4">`)
+                    printWindow.document.write(`<div class="flex flex-col w-full ">`)
+                    printWindow.document.write(`<span>Tipo de Serviço: ${dataLocale.type_service}</span>`);
+                    printWindow.document.write(`<span>Atendente: ${dataLocale.name_clerk.toUpperCase()}</span>`);
+                    printWindow.document.write(`<span>Data: ${moment(dataLocale.date_service).format("DD-MM-YYYY")}</span>`);
+                    printWindow.document.write(`<span>Horário: ${moment(dataLocale.date_service).format("HH:mm:ss")}</span>`);
+                    printWindow.document.write(`<span>Total de clientes: ${dataLocale.total_clients}</span>`);
+                    printWindow.document.write(`</div>`)
+                    printWindow.document.write(`<div class="flex justify-between w-full font-bold mb-2">`)
+                    printWindow.document.write(`<span class="flex-1">Preço total</span>`);
+                    printWindow.document.write(`<span class="flex-1">Preço pago</span>`);
+                    printWindow.document.write(`<span class="flex-1">Tipo de pagamento</span>`);
+                    printWindow.document.write(`<span class="flex-1">Tipo de usuário</span>`);
+                    printWindow.document.write(`<span class="flex-1">Matricula</span>`);
+                    if(dataLocale.ordersData[0].quantity_items) {
+                        printWindow.document.write(`<span class="flex-1">Quantidade de itens</span>`);
                     }
-                    if(item.registration_student) {
-                        printWindow.document.write(`<p class="flex-1">${item.registration_student}</p>`);
-                    } else {
-                        printWindow.document.write(`<p class="flex-1">EXTERNO</p>`);
-                    }
-                    if ( item.quantity_items) {
-                        printWindow.document.write(`<p class="flex-1">${item.quantity_items}</p>`);
-                    }
-                    if ( item.quantity_kg) {
-                        printWindow.document.write(`<p class="flex-1">${item.quantity_kg}kg</p>`);
+                    if(dataLocale.ordersData[0].quantity_kg) {
+                        printWindow.document.write(`<span class="flex-1">Peso`);
                     }
                     printWindow.document.write(`</div>`)
-                });
-                printWindow.document.write('</body></html>');
-                printWindow.document.close();
-                printWindow.print();
-            } else {
-                alert("Não foi possível buscar este relatório");
-            }
-        } catch (error) {
-            console.error('Erro ao obter os dados do relatório:', error);
-        }
-    };
-
-    const handleTypeService = (e) => {
-        setTypeService(e.target.value)
-    };
-
-    const handleStartedService = async (event) => {
-        console.log("aqui")
-        event.preventDefault();
-
-        try {
-            const date = new Date().toISOString();
-            const response = await fetch("http://localhost:3030/atendimento", {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify( {date, type_service: typeService.toUpperCase(), id_clerk:clerk.id} )
-            });
-
-            if(response.ok) {
-                const data = await response.json();
-                switch(typeService) {
-                    case "café": 
-                        navigate(`/atendente/cafe`)
-                        break;
-                    case "almoço":
-                        navigate(`/atendente/almoco`)
-                        break;
-                    case "jantar":
-                        navigate(`/atendente/jantar`)
-                        break;
+                    printWindow.document.write(`</main>`)
+                    printWindow.document.write(`<div class="bg-black w-full h-1 mb-2"></div>`)
+                    dataLocale.ordersData.forEach(item => {
+                        printWindow.document.write(`<div class="flex justify-between mb-2">`)
+                        printWindow.document.write(`<p class="flex-1">R$ ${item.price_total}</p>`);
+                        printWindow.document.write(`<p class="flex-1">R$ ${item.price_paid}</p>`);
+                        printWindow.document.write(`<p class="flex-1">${item.type_payment}</p>`);
+                        if(item.type_assistance) {
+                            printWindow.document.write(`<p class="flex-1">${item.type_assistance}</p>`);
+                        } else {
+                            printWindow.document.write(`<p class="flex-1">EXTERNO</p>`);
+                        }
+                        if(item.registration_student) {
+                            printWindow.document.write(`<p class="flex-1">${item.registration_student}</p>`);
+                        } else {
+                            printWindow.document.write(`<p class="flex-1">EXTERNO</p>`);
+                        }
+                        if ( item.quantity_items) {
+                            printWindow.document.write(`<p class="flex-1">${item.quantity_items}</p>`);
+                        }
+                        if ( item.quantity_kg) {
+                            printWindow.document.write(`<p class="flex-1">${item.quantity_kg}kg</p>`);
+                        }
+                        printWindow.document.write(`</div>`)
+                    });
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+                    printWindow.print();
+                } else {
+                    alert("Não foi possível buscar este relatório");
                 }
-
-                openService(data.id)
-            } else {
-                alert("erro!")
+            } catch (error) {
+                console.error('Erro ao obter os dados do relatório:', error);
             }
-        } catch(error) {
-            console.error("Erro ao conectar ao servidor", error);
-        }
+        };
 
-    } 
+        const handleTypeService = (e) => {
+            setTypeService(e.target.value)
+        };
 
-    const handleClickSettings = () => {
-        navigate("/atendente/configuracoes")
-    }
+        const handleStartedService = async (event) => {
+            console.log("aqui")
+            event.preventDefault();
 
-    useEffect(() => {
-        fetchData(currentPage);
-    }, [currentPage]);
+            try {
+                const date = new Date().toISOString();
+                const response = await fetch("http://localhost:3030/atendimento", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify( {date, type_service: typeService.toUpperCase(), id_clerk:clerk.id} )
+                });
 
-    const fetchData = async (page) => {
-        try {
-            const response = await fetch(`http://localhost:3030/getAtendimentos?page=${page}&limit=3`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify( {id:clerk.id} )
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+                if(response.ok) {
+                    const data = await response.json();
+                    switch(typeService) {
+                        case "café": 
+                            navigate(`/atendente/cafe`)
+                            break;
+                        case "almoço":
+                            navigate(`/atendente/almoco`)
+                            break;
+                        case "jantar":
+                            navigate(`/atendente/jantar`)
+                            break;
+                    }
+
+                    openService(data.id)
+                } else {
+                    alert("erro!")
+                }
+            } catch(error) {
+                console.error("Erro ao conectar ao servidor", error);
             }
-            const data = await response.json();
-            setData(data.results);
-            setTotalPages(data.totalPages);
-        } catch (error) {
-            console.error('Erro ao buscar dados:', error);
-        }
-    };
 
-    const nextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
+        } 
 
-    const prevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+        const handleClickSettings = () => {
+            navigate("/atendente/configuracoes")
         }
-    };
 
-    const handleClickExit = () => {
-        navigate("/")
-    }
-    
-    return (
-        login ? children : ( 
+        useEffect(() => {
+            fetchData(currentPage);
+        }, [currentPage]);
+
+        const fetchData = async (page) => {
+            try {
+                const response = await fetch(`http://localhost:3030/getAtendimentos?page=${page}&limit=3`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify( {id:clerk.id} )
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setData(data.results);
+                setTotalPages(data.totalPages);
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
+        };
+
+        const nextPage = () => {
+            if (currentPage < totalPages) {
+                setCurrentPage(currentPage + 1);
+            }
+        };
+
+        const prevPage = () => {
+            if (currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            }
+        };
+
+        useEffect(() => {
+            const token = localStorage.getItem('atendente_authToken');
+            const tokenExpiration = localStorage.getItem('atendente_tokenExpiration');
+            
+            if (token && tokenExpiration) {
+                const isExpired = Date.now() > tokenExpiration;
+                
+                if (isExpired) {
+                    handleLogout();
+                } else {
+                    const timeout = setTimeout(() => {
+                        handleLogout();
+                    }, tokenExpiration - Date.now());
+                    
+                    return () => clearTimeout(timeout);
+                }
+            } else 
+                handleLogout()
+        }, []);
+        
+        const handleLogout = () => {
+            localStorage.removeItem('atendente_authToken');
+            localStorage.removeItem('atendente_tokenExpiration');
+            navigate("/atendente"); 
+        }
+  
+        return (
             <Dialog.Root>
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4'>
                     <Header
                         name={clerk.name}
                         linkPhoto={clerk.photo}
                         onClickedSettings={handleClickSettings}
-                        onClickedExit={handleClickExit}
+                        onClickedExit={handleLogout}
                     />
 
                     <div className='flex'>
@@ -323,5 +344,4 @@ export function HomeClerk({children}) {
                 </div>
             </Dialog.Root>
         )
-    )
-}
+    }

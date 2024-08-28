@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Cross1Icon, CameraIcon, LockClosedIcon } from "@radix-ui/react-icons";
+import { CameraIcon, LockClosedIcon } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Button } from "../../componentes/Button.jsx";
 import { Header } from "../../componentes/Header.jsx";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ClerkContext } from "../../contexts/ClerkContext.jsx";
 import { useNavigate } from "react-router-dom";
 
-export function SettingsClerk({ children }) {
+export function SettingsClerk() {
   const { clerk } = useContext(ClerkContext);
   const navigate = useNavigate();
 
@@ -62,6 +61,32 @@ export function SettingsClerk({ children }) {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('atendente_authToken');
+    const tokenExpiration = localStorage.getItem('atendente_tokenExpiration');
+    
+    if (token && tokenExpiration) {
+        const isExpired = Date.now() > tokenExpiration;
+        
+        if (isExpired) {
+            handleLogout();
+        } else {
+            const timeout = setTimeout(() => {
+                handleLogout();
+            }, tokenExpiration - Date.now());
+            
+            return () => clearTimeout(timeout);
+        }
+    } else 
+        handleLogout()
+}, []);
+
+  const handleLogout = () => {
+      localStorage.removeItem('atendente_authToken');
+      localStorage.removeItem('atendente_tokenExpiration');
+      navigate("/atendente"); 
+  }
+
   return (
     <Dialog.Root>
       <div className="flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4">
@@ -69,6 +94,7 @@ export function SettingsClerk({ children }) {
           name={clerk.name}
           linkPhoto={clerk.photo}
           onClickedSettings={handleClickBack}
+          onClickedExit={handleLogout}
         />
 
         <div className="flex flex-col px-10">

@@ -1,4 +1,4 @@
-import db from "../database/db.js";
+import database from "../database/connection.db.js";
 
 
 export const createOrder = (req,res) => {
@@ -32,7 +32,7 @@ export const createOrder = (req,res) => {
 
     queryInsert += ")";
 
-    db.query(queryInsert, queryParams, (err, data) => {
+    database.query(queryInsert, queryParams, (err, data) => {
         if (err) {
             return res.status(500).json({ error: 'Erro ao criar comanda' });
         }

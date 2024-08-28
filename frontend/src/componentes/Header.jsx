@@ -1,7 +1,7 @@
 import logo from "../assets/logo.png";
 import { PhotoMenu } from './PhotoMenu';
 
-export function Header({name,linkPhoto, onClickedSettings, onClickedTerms, onClickedSupport, onClickedAbout, onClickedExit }) {
+export function Header({name,linkPhoto, onClickedSettings, nameSettings, onClickedTerms, onClickedSupport, onClickedAbout, onClickedExit }) {
     return (
         <header className="w-lvw bg-slate-900 px-10 py-4 flex justify-between items-center text-white">
             <div className='gap-3 flex justify-between items-center'>
@@ -11,6 +11,7 @@ export function Header({name,linkPhoto, onClickedSettings, onClickedTerms, onCli
             <div className='gap-3 flex justify-between items-center'>
                 <PhotoMenu
                     linkPhoto={linkPhoto}
+                    nameSettings={nameSettings}
                     onClickedSettings={onClickedSettings}
                     onClickedTerms={onClickedTerms}
                     onClickedSupport={onClickedSupport}

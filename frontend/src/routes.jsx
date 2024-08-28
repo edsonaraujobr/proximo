@@ -8,11 +8,16 @@ import { HomeAdministrator } from "./pages/Administrator/HomeAdministrator";
 import { ScreenLunch } from "./pages/Clerk/ScreenLunch";
 import { SettingsClerk } from "./pages/Clerk/SettingsClerk";
 import { SettingsAdministrator } from "./pages/Administrator/SettingsAdministrator";
+import ProtectedRoute from "./protectedRoute.jsx";
 
 function MainRoutes() {
     return (
         <Routes>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element=
+            {
+                <Home/>
+            } 
+            />
             <Route path="/administrador" element=
             {
                 <Login
@@ -31,41 +36,39 @@ function MainRoutes() {
             />
             <Route path="/administrador/home" element=
             {
-                <HomeAdministrator>
-
-                </HomeAdministrator>
+                <ProtectedRoute typeUser="administrador" element={HomeAdministrator}/>
             }
             />
             <Route path="/atendente/almoco" element=
             {
-                <ScreenLunch>
-                    <Home/>
-                </ScreenLunch>
+                <ProtectedRoute typeUser="atendente" element={ScreenLunch}/>
             }
             />
             <Route path="/atendente/cafe" element=
             {
-                <ScreenCoffee>
-                    <Home/>
-                </ScreenCoffee>
+                <ProtectedRoute typeUser="atendente" element={ScreenCoffee}/>
             }
             />
             <Route path="/atendente/jantar" element=
             {
-                <ScreenDinner>
-                    <Home/>
-                </ScreenDinner>
+                <ProtectedRoute typeUser="atendente" element={ScreenDinner}/>
             }
             />
             <Route path="/atendente/home" element=
             {
-                <HomeClerk>
-                    <Home/>
-                </HomeClerk>
+                <ProtectedRoute typeUser="atendente" element={HomeClerk}/>
             }
             />
-            <Route path="/atendente/configuracoes" element={<SettingsClerk/>} />
-            <Route path="/administrador/configuracoes" element={<SettingsAdministrator/>} />
+            <Route path="/atendente/configuracoes" element=
+            {
+                <ProtectedRoute typeUser="atendente" element={SettingsClerk}/>
+            } 
+            />
+            <Route path="/administrador/configuracoes" element=
+            {
+                <ProtectedRoute typeUser="administrador" element={SettingsAdministrator}/>
+            } 
+            />
         </Routes>
     )
 }

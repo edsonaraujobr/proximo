@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { ServiceContext } from '../../contexts/ServiceContext.jsx';
 import { useRef, useEffect } from 'react';
 
-export function ScreenLunch ({children}) {
+export function ScreenLunch () {
     const [registration, setRegistration] = useState('');
     const [userType, setUserType] = useState('interno');
     const [paymentType, setPaymentType] = useState('cartão');
@@ -29,7 +29,6 @@ export function ScreenLunch ({children}) {
     const { save: saveStudent, student, remove: removeStudent } = useContext(StudentContext);
     const { service } = useContext(ServiceContext);
 
-    const login = false;
     const navigate = useNavigate();
     const priceFood = 39.37;
 
@@ -253,8 +252,33 @@ export function ScreenLunch ({children}) {
         }
     }
 
+    useEffect(() => {
+        const token = localStorage.getItem('atendente_authToken');
+        const tokenExpiration = localStorage.getItem('atendente_tokenExpiration');
+        
+        if (token && tokenExpiration) {
+            const isExpired = Date.now() > tokenExpiration;
+            
+            if (isExpired) {
+                handleLogout();
+            } else {
+                const timeout = setTimeout(() => {
+                    handleLogout();
+                }, tokenExpiration - Date.now());
+                
+                return () => clearTimeout(timeout);
+            }
+        } else 
+            handleLogout()
+    }, []);
+    
+      const handleLogout = () => {
+          localStorage.removeItem('atendente_authToken');
+          localStorage.removeItem('atendente_tokenExpiration');
+          navigate("/atendente"); 
+      }
+
     return ( 
-        login ? children : (
         <div className="w-lvw h-lvh bg-slate-800 text-white flex flex-col">
             <Header
                 name={clerk.name}
@@ -476,5 +500,4 @@ export function ScreenLunch ({children}) {
             </Dialog.Root>
         </div>
         )
-    )
 }

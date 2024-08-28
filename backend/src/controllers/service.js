@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import db from "../database/db.js";
+import database from "../database/connection.db.js";
 
 
 export const createService = (req,res) => {
@@ -9,7 +9,7 @@ export const createService = (req,res) => {
 
     const formattedDate = moment(date).tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss');
 
-    db.query(query, [formattedDate, type_service, id_clerk], (err,data) => {
+    database.query(query, [formattedDate, type_service, id_clerk], (err,data) => {
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao criar serviço' });
@@ -40,7 +40,7 @@ export const getServices = (req, res) => {
         DESC LIMIT ?, ?; 
     `;
     
-    db.query(query, [id,startIndex, limit], (err, results) => {
+    database.query(query, [id,startIndex, limit], (err, results) => {
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao buscar serviços' });
@@ -56,7 +56,7 @@ export const getServices = (req, res) => {
             ) AS result_set
         `;
 
-        db.query(countQuery, [id], (err, countResults) => {
+        database.query(countQuery, [id], (err, countResults) => {
             if (err) {
                 console.error('Erro ao contar serviços:', err);
                 return res.status(500).json({ error: 'Erro ao contar serviços' });
@@ -83,7 +83,7 @@ export const getReport = (req,res) => {
         LEFT JOIN student ON orders.registration_student = student.registration
         WHERE id_service = ?;`
 
-    db.query(queryOrders, [id,id], (err, dataOrders) => {
+    database.query(queryOrders, [id,id], (err, dataOrders) => {
         if(err) {
             return res.status(500).json({error: 'Erro ao buscar atendimento'});
         }
@@ -95,7 +95,7 @@ export const getReport = (req,res) => {
                 INNER JOIN clerk ON id_clerk = clerk.id AND service.id = ?;
             `;
 
-            db.query(queryServices, id, (err, dataService) => {
+            database.query(queryServices, id, (err, dataService) => {
 
                 if(err) {
                     return res.status(500).json({error: 'Erro ao buscar serviço'});

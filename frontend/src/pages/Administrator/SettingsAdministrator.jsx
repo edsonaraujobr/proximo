@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Cross1Icon, CameraIcon, LockClosedIcon } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "../../componentes/Button.jsx";
@@ -62,12 +62,40 @@ export function SettingsAdministrator({ children }) {
     }
   };
 
+  useEffect(() => {
+      const token = localStorage.getItem('administrador_authToken');
+      const tokenExpiration = localStorage.getItem('administrador_tokenExpiration');
+      
+      if (token && tokenExpiration) {
+          const isExpired = Date.now() > tokenExpiration;
+          
+          if (isExpired) {
+              handleLogout();
+          } else {
+              const timeout = setTimeout(() => {
+                  handleLogout();
+              }, tokenExpiration - Date.now());
+              
+              return () => clearTimeout(timeout);
+          }
+      } else 
+          handleLogout()
+  }, []);
+
+  const handleLogout = () => {
+      localStorage.removeItem('administrador_authToken');
+      localStorage.removeItem('administrador_tokenExpiration');
+      navigate("/administrador"); 
+  }
+
   return (
     <Dialog.Root>
       <div className="flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4">
         <Header
           name={administrator.name}
           onClickedSettings={handleClickBack}
+          onClickedExit={handleLogout}
+          nameSettings="Home"
         />
 
         <div className="flex flex-col px-10">
@@ -138,7 +166,7 @@ export function SettingsAdministrator({ children }) {
             )}
             <button type="submit" className="w-full mt-4 bg-green-700 text-white rounded-md h-7 hover:bg-green-900">Salvar Alterações</button>
             </form>
-            <button type="" className="w-full  bg-green-700 text-white rounded-md h-7 hover:bg-green-900" onClick={handleClickBack}>Voltar</button>
+            <button type="" className="w-full  bg-yellow-600 text-white rounded-md h-7 hover:bg-yellow-700" onClick={handleClickBack}>Voltar</button>
             
             
           </div>

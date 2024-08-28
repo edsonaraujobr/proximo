@@ -4,7 +4,7 @@ import { ExitIcon, GearIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
 import './PhotoMenu.css';
 import Modal from '../componentes/Modal.jsx'
 
-export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClickedSupport, onClickedAbout, onClickedExit }) {
+export function PhotoMenu({linkPhoto, onClickedSettings, nameSettings, onClickedTerms, onClickedSupport, onClickedAbout, onClickedExit }) {
     
     const [openModalTerms, setOpenModalTerms]=useState(false);
     const customModalStyles = {
@@ -17,7 +17,6 @@ export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClick
         overflowY: 'scroll',
         scrollbarWidth: 'none',
       };
-    console.log(linkPhoto)
     return (
         <><DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
@@ -33,7 +32,7 @@ export function PhotoMenu({linkPhoto, onClickedSettings, onClickedTerms, onClick
             <DropdownMenu.Portal>
                 <DropdownMenu.Content className="DropdownMenuContent bg-slate-800 border border-slate-600" sideOffset={5}>
                     <DropdownMenu.Item className="DropdownMenuItem" onClick={onClickedSettings}>
-                        Configurações <div className="RightSlot"><GearIcon /></div>
+                        {nameSettings ? nameSettings : "Configurações" } <div className="RightSlot"><GearIcon /></div>
                     </DropdownMenu.Item>
 
                     <DropdownMenu.Separator className="DropdownMenuSeparator" />

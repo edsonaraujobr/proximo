@@ -21,5 +21,5 @@ app.use("/", servicesOrders);
 app.use('/uploads', express.static('uploads'));
 
 app.listen('3030', () => {
-  console.log(`Server is running on port 3030`);
+  console.log(`Server is running`);
 });
