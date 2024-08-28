@@ -15,10 +15,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("/aluno", getStudent)
-router.post("/registrar-aluno", upload.single('photo'),registerStudents)
-router.get("/listar-alunos", getAllStudents)
-router.put("/atualizar-aluno", updateStudent)
-router.delete("/remover-aluno", removeStudent)
+router.post("aluno/pesquisar/:registration", getStudent)
+router.post("aluno/registrar", upload.single('photo'),registerStudents)
+router.get("aluno/listar", getAllStudents)
+router.put("aluno/atualizar/:registration", updateStudent)
+router.delete("aluno/remover/:registration", removeStudent)
 
 export default router

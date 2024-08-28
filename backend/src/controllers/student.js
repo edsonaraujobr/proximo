@@ -1,7 +1,7 @@
 import database from "../database/connection.db.js";
 
 export const getStudent = (req, res) => {
-    const { registration } = req.body;
+    const { registration } = req.params;
 
     const query = "SELECT * FROM student WHERE registration = ?";
 
@@ -126,8 +126,9 @@ export const getAllStudents = (req, res) => {
 }
 
 export const updateStudent = (req, res) => {
-    const { registration, course, type_assistance, notice_number, date_started_assistance} = req.body;
-    console.log("chegou aqui")
+    const { registration } = req.params
+    const { course, type_assistance, notice_number, date_started_assistance} = req.body;
+
     if (!registration) {
         return res.status(400).send('Dados insuficientes');
     }
@@ -150,7 +151,7 @@ export const updateStudent = (req, res) => {
 }
 
 export const removeStudent = (req, res) => {
-    const { registration } = req.body;
+    const { registration } = req.params;
 
     if (!registration) {
         return res.status(400).send('Dados insuficientes');

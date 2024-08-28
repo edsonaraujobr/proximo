@@ -17,7 +17,7 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 
 frontend/node_modules/
-
+backend/.env
 backend/node_modules/
 
 # Editor directories and files
