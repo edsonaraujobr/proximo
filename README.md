@@ -1,37 +1,61 @@
-# Sobre 🔍
+## 📋 Project
 
-Este projeto foi desenvolvido como trabalho final para disciplina **Banco de Dados I** ministrada pela doscente **Maísa Soares Dos Santos Lopes** do curso de **Ciência da Computação**. 
+This project was deleveped as final project of the database discipline taught by the teacher **Maísa Soares Dos Santos Lopes** from Computer Science Course.
 
-Intitulado **próximo**, é software que busca solucionar um problema real enfrentado pelos estudantes que consomem diariamente no Restaurante Universitário da UESB de Vitória da Conquista.
+Named as **próximo**, it's a software that aims to solve a real problem faced by students who consume at the university resturant at UESB, Vitória da Conquista. <br>
 
-É uma aplicação desenvolvido inicialmente para web, por Edson Araújo, Pedro Lucca, Christian Kauan e Deyvson Luís. 
 
-## Slide de apresentação 📺
+## 💻 How to use
 
- [Baixe o slide aqui](https://github.com/edsonaraujobr/software-ru/blob/main/Apresenta%C3%A7%C3%A3oProximo.pptx)
+To clone and run this application you need to have [Git](https://git-scm.com) and [Docker](https://www.docker.com/) installed on your computer
+<br>
+In your command line
 
-## Modelo Conceitual 🎲
+```bash
+# Clone the repository
+$ git clone https://github.com/edsonaraujobr/undefined_api
 
- [Visualize aqui](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloConceitual.png)
+# Run the application through docker
+$ docker compose up --build
 
-## Modelo Lógico 💎
+# Access the application in your browser
+$ http://localhost:9000
 
- [Visualize aqui](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloLogico.png)
+```
+Now, you need to create an account for the clerk after logging in as the admin with the email admin@gmail.com and password admin. Then, you can access the system as the clerk using the account you just created.
 
-## Documento de requisitos 📃
+## 👨‍💻 Technologies
 
-[Baixe aqui](https://github.com/edsonaraujobr/software-ru/blob/main/documentoRequisitosBD.pdf)
+These are the technologies used in this project
+
+**Backend:** [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/pt-br/), [MySQL](https://www.mysql.com/). <br>
+**Frontend:** [ReactJS](https://react.dev/), [TailwindCSS](https://tailwindcss.com/docs/guides/vite), [Vite](https://vitejs.dev/).
+
+## 📺 Presentation Slide
+
+ [Download here](https://github.com/edsonaraujobr/software-ru/blob/main/Apresenta%C3%A7%C3%A3oProximo.pptx)
+
+## 🎲 Conceptual Model
+
+ [View here](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloConceitual.png)
+
+## 💎 Logic Model
+
+  [View here](https://github.com/edsonaraujobr/software-ru/blob/main/ModeloLogico.png)
+
+## 📃 Requirements Document
+
+[Download here](https://github.com/edsonaraujobr/software-ru/blob/main/documentoRequisitosBD.pdf)
  
-## Execução 🎬
+## 🎬 Running 
 
 ![5bfca227-4930-4071-bc94-2e0c2565684a](https://github.com/edsonaraujobr/software-ru/assets/137104822/55bc23f1-22b0-4a0b-82f3-b2b407ce6cd6)
 
-## Tecnologias Utilizadas 🖥
+## 📝 License
 
-1. ReactJS ✅
-2. TailwindCSS ✅
-3. NodeJS ✅
-4. Docker ✅
+This project are is under the MIT license. See the [LICENSE](https://github.com/edsonaraujobr/software-ru/blob/main/LICENSE) to get more details.
+
+
 
 
 
