@@ -35,12 +35,11 @@ export function SettingsClerk() {
       return;
     }
 
-    const id=clerk.id;
     try {
-      const response = await fetch(`http://localhost:3030/update-password-id/atendente`, {
+      const response = await fetch(`http://localhost:3030/clerk/update-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, password: newPassword, current:currentPassword}),
+        body: JSON.stringify({ email: clerk.email, password: newPassword})
       });
 
       if (response.ok) {
@@ -62,8 +61,8 @@ export function SettingsClerk() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('atendente_authToken');
-    const tokenExpiration = localStorage.getItem('atendente_tokenExpiration');
+    const token = localStorage.getItem('clerk_authToken');
+    const tokenExpiration = localStorage.getItem('clerk_tokenExpiration');
     
     if (token && tokenExpiration) {
         const isExpired = Date.now() > tokenExpiration;
@@ -82,9 +81,9 @@ export function SettingsClerk() {
 }, []);
 
   const handleLogout = () => {
-      localStorage.removeItem('atendente_authToken');
-      localStorage.removeItem('atendente_tokenExpiration');
-      navigate("/atendente"); 
+      localStorage.removeItem('clerk_authToken');
+      localStorage.removeItem('clerk_tokenExpiration');
+      navigate("/clerk"); 
   }
 
   return (

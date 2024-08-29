@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
-import { Cross1Icon, CameraIcon, LockClosedIcon } from "@radix-ui/react-icons";
+import { LockClosedIcon } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
-import { Button } from "../../componentes/Button.jsx";
 import { Header } from "../../componentes/Header.jsx";
 import { useContext } from "react";
 import { AdministratorContext } from "../../contexts/AdministratorContext.jsx";
 import { useNavigate } from "react-router-dom";
 
-export function SettingsAdministrator({ children }) {
+export function SettingsAdministrator() {
   const { administrator } = useContext(AdministratorContext);
   const navigate = useNavigate();
 
   const handleClickBack = () => {
-    navigate("../administrador/home");
+    navigate("../administrator/home");
   };
 
   const [newPassword, setNewPassword] = useState('');
@@ -36,12 +35,11 @@ export function SettingsAdministrator({ children }) {
       return;
     }
 
-    const id=administrator.id;
     try {
-      const response = await fetch(`http://localhost:3030/update-password-id/administrador`, {
+      const response = await fetch(`http://localhost:3030/administrator/update-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, password: newPassword, current:currentPassword}),
+        body: JSON.stringify({ email: administrator.email, password: newPassword, })
       });
 
       if (response.ok) {
@@ -63,8 +61,8 @@ export function SettingsAdministrator({ children }) {
   };
 
   useEffect(() => {
-      const token = localStorage.getItem('administrador_authToken');
-      const tokenExpiration = localStorage.getItem('administrador_tokenExpiration');
+      const token = localStorage.getItem('administrator_authToken');
+      const tokenExpiration = localStorage.getItem('administrator_tokenExpiration');
       
       if (token && tokenExpiration) {
           const isExpired = Date.now() > tokenExpiration;
@@ -83,9 +81,9 @@ export function SettingsAdministrator({ children }) {
   }, []);
 
   const handleLogout = () => {
-      localStorage.removeItem('administrador_authToken');
-      localStorage.removeItem('administrador_tokenExpiration');
-      navigate("/administrador"); 
+      localStorage.removeItem('administrator_authToken');
+      localStorage.removeItem('administrator_tokenExpiration');
+      navigate("/administrator"); 
   }
 
   return (

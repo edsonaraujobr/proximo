@@ -29,7 +29,7 @@ export const login = (req, res) => {
                 }, 
                 SECRET,
                 {
-                    expiresIn: '1m' 
+                    expiresIn: '4h' 
                 }
             )
 

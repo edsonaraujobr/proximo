@@ -18,55 +18,55 @@ function MainRoutes() {
                 <Home/>
             } 
             />
-            <Route path="/administrador" element=
+            <Route path="/administrator" element=
             {
                 <Login
-                    typeUser="administrador"
-                    otherUser="atendente"
+                    typeUser="administrator"
+                    otherUser="clerk"
                 />
             }
             />
-            <Route path="/atendente" element=
+            <Route path="/clerk" element=
             {
                 <Login
-                    typeUser="atendente"
-                    otherUser="administrador"
+                    typeUser="clerk"
+                    otherUser="administrator"
                 />
             }
             />
-            <Route path="/administrador/home" element=
+            <Route path="/administrator/home" element=
             {
-                <ProtectedRoute typeUser="administrador" element={HomeAdministrator}/>
+                <ProtectedRoute typeUser="administrator" element={HomeAdministrator}/>
             }
             />
-            <Route path="/atendente/almoco" element=
+            <Route path="/clerk/lunch" element=
             {
-                <ProtectedRoute typeUser="atendente" element={ScreenLunch}/>
+                <ProtectedRoute typeUser="clerk" element={ScreenLunch}/>
             }
             />
-            <Route path="/atendente/cafe" element=
+            <Route path="/clerk/coffee" element=
             {
-                <ProtectedRoute typeUser="atendente" element={ScreenCoffee}/>
+                <ProtectedRoute typeUser="clerk" element={ScreenCoffee}/>
             }
             />
-            <Route path="/atendente/jantar" element=
+            <Route path="/clerk/dinner" element=
             {
-                <ProtectedRoute typeUser="atendente" element={ScreenDinner}/>
+                <ProtectedRoute typeUser="clerk" element={ScreenDinner}/>
             }
             />
-            <Route path="/atendente/home" element=
+            <Route path="/clerk/home" element=
             {
-                <ProtectedRoute typeUser="atendente" element={HomeClerk}/>
+                <ProtectedRoute typeUser="clerk" element={HomeClerk}/>
             }
             />
-            <Route path="/atendente/configuracoes" element=
+            <Route path="/clerk/settings" element=
             {
-                <ProtectedRoute typeUser="atendente" element={SettingsClerk}/>
+                <ProtectedRoute typeUser="clerk" element={SettingsClerk}/>
             } 
             />
-            <Route path="/administrador/configuracoes" element=
+            <Route path="/administrator/settings" element=
             {
-                <ProtectedRoute typeUser="administrador" element={SettingsAdministrator}/>
+                <ProtectedRoute typeUser="administrator" element={SettingsAdministrator}/>
             } 
             />
         </Routes>

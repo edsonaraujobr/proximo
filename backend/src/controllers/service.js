@@ -3,14 +3,14 @@ import database from "../database/connection.db.js";
 
 
 export const createService = (req,res) => {
-    const { id_clerk } = req.params
+    const { id } = req.params
     const { date, type_service } = req.body
 
     const query = "INSERT INTO service (date_service,type_service,id_clerk) VALUES (?,?,?)"
 
     const formattedDate = moment(date).tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss');
 
-    database.query(query, [formattedDate, type_service, id_clerk], (err,data) => {
+    database.query(query, [formattedDate, type_service, id], (err,data) => {
         if (err) {
             console.error('Erro ao consultar banco de dados:', err);
             return res.status(500).json({ error: 'Erro ao criar serviço' });

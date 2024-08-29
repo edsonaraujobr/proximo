@@ -47,7 +47,7 @@ export function Login({ typeUser, otherUser}) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-        const response = await fetch(`http://localhost:3030/${typeUser}`, {
+        const response = await fetch(`http://localhost:3030/${typeUser}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ export function Login({ typeUser, otherUser}) {
 
         if (response.ok) {
             const data = await response.json();
-            if(typeUser === 'atendente') {
+            if(typeUser === 'clerk') {
 
               const clerk = data.responseClerk
               loginClerk(clerk)
@@ -68,8 +68,8 @@ export function Login({ typeUser, otherUser}) {
               localStorage.setItem(`${typeUser}_authToken`, clerk.token);
               localStorage.setItem(`${typeUser}_tokenExpiration`, expirationTime);
 
-              navigate(`/atendente/home`)
-            } else if(typeUser === 'administrador') {
+              navigate(`/clerk/home`)
+            } else if(typeUser === 'administrator') {
               
               const adm = data.user;
               loginAdministrator(adm)
@@ -80,7 +80,7 @@ export function Login({ typeUser, otherUser}) {
               localStorage.setItem(`${typeUser}_authToken`, adm.token);
               localStorage.setItem(`${typeUser}_tokenExpiration`, expirationTime);
 
-              navigate(`/administrador/home`)
+              navigate(`/administrator/home`)
             
             }
 
@@ -95,7 +95,7 @@ export function Login({ typeUser, otherUser}) {
   const handleSendRecoveryCode = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3030/send-recovery-code/${typeUser}`, {
+      const response = await fetch(`http://localhost:3030/${typeUser}/send-recovery-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -118,7 +118,7 @@ export function Login({ typeUser, otherUser}) {
   const handleVerifyRecoveryCode = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3030/verify-recovery-code/${typeUser}`, {
+      const response = await fetch(`http://localhost:3030/${typeUser}/verify-recovery-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code: recoveryCode }),
@@ -148,7 +148,7 @@ export function Login({ typeUser, otherUser}) {
     }
 
     try {
-      const response = await fetch(`http://localhost:3030/update-password/${typeUser}`, {
+      const response = await fetch(`http://localhost:3030/${typeUser}/update-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password: newPassword }),
@@ -183,7 +183,7 @@ export function Login({ typeUser, otherUser}) {
       <header className="flex flex-col justify-center items-center gap-3">
         <img src={logo} alt="sdsd" className="logo"/>
         <h2 className="font-light text-2xl">
-          Entre como <strong className="font-bold">{typeUser}</strong>
+          Entre como <strong className="font-bold">{typeUser === "clerk" ? "Atendente" : "Administrador"}</strong>
         </h2>
       </header>
 
@@ -226,7 +226,7 @@ export function Login({ typeUser, otherUser}) {
       </form>
 
       <div className="flex w-[360px] h-14 p-2 justify-center items-center rounded-md border border-slate-700">
-        <span className="font-bold text-sm">É um {otherUser}? <a className="hover:underline font-light text-blue-500 cursor-pointer" onClick={handleUserChange}>Entre como {otherUser}</a></span>
+        <span className="font-bold text-sm">É um {otherUser === "clerk" ? "Atendente" : "Administrador"}? <a className="hover:underline font-light text-blue-500 cursor-pointer" onClick={handleUserChange}>Entre como {otherUser === "clerk" ? "Atendente" : "Administrador"}</a></span>
       </div>
 
       { usuarioNaoEncontrado && (

@@ -43,13 +43,13 @@
 
         const handlePrintReport = async (id) => {
             try {
-                const response = await fetch('http://localhost:3030/getRelatorios', {
+                const token = localStorage.getItem('clerk_authToken');      
+                const response = await fetch(`http://localhost:3030/service/reports/${id}`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': clerk.token
-                    },
-                    body: JSON.stringify({id})
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
                 if(response.ok) {
                     const data = await response.json();
@@ -121,30 +121,33 @@
         };
 
         const handleStartedService = async (event) => {
-            console.log("aqui")
             event.preventDefault();
 
             try {
+                console.log(clerk.id)
                 const date = new Date().toISOString();
-                const response = await fetch("http://localhost:3030/atendimento", {
+                const token = localStorage.getItem('clerk_authToken');  
+                const response = await fetch(`http://localhost:3030/service/create/${clerk.id}`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type':'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify( {date, type_service: typeService.toUpperCase(), id_clerk:clerk.id} )
+                    body: JSON.stringify( {date, type_service: typeService.toUpperCase()} )
                 });
 
                 if(response.ok) {
                     const data = await response.json();
+                    sessionStorage.setItem('atendimento', 'true');
                     switch(typeService) {
                         case "café": 
-                            navigate(`/atendente/cafe`)
+                            navigate(`/clerk/coffee`)
                             break;
                         case "almoço":
-                            navigate(`/atendente/almoco`)
+                            navigate(`/clerk/lunch`)
                             break;
                         case "jantar":
-                            navigate(`/atendente/jantar`)
+                            navigate(`/clerk/dinner`)
                             break;
                     }
 
@@ -159,7 +162,7 @@
         } 
 
         const handleClickSettings = () => {
-            navigate("/atendente/configuracoes")
+            navigate("/clerk/settings")
         }
 
         useEffect(() => {
@@ -168,12 +171,14 @@
 
         const fetchData = async (page) => {
             try {
-                const response = await fetch(`http://localhost:3030/getAtendimentos?page=${page}&limit=3`, {
+                const token = localStorage.getItem('clerk_authToken');      
+                const { id } = JSON.parse(localStorage.getItem('clerk'))
+                const response = await fetch(`http://localhost:3030/service/list/${id}?page=${page}&limit=3`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type':'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify( {id:clerk.id} )
                 });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -199,8 +204,8 @@
         };
 
         useEffect(() => {
-            const token = localStorage.getItem('atendente_authToken');
-            const tokenExpiration = localStorage.getItem('atendente_tokenExpiration');
+            const token = localStorage.getItem('clerk_authToken');
+            const tokenExpiration = localStorage.getItem('clerk_tokenExpiration');
             
             if (token && tokenExpiration) {
                 const isExpired = Date.now() > tokenExpiration;
@@ -219,19 +224,23 @@
         }, []);
         
         const handleLogout = () => {
-            localStorage.removeItem('atendente_authToken');
-            localStorage.removeItem('atendente_tokenExpiration');
-            navigate("/atendente"); 
+            localStorage.removeItem('clerk_authToken');
+            localStorage.removeItem('clerk_tokenExpiration');
+            localStorage.removeItem('clerk');
+            navigate("/clerk"); 
         }
   
+        const headerProps = {
+            name: clerk?.name,
+            onClickedSettings: handleClickSettings,
+            onClickedExit: handleLogout,
+            ...(clerk?.photo ? { linkPhoto: clerk.photo } : {})
+        };
         return (
             <Dialog.Root>
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4'>
                     <Header
-                        name={clerk.name}
-                        linkPhoto={clerk.photo}
-                        onClickedSettings={handleClickSettings}
-                        onClickedExit={handleLogout}
+                        {...headerProps}
                     />
 
                     <div className='flex'>

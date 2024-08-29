@@ -9,6 +9,8 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useNavigate } from 'react-router-dom';
 import { ServiceContext } from '../../contexts/ServiceContext.jsx';
 import { useRef, useEffect } from 'react';
+import { createOrder } from "./functions/createOrder.js";
+import { searchStudent } from './functions/searchStudent.js';
 
 export function ScreenLunch () {
     const [registration, setRegistration] = useState('');
@@ -107,33 +109,6 @@ export function ScreenLunch () {
         }
     }
 
-    const handleSearchStudent = async (e) => {
-        e.preventDefault();
-        
-        try {
-            setSearchUser(true)
-            const response = await fetch(`http://localhost:3030/aluno`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ registration }),
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                setFoundUser(true);
-                saveStudent(data.responseStudent);
-                focusInputQuantity();
-            } else {
-                setFoundUser(false);
-            }
-        } catch (error) {
-            alert("ERRO! Não conseguimos conectar ao servidor para encontrar o aluno");
-        }
-        
-    }
-
     const handleQuantityKg = (e) => {
         const handleQuantity = e.target.value;
         if(handleQuantity.length <= 5) {
@@ -182,10 +157,10 @@ export function ScreenLunch () {
         e.preventDefault();
         if(userType === 'externo') {
             if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartão' || paymentType === 'pix')) {
-                handleCreateOrder();
+                createOrder(Number(priceTotal), Number(money), Number(price), paymentType.toUpperCase(), Number(quantity), Number(service), student, cleanFieldsStudent);
             } else if(quantity > 0 && priceTotal > 0 && money > 0 && paymentType === 'dinheiro') {
                 if(money >= price) {
-                    handleCreateOrder();
+                    createOrder(Number(priceTotal), Number(money), Number(price), paymentType.toUpperCase(), Number(quantity), Number(service), student, cleanFieldsStudent);
                 } else {
                     alert("ERRO! Valor insuficiente");
                 }
@@ -197,10 +172,10 @@ export function ScreenLunch () {
 
             if(student) {
                 if(quantity > 0 && priceTotal > 0 && money > 0 && (paymentType === 'cartão' || paymentType === 'pix')) {
-                    handleCreateOrder();
+                    createOrder(Number(priceTotal), Number(money), Number(price), paymentType.toUpperCase(), Number(quantity), Number(service), student, cleanFieldsStudent);
                 } else if(quantity >0 && priceTotal > 0 && money > 0 && paymentType === 'dinheiro' ) {
                     if(money >= price) {
-                        handleCreateOrder();
+                        createOrder(Number(priceTotal), Number(money), Number(price), paymentType.toUpperCase(), Number(quantity), Number(service), student, cleanFieldsStudent);
                     } else {
                         alert("ERRO! Valor insuficiente");
                     }
@@ -215,46 +190,22 @@ export function ScreenLunch () {
 
     const handleCloseService = (e) => {
         e.preventDefault();
-        navigate(`/atendente/home`);
+        navigate(`/clerk/home`);
     }
 
-    const handleCreateOrder = async () => {
-        try {
-            const  orderData = {
-                price_total: Number(priceTotal),
-                price: Number(price),
-                type_payment: paymentType.toUpperCase(),
-                quantity_kg: Number(quantity),
-                id_service: Number(service)
-            }
-
-            if(student && student.registration) {
-                orderData.registration_student = student.registration;
-            }
-
-            const response = await fetch("http://localhost:3030/order", {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify( orderData )
-            })
-
-            if(response.ok) {
-                cleanFieldsStudent();
-                alert("Atendimento realizado com sucesso");
-                alert("Troco: " + (money-price).toFixed(2))
-            } else {
-                alert("Erro no servidor");
-            }
-        } catch(error) {
-            alert("ERRO! Não conseguimos conectar ao servidor para enviar o atendimento");
-        }
-    }
+    
 
     useEffect(() => {
-        const token = localStorage.getItem('atendente_authToken');
-        const tokenExpiration = localStorage.getItem('atendente_tokenExpiration');
+        const token = localStorage.getItem('clerk_authToken');
+        const accessed = sessionStorage.getItem('atendimento');
+        
+        if (!accessed && token) {
+            navigate('/clerk/home'); 
+        } else {
+            sessionStorage.removeItem('atendimento');
+        }
+
+        const tokenExpiration = localStorage.getItem('clerk_tokenExpiration');
         
         if (token && tokenExpiration) {
             const isExpired = Date.now() > tokenExpiration;
@@ -273,9 +224,9 @@ export function ScreenLunch () {
     }, []);
     
       const handleLogout = () => {
-          localStorage.removeItem('atendente_authToken');
-          localStorage.removeItem('atendente_tokenExpiration');
-          navigate("/atendente"); 
+          localStorage.removeItem('clerk_authToken');
+          localStorage.removeItem('clerk_tokenExpiration');
+          navigate("/clerk"); 
       }
 
     return ( 
@@ -318,7 +269,7 @@ export function ScreenLunch () {
                                     </div>
                                 </div>
                                 { userType === 'interno' ? (
-                                    <form onSubmit={handleSearchStudent} className='flex gap-2 flex-col '>
+                                    <form onSubmit={(e) => searchStudent(e,setSearchUser, setFoundUser, saveStudent, registration)} className='flex gap-2 flex-col '>
                                         <label htmlFor="matricula">Nº de matrícula: </label>
                                         <input 
                                             ref={inputRegistrationRef}

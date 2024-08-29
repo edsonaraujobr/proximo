@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "9000:5173"
-  #   depends_on:
-  #     - backend
+  frontend:
+    build: ./frontend
+    ports:
+      - "9000:5173"
+    depends_on:
+      - backend
     
   mysql:
     image: mysql:8.0.36
@@ -18,9 +18,9 @@ services:
     volumes:
       - ./backend/src/database/sql.sql:/docker-entrypoint-initdb.d/sql.sql
 
-  # backend:
-  #   build: ./backend
-  #   ports:
-  #     - "3030:3030"
-  #   depends_on:
-  #     - mysql
+  backend:
+    build: ./backend
+    ports:
+      - "3030:3030"
+    depends_on:
+      - mysql

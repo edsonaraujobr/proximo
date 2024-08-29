@@ -7,7 +7,7 @@ import { AdministratorContext } from '../../contexts/AdministratorContext.jsx';
 import * as Dialog from '@radix-ui/react-dialog'; 
 import moment from 'moment';
 
-export function HomeAdministrator ({children}) {
+export function HomeAdministrator () {
     const [ registration, setRegistration ] = useState('');
     const [ name, setName ] = useState('');
     const [ course, setCourse ] = useState('');
@@ -36,7 +36,7 @@ export function HomeAdministrator ({children}) {
     const inputRefClerk = useRef(null)
     const itens = ["Registrar Aluno","Registrar Atendente", "Visualizar Alunos","Visualizar Atendentes"]
     const [activeTab, setActiveTab] = useState(itens[0]);
-    const login = false;
+
     const navigate = useNavigate()
 
     const nextPageStudent = () => {
@@ -55,15 +55,20 @@ export function HomeAdministrator ({children}) {
 
     const fetchStudent = useCallback (async (page) => {
         try {
-            console.log("chamou aqui")
-            const response = await fetch(`http://localhost:3030/listar-alunos?page=${page}&limit=10`);
+            const token = localStorage.getItem('administrator_authToken');
+            const response = await fetch(`http://localhost:3030/student/list?page=${page}&limit=10`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (response.ok) {
                 const data = await response.json();
                 setListStudent(data.results);
-                console.log(listStudent);
                 setTotalPagesStudent(data.totalPages)
             } else {
-                console.log("Erro ao buscar alunos");
+                alert("Erro ao buscar alunos");
             }
         } catch (error) {
             alert("Erro ao conectar com o servidor", error);
@@ -86,18 +91,23 @@ export function HomeAdministrator ({children}) {
 
     const fetchClerk = useCallback(async (page) =>{
         try {
-            console.log("chamou fetchClerk")
-            const response = await fetch(`http://localhost:3030/listar-atendentes?page=${page}&limit=10`);
+            const token = localStorage.getItem('administrator_authToken');
+            const response = await fetch(`http://localhost:3030/clerk/list?page=${page}&limit=10`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (response.ok) {
                 const data = await response.json();
                 setListClerk(data.results);
-                console.log(listClerk)
                 setTotalPagesClerk(data.totalPages)
             } else {
-                console.log("Erro ao buscar alunos");
+                alert("Erro ao buscar alunos");
             }
         } catch (error) {
-            console.log("Erro ao conectar com o servidor", error);
+            alert("Erro ao conectar com o servidor", error);
         }
     }, []);
 
@@ -118,26 +128,25 @@ export function HomeAdministrator ({children}) {
     const handleCreatedStudent = async (e) => {
         e.preventDefault();
         try {
-            console.log("aqui")
             const formData = new FormData();
             formData.append('registration', registration);
             formData.append('typeAssistance', typeAssistance.toUpperCase());
             formData.append('name', name.toUpperCase());
-            formData.append('course', course.toUpperCase());
-            console.log("aqui")          
+            formData.append('course', course.toUpperCase());        
             if(noticeNumber && noticeNumber.trim() !== '') 
                 formData.append('noticeNumber', noticeNumber.toUpperCase());
             if(dateStartedAssistance && dateStartedAssistance.trim() !== '') 
                 formData.append('dateStartedAssistance', dateStartedAssistance);
             if(photo)
-                formData.append('photo', photo);
-            console.log("aqui")    
-            console.log(administrator.id)      
-            formData.append('idAdministrator', administrator.id)  
-            console.log("aqui")          
-            const response = await fetch('http://localhost:3030/registrar-aluno', {
+                formData.append('photo', photo);      
+            formData.append('idAdministrator', administrator.id)    
+            const token = localStorage.getItem('administrator_authToken');      
+            const response = await fetch('http://localhost:3030/student/create', {
                 method: 'POST',
                 body:formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
             })
 
             if(response.ok) {
@@ -162,12 +171,14 @@ export function HomeAdministrator ({children}) {
                 formData.append('shiftClerk', shiftClerk.toUpperCase());
             if(photoClerk)
                 formData.append('photoClerk', photoClerk);  
-            console.log(administrator.id)
-            formData.append('idAdministrator', administrator.id)    
-            console.log("aqui")        
-            const response = await fetch('http://localhost:3030/registrar-atendente', {
+            formData.append('idAdministrator', administrator.id)   
+            const token = localStorage.getItem('administrator_authToken');      
+            const response = await fetch('http://localhost:3030/clerk/create', {
                 method: 'POST',
                 body:formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
             })
 
             if(response.ok) {
@@ -290,7 +301,6 @@ export function HomeAdministrator ({children}) {
         e.preventDefault();
         try {
             const data = {
-                id: idClerk, 
                 nameClerk: nameClerk.toUpperCase(), 
                 emailClerk: emailClerk 
             };
@@ -298,10 +308,12 @@ export function HomeAdministrator ({children}) {
             if(shiftClerk && shiftClerk.trim() !== '')
                 data.shiftClerk = shiftClerk.toUpperCase();
 
-            const response = await fetch('http://localhost:3030/atualizar-atendente', {
+            const token = localStorage.getItem('administrator_authToken');   
+            const response = await fetch(`http://localhost:3030/clerk/update/${idClerk}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(data)
             })
@@ -324,12 +336,13 @@ export function HomeAdministrator ({children}) {
     const handleRemoveClerk = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:3030/remover-atendente', {
+            const token = localStorage.getItem('administrator_authToken');   
+            const response = await fetch(`http://localhost:3030/clerk/delete/${idClerk}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({id: idClerk})
             })
 
             if(response.ok) {
@@ -348,22 +361,23 @@ export function HomeAdministrator ({children}) {
         e.preventDefault();
         try {
             const data = {
-                registration: registration, 
                 course: course.toUpperCase(), 
                 type_assistance: typeAssistance.toUpperCase(),
             };
 
-            if(noticeNumber && noticeNumber.trim() !== '') {
+            if(noticeNumber && noticeNumber.trim() !== '') 
                 data.notice_number = noticeNumber;
-            }
+            
 
-            if(dateStartedAssistance && noticeNumber.trim() !== '') {
+            if(dateStartedAssistance && noticeNumber.trim() !== '') 
                 data.date_started_assistance = dateStartedAssistance;
-            }
-            const response = await fetch('http://localhost:3030/atualizar-aluno', {
+            
+            const token = localStorage.getItem('administrator_authToken');   
+            const response = await fetch(`http://localhost:3030/student/update/${registration}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(data)
             })
@@ -396,12 +410,13 @@ export function HomeAdministrator ({children}) {
     const handleRemoveStudent = async(e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:3030/remover-aluno', {
+            const token = localStorage.getItem('administrator_authToken');    
+            const response = await fetch(`http://localhost:3030/student/delete/${registration}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({registration: registration})
             })
 
             if(response.ok) {
@@ -417,12 +432,12 @@ export function HomeAdministrator ({children}) {
     }
 
     const handleClickSettings = () => {
-        navigate("/administrador/configuracoes")
+        navigate("/administrator/settings")
     }
 
     useEffect(() => {
-        const token = localStorage.getItem('administrador_authToken');
-        const tokenExpiration = localStorage.getItem('administrador_tokenExpiration');
+        const token = localStorage.getItem('administrator_authToken');
+        const tokenExpiration = localStorage.getItem('administrator_tokenExpiration');
         
         if (token && tokenExpiration) {
             const isExpired = Date.now() > tokenExpiration;
@@ -441,13 +456,12 @@ export function HomeAdministrator ({children}) {
     }, []);
     
     const handleLogout = () => {
-        localStorage.removeItem('administrador_authToken');
-        localStorage.removeItem('administrador_tokenExpiration');
-        navigate("/administrador"); 
+        localStorage.removeItem('administrator_authToken');
+        localStorage.removeItem('administrator_tokenExpiration');
+        navigate("/administrator"); 
     }
 
     return (
-        login ? children : ( 
                 <div className='flex flex-col bg-slate-800 w-lvw h-lvh text-white gap-4 fixed'>
                         <Tabs.Root
                             value={activeTab}
@@ -1013,5 +1027,4 @@ export function HomeAdministrator ({children}) {
                         </Tabs.Root>
                 </div>  
             )
-    )
 }

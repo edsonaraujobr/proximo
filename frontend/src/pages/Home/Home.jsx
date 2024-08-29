@@ -25,8 +25,8 @@ export function Home() {
                         <p className="text-lg font-light ">Esta é uma aplicação completa para realizar a <strong className="font-bold">administração das vendas </strong><br /> do restaurante universitário de forma <strong className="font-bold">simplificada e completamente digital.</strong></p>
                     </div>
                     <div className="flex flex-col items-center justify-center gap-4">
-                        <Link to="/atendente" className="w-full  text-center px-4 py-2 bg-lime-500 rounded text-slate-900 hover:bg-lime-600 hover:scale-110 duration-300 transition ease-in-out delay-150">Entrar como Atendente</Link>
-                        <Link to="/administrador" className="w-full text-center  px-4 py-2 bg-lime-500 rounded text-slate-900 hover:bg-lime-600 hover:scale-110 duration-300 transition ease-in-out delay-150">Entrar como Administrador</Link>
+                        <Link to="/clerk" className="w-full  text-center px-4 py-2 bg-lime-500 rounded text-slate-900 hover:bg-lime-600 hover:scale-110 duration-300 transition ease-in-out delay-150">Entrar como Atendente</Link>
+                        <Link to="/administrator" className="w-full text-center  px-4 py-2 bg-lime-500 rounded text-slate-900 hover:bg-lime-600 hover:scale-110 duration-300 transition ease-in-out delay-150">Entrar como Administrador</Link>
                     </div>
                 </section>
 
@@ -95,7 +95,7 @@ export function Home() {
                         <img src="../../../public/logo.png" alt="foto cliente"  className="size-32"/>
                         <div className="w-full md:w-1/2">
                             <p className="text-lg">
-                                <strong>Próximo</strong> é uma aplicação inovadora projetada para transformar a maneira como o restaurante universitário da UESB é gerenciado, tornando o processo mais eficiente, organizado e acessível tanto para os estudantes quanto para o público externo. 
+                                <strong>Próximo</strong> é uma aplicação inovadora projetada para transformar a maneira como o restaurante universitário é gerenciado, tornando o processo mais eficiente, organizado e acessível tanto para os estudantes quanto para o público externo. 
                             </p>
                         </div>
                     </div>
