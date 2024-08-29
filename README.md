@@ -13,7 +13,7 @@ In your command line
 
 ```bash
 # Clone the repository
-$ git clone https://github.com/edsonaraujobr/undefined_api
+$ git clone https://github.com/edsonaraujobr/proximo/tree/middleware
 
 # Run the application through docker
 $ docker compose up --build
@@ -53,7 +53,7 @@ These are the technologies used in this project
 
 ## 📝 License
 
-This project are is under the MIT license. See the [LICENSE](https://github.com/edsonaraujobr/software-ru/blob/main/LICENSE) to get more details.
+See the [LICENSE](https://github.com/edsonaraujobr/software-ru/blob/main/LICENSE) to get more details.
 
 
 
