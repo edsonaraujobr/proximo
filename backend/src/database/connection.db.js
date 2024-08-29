@@ -1,7 +1,7 @@
 import mysql from "mysql2";
 
 const database = mysql.createConnection({
-  host: "mysql-container" | "root",
+  host: "mysql-container" | "localhost",
   user: "root",
   port: 3306,
   password: "root",

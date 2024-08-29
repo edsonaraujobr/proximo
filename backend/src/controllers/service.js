@@ -3,7 +3,8 @@ import database from "../database/connection.db.js";
 
 
 export const createService = (req,res) => {
-    const { date, type_service, id_clerk } = req.body
+    const { id_clerk } = req.params
+    const { date, type_service } = req.body
 
     const query = "INSERT INTO service (date_service,type_service,id_clerk) VALUES (?,?,?)"
 
@@ -25,7 +26,7 @@ export const createService = (req,res) => {
 }
 
 export const getServices = (req, res) => {
-    const { id } = req.body
+    const { id } = req.params
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
@@ -76,7 +77,7 @@ export const getServices = (req, res) => {
 };
 
 export const getReport = (req,res) => {
-    const {id} = req.body;
+    const {id} = req.params;
     const queryOrders = `SELECT price_total, price_paid, type_payment, registration_student, quantity_kg, quantity_items, student.type_assistance,
         (SELECT COUNT(*) FROM orders WHERE id_service = ?) AS total_clients
         FROM orders 

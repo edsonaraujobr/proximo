@@ -27,7 +27,8 @@ export const login = (req, res) => {
                     const token = jwt.sign(
                         {
                             name: clerk.full_name,
-                            email: clerk.email
+                            email: clerk.email,
+                            role: 'clerk'
                         }, 
                         SECRET,
                         {
@@ -146,7 +147,8 @@ export const getAllClerks = (req, res) => {
 }
 
 export const updateClerk = (req, res) => {
-    const { id, nameClerk, emailClerk, shiftClerk} = req.body;
+    const { id } = req.params;
+    const { nameClerk, emailClerk, shiftClerk} = req.body;
     
     if (!id || !nameClerk || !emailClerk ) {
         return res.status(400).send('Dados insuficientes');
@@ -169,7 +171,7 @@ export const updateClerk = (req, res) => {
 }
 
 export const removeClerk = (req, res) => {
-    const { id } = req.body;
+    const { id } = req.params;
 
     if (!id) {
         return res.status(400).send('Dados insuficientes');
@@ -267,56 +269,3 @@ export const updatePassword = (req, res) => {
   };
 
 
-  export const updatePasswordId = (req, res) => {
-    const { id, password, current } = req.body;
-
-    const queryGetPassword = "SELECT password FROM clerk WHERE id = ?";
-
-    database.query(queryGetPassword, [id], (err, data) => {
-        if (err) {
-            console.error('Erro ao consultar banco de dados:', err);
-            return res.status(500).json({ error: 'Erro ao localizar usuário' });
-        }
-        
-        if (data.length > 0) {
-            const storedPassword = data[0].password;
-
-            bcrypt.compare(current, storedPassword, (err, isMatch) => {
-                if (err) {
-                    console.error('Erro ao comparar senhas:', err);
-                    return res.status(500).json({ error: 'Erro ao verificar senha' });
-                }
-
-                if (isMatch) {
-                    bcrypt.hash(password, saltRounds, (err, hash) => {
-                        if (err) {
-                            console.error('Erro ao hashear a nova senha:', err);
-                            return res.status(500).json({ error: 'Erro ao processar nova senha' });
-                        }
-
-                        const queryUpdatePassword = "UPDATE clerk SET password = ? WHERE id = ?";
-
-                        database.query(queryUpdatePassword, [hash, id], (err, result) => {
-                            if (err) {
-                                console.error('Erro ao atualizar a senha no banco de dados:', err);
-                                
-                                return res.status(500).json({ error: 'Erro ao atualizar a senha' });
-                            }
-
-                            if (result.affectedRows > 0) {
-                                return res.status(200).json({ message: 'Senha atualizada com sucesso' });
-                            } else {
-                                return res.status(404).json({ error: 'Usuário não encontrado' });
-                            }
-                        });
-                    });
-                } else {
-                    return res.status(400).json({ error: 'Senha atual incorreta' });
-                }
-            });
-        } else {
-            
-            return res.status(404).json({ error: 'Usuário não encontrado' });
-        }
-    });
-};

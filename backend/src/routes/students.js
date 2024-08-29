@@ -1,5 +1,6 @@
 import express from "express";
 import { getStudent, registerStudents, getAllStudents, updateStudent, removeStudent } from "../controllers/student.js";
+import {  authenticateJWT, authorizeAdmistrator, authorizeClerk } from "../middlewares/authMiddleware.js";
 import multer from "multer"
 import path from "path";
 
@@ -15,10 +16,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("aluno/pesquisar/:registration", getStudent)
-router.post("aluno/registrar", upload.single('photo'),registerStudents)
-router.get("aluno/listar", getAllStudents)
-router.put("aluno/atualizar/:registration", updateStudent)
-router.delete("aluno/remover/:registration", removeStudent)
+router.post("/student/search/:registration",authenticateJWT, authorizeClerk, getStudent)
+
+router.post("/student/create", authenticateJWT, authorizeAdmistrator, upload.single('photo'),registerStudents)
+router.get("/student/list", authenticateJWT, authorizeAdmistrator, getAllStudents)
+router.put("/student/update/:registration", authenticateJWT, authorizeAdmistrator, updateStudent)
+router.delete("/student/delete/:registration", authenticateJWT, authorizeAdmistrator, removeStudent)
 
 export default router
